@@ -83,6 +83,7 @@ npm run lhci     # Lighthouse CI (khi đã cấu hình)
 - Nếu một cách ghi file lỗi 2 lần: DỪNG và báo cáo, không thử cách vòng vèo khác.
 - Trước khi `npm install` bất kỳ gói nào (kể cả devDependency, @types/*, parser), nêu danh sách và lý do để người dùng đồng ý.
 - Không đọc mã nguồn trong node_modules trừ khi bắt buộc. Cần biết API thì ưu tiên docs chính thức hoặc file kiểu dữ liệu (.d.ts), tối đa 15 lệnh cho phần khám phá.
+- Lộ trình, tiêu chí hoàn thành và giao thức mỗi task nằm trong docs/ROADMAP.md. Chỉ đọc mục Giao thức chung và mục của task hiện tại.
 
 ## 5. Quy tắc cứng về nội dung (QUAN TRỌNG NHẤT)
 
