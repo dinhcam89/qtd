@@ -71,4 +71,3 @@
      - Tự động upload artifact `playwright-report/` khi có test thất bại.
 - **Số placeholder hiện tại:** 33.
 - **Việc người dùng cần làm tiếp:** Cổng G1 (chuẩn bị nội dung, kết nối Cloudflare Pages, xem checklist chi tiết trong báo cáo).
-
