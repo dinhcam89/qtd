@@ -3,3 +3,4 @@ export * from './rates';
 export * from './contact';
 export * from './schedule';
 export * from './leadership';
+export * from './news';

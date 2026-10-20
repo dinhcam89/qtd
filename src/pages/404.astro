@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Không tìm thấy trang"
+  description="Trang bạn yêu cầu không tồn tại hoặc đã được thay đổi địa chỉ liên kết."
+>
+  <div class="py-16 sm:py-24 text-center max-w-xl mx-auto space-y-6">
+    <p class="text-sm font-bold tracking-widest text-brand-primary uppercase">
+      Mã lỗi 404
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-text">
+      Không tìm thấy trang
+    </h1>
+    <p class="text-base text-brand-muted">
+      Trang bạn đang tìm kiếm không tồn tại, đã bị xóa hoặc tạm thời không khả
+      dụng.
+    </p>
+    <div class="pt-4">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center px-6 py-3 min-h-[44px] rounded-md bg-brand-primary text-white font-medium hover:bg-brand-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus focus-visible:ring-offset-2"
+      >
+        Quay về trang chủ
+      </a>
+    </div>
+  </div>
+</BaseLayout>

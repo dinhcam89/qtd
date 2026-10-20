@@ -1,30 +1,258 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSite, getRates } from '../lib/data';
+import { getPublishedNews } from '../lib/news';
+import {
+  formatAsOf,
+  formatDate,
+  formatNumber,
+  formatCurrency,
+  formatPercent,
+  formatText,
+} from '../lib/format';
+import { RATE_DISCLAIMER, DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+
+const site = await getSite();
+const rates = await getRates();
+const publishedNews = await getPublishedNews();
+
+const siteTitle = site.name
+  ? `Trang chủ — Quỹ tín dụng nhân dân ${site.name}`
+  : 'Trang chủ — Quỹ tín dụng nhân dân [TÊN QUỸ]';
+const siteDescription =
+  formatText(site.description) ||
+  `Cổng thông tin Quỹ tín dụng nhân dân ${site.name}`;
 ---
 
-<BaseLayout
-  title="Trang chủ — Quỹ tín dụng nhân dân [TÊN QUỸ]"
-  description="Website thông tin chính thức của Quỹ tín dụng nhân dân [TÊN QUỸ]"
->
-  <div class="space-y-8">
-    <section class="py-6 border-b border-gray-200">
-      <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-        Quỹ tín dụng nhân dân [TÊN QUỸ]
-      </h1>
-      <p class="text-lg text-gray-700 max-w-3xl">
-        Chào mừng quý thành viên và khách hàng đến với website thông tin chính
-        thức của Quỹ tín dụng nhân dân.
-      </p>
-    </section>
-
-    <section class="py-4">
-      <div class="rounded-lg bg-blue-50 border border-blue-200 p-6">
-        <h2 class="text-xl font-semibold text-blue-900 mb-2">Thông báo</h2>
-        <p class="text-blue-800">
-          Hệ thống đang trong quá trình hoàn thiện nền tảng kỹ thuật. Mọi số
-          liệu và thông tin chính thức sẽ được cập nhật sau khi được phê duyệt.
+<BaseLayout title={siteTitle} description={siteDescription}>
+  <div class="space-y-12 sm:space-y-16">
+    <!-- 1. Hero Section -->
+    <section class="py-6 sm:py-10 border-b border-brand-border">
+      <div class="max-w-3xl space-y-4">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-primary tracking-tight">
+          {formatText(site.name)}
+        </h1>
+        <p class="text-lg sm:text-xl text-brand-muted leading-relaxed">
+          {formatText(site.description)}
         </p>
       </div>
     </section>
+
+    <!-- 2. Khối Số liệu quy mô (#quy-mo) -->
+    <section id="quy-mo" class="scroll-mt-20 py-2">
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+          <h2 class="text-2xl font-bold text-brand-text">Quy mô hoạt động</h2>
+          <p class="text-sm text-brand-muted">
+            {site.stats.as_of
+              ? `Số liệu ${formatAsOf(site.stats.as_of)}`
+              : `Số liệu: ${DEFAULT_FALLBACK_TEXT}`}
+          </p>
+        </div>
+
+        <!-- Lưới 4 cột trên Desktop, 2 cột trên Mobile -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-2">
+          <!-- Thành viên -->
+          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
+              Thành viên
+            </span>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+              {formatNumber(site.stats.members_count)}
+            </div>
+            <span class="text-xs text-brand-muted block">thành viên</span>
+          </div>
+
+          <!-- Vốn điều lệ -->
+          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
+              Vốn điều lệ
+            </span>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+              {formatCurrency(site.stats.charter_capital)}
+            </div>
+          </div>
+
+          <!-- Tổng tài sản -->
+          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
+              Tổng tài sản
+            </span>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+              {formatCurrency(site.stats.total_assets)}
+            </div>
+          </div>
+
+          <!-- Tổng dư nợ cho vay -->
+          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
+              Dư nợ cho vay
+            </span>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+              {formatCurrency(site.stats.total_loans)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Khối Lãi suất tóm tắt (#lai-suat) -->
+    <section
+      id="lai-suat"
+      class="scroll-mt-20 py-2 border-t border-brand-border pt-10"
+    >
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+          <div>
+            <h2 class="text-2xl font-bold text-brand-text">
+              Biểu lãi suất tham khảo
+            </h2>
+            <p class="text-sm text-brand-muted mt-1">
+              {rates.effective_from
+                ? `Áp dụng từ ngày ${formatDate(rates.effective_from)}`
+                : `Thời điểm áp dụng: ${DEFAULT_FALLBACK_TEXT}`}
+            </p>
+          </div>
+        </div>
+
+        <!-- Bảng 1: Lãi suất tiền gửi (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
+        <div class="space-y-3">
+          <h3 class="text-lg font-semibold text-brand-primary">
+            Lãi suất tiền gửi
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="responsive-rate-table w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-brand-border bg-brand-surface text-brand-text text-sm font-semibold">
+                  <th scope="col" class="py-3 px-4">
+                    Kỳ hạn
+                  </th>
+                  <th scope="col" class="py-3 px-4">
+                    Lãi suất (%/năm)
+                  </th>
+                  <th scope="col" class="py-3 px-4">
+                    Ghi chú
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-brand-border text-sm">
+                {rates.deposit_rates.map((item) => (
+                  <tr class="hover:bg-brand-surface/50 transition-colors">
+                    <td
+                      data-label="Kỳ hạn"
+                      class="py-3 px-4 font-medium text-brand-text"
+                    >
+                      {formatText(item.term)}
+                    </td>
+                    <td
+                      data-label="Lãi suất (%/năm)"
+                      class="py-3 px-4 font-bold text-brand-primary"
+                    >
+                      {formatPercent(item.rate)}
+                    </td>
+                    <td data-label="Ghi chú" class="py-3 px-4 text-brand-muted">
+                      {formatText(item.note, '—')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bảng 2: Lãi suất cho vay (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
+        <div class="space-y-3 pt-4">
+          <h3 class="text-lg font-semibold text-brand-primary">
+            Lãi suất cho vay
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="responsive-rate-table w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-brand-border bg-brand-surface text-brand-text text-sm font-semibold">
+                  <th scope="col" class="py-3 px-4">
+                    Mục đích vay
+                  </th>
+                  <th scope="col" class="py-3 px-4">
+                    Kỳ hạn
+                  </th>
+                  <th scope="col" class="py-3 px-4">
+                    Lãi suất (%/năm)
+                  </th>
+                  <th scope="col" class="py-3 px-4">
+                    Ghi chú
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-brand-border text-sm">
+                {rates.loan_rates.map((item) => (
+                  <tr class="hover:bg-brand-surface/50 transition-colors">
+                    <td
+                      data-label="Mục đích vay"
+                      class="py-3 px-4 font-medium text-brand-text"
+                    >
+                      {formatText(item.purpose)}
+                    </td>
+                    <td data-label="Kỳ hạn" class="py-3 px-4 text-brand-muted">
+                      {formatText(item.term, '—')}
+                    </td>
+                    <td
+                      data-label="Lãi suất (%/năm)"
+                      class="py-3 px-4 font-bold text-brand-primary"
+                    >
+                      {formatPercent(item.rate)}
+                    </td>
+                    <td data-label="Ghi chú" class="py-3 px-4 text-brand-muted">
+                      {formatText(item.note, '—')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Dòng lưu ý lãi suất bắt buộc -->
+        <p class="text-sm text-brand-muted italic bg-brand-surface p-3 rounded border border-brand-border">
+          {RATE_DISCLAIMER}
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Khối Tin mới (Ẩn hoàn toàn nếu chưa có bài công khai, đã lọc draft: true) -->
+    {publishedNews.length > 0 && (
+      <section
+        id="tin-tuc"
+        class="scroll-mt-20 py-2 border-t border-brand-border pt-10"
+      >
+        <div class="space-y-6">
+          <h2 class="text-2xl font-bold text-brand-text">
+            Tin tức & Thông báo
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {publishedNews.slice(0, 3).map((item) => (
+              <article class="border border-brand-border rounded-lg p-5 bg-white space-y-3 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <span class="inline-block text-xs font-semibold px-2 py-1 rounded bg-brand-surface text-brand-primary">
+                    {item.data.category}
+                  </span>
+                  <h3 class="text-lg font-bold text-brand-text line-clamp-2">
+                    {item.data.title}
+                  </h3>
+                  <p class="text-sm text-brand-muted line-clamp-3">
+                    {item.data.description}
+                  </p>
+                </div>
+                <time
+                  class="text-xs text-brand-muted block pt-2 border-t border-brand-border"
+                  datetime={item.data.pubDate.toISOString()}
+                >
+                  {formatDate(item.data.pubDate)}
+                </time>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
   </div>
 </BaseLayout>

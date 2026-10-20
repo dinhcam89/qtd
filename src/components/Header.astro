@@ -1,0 +1,102 @@
+---
+import { NAV_ITEMS } from '../lib/nav';
+
+interface Props {
+  siteName?: string;
+}
+
+const { siteName = 'Quỹ tín dụng nhân dân [TÊN QUỸ]' } = Astro.props;
+---
+
+<header
+  class="border-b border-brand-border bg-white sticky top-0 z-40"
+  id="site-header"
+>
+  <div class="max-w-[1200px] mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between min-h-[4.5rem] py-3">
+      <!-- Tên Quỹ -->
+      <a
+        href="#"
+        class="text-lg sm:text-xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus focus-visible:ring-offset-2 rounded py-1"
+      >
+        {siteName}
+      </a>
+
+      <!-- Menu ngang trên Desktop (lg+) -->
+      <nav
+        class="hidden lg:flex items-center space-x-1"
+        aria-label="Điều hướng chính"
+      >
+        {NAV_ITEMS.map((item) => (
+          <a
+            href={item.href}
+            class="px-4 py-2 text-base font-medium text-brand-text hover:text-brand-primary hover:bg-brand-surface rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus"
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Nút Hamburger trên Mobile (vùng bấm tối thiểu 44x44px, ẩn khi chưa nạp JS để link hiển thị dự phòng) -->
+      <button
+        type="button"
+        id="menu-toggle-btn"
+        class="hidden lg:hidden p-2.5 min-w-[44px] min-h-[44px] rounded-md text-brand-text hover:bg-brand-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus"
+        aria-expanded="false"
+        aria-controls="mobile-nav-panel"
+        aria-label="Mở danh mục điều hướng"
+      >
+        <svg
+          class="w-6 h-6 icon-open"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+        <svg
+          class="w-6 h-6 icon-close hidden"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Panel Menu Mobile: Hiển thị mặc định nếu JS tắt, được JS đóng lại khi khởi chạy -->
+    <nav
+      id="mobile-nav-panel"
+      class="lg:hidden border-t border-brand-border py-3"
+      aria-label="Điều hướng trên di động"
+    >
+      <ul class="flex flex-col space-y-1">
+        {NAV_ITEMS.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="block px-4 py-3 min-h-[44px] text-base font-medium text-brand-text hover:text-brand-primary hover:bg-brand-surface rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script src="../scripts/menu.ts"></script>

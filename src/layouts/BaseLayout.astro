@@ -1,19 +1,32 @@
 ---
+import '../styles/global.css';
+import SkipLink from '../components/SkipLink.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getSite, getContact, getSchedule } from '../lib/data';
+
 interface Props {
   title?: string;
   description?: string;
 }
 
+const site = await getSite();
+const contact = await getContact();
+const schedule = await getSchedule();
+
+const defaultTitle = site.name
+  ? `Quỹ tín dụng nhân dân ${site.name}`
+  : 'Quỹ tín dụng nhân dân [TÊN QUỸ]';
+
 const {
-  title = 'Quỹ tín dụng nhân dân [TÊN QUỸ]',
-  description = 'Website thông tin chính thức của Quỹ tín dụng nhân dân [TÊN QUỸ]',
+  title = defaultTitle,
+  description = `Cổng thông tin Quỹ tín dụng nhân dân ${site.name}`,
 } = Astro.props;
 
 const canonicalURL = new URL(
   Astro.url.pathname,
   Astro.site ?? 'https://qtd.pages.dev'
 );
-import '../styles/global.css';
 ---
 
 <!doctype html>
@@ -25,36 +38,18 @@ import '../styles/global.css';
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
   </head>
-  <body class="min-h-screen flex flex-col bg-white text-gray-900">
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:p-3 focus:bg-blue-800 focus:text-white focus:rounded focus:outline-none"
+  <body class="min-h-screen flex flex-col bg-white text-brand-text">
+    <SkipLink targetId="main-content" />
+
+    <Header siteName={site.name} />
+
+    <main
+      id="main-content"
+      class="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 py-8"
     >
-      Chuyển đến nội dung chính
-    </a>
-
-    <header class="border-b border-gray-200 bg-white">
-      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <div class="text-xl font-bold tracking-tight text-gray-900">
-          Quỹ tín dụng nhân dân [TÊN QUỸ]
-        </div>
-      </div>
-    </header>
-
-    <main id="main-content" class="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
       <slot />
     </main>
 
-    <footer class="border-t border-gray-200 bg-gray-50 mt-auto">
-      <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-600 text-center">
-        <p>
-          &copy; {new Date().getFullYear()} Quỹ tín dụng nhân dân [TÊN QUỸ]. Tất
-          cả các quyền được bảo lưu.
-        </p>
-        <p class="mt-1 text-xs text-gray-500">
-          Thông tin mang tính tham khảo, vui lòng liên hệ quỹ để biết chi tiết.
-        </p>
-      </div>
-    </footer>
+    <Footer site={site} contact={contact} schedule={schedule} />
   </body>
 </html>

@@ -5,6 +5,7 @@ import { ratesSchema } from './lib/schemas/rates';
 import { contactSchema } from './lib/schemas/contact';
 import { scheduleSchema } from './lib/schemas/schedule';
 import { leadershipSchema } from './lib/schemas/leadership';
+import { newsSchema } from './lib/schemas/news';
 
 export const collections = {
   site: defineCollection({
@@ -26,5 +27,9 @@ export const collections = {
   leadership: defineCollection({
     loader: glob({ pattern: 'leadership.yaml', base: 'src/data' }),
     schema: leadershipSchema,
+  }),
+  news: defineCollection({
+    loader: glob({ pattern: '**/*.{md,mdx}', base: 'src/content/news' }),
+    schema: newsSchema,
   }),
 };
