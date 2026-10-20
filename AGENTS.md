@@ -19,7 +19,7 @@ Website **tĩnh** để giới thiệu quỹ cho khách hàng cũ và mới: gi�
 - Danh sách thành viên cá nhân. Chỉ hiển thị **số liệu tổng hợp** (số thành viên, vốn điều lệ, tổng tài sản…)
 - Backend/database riêng. Mọi thứ là file tĩnh trong Git
 
-Người dùng chính: người dân, nhiều người lớn tuổi, đa số dùng điện thoại, nhưng bản **desktop là bản thiết kế chuẩn**. Toàn bộ giao diện bằng **tiếng Việt**.
+Người dùng chính: người dân, đa số dùng điện thoại, nhưng bản **desktop là bản thiết kế chuẩn**. Toàn bộ giao diện bằng **tiếng Việt**.
 
 ## 2. Stack (không tự ý thay đổi)
 
