@@ -5,22 +5,23 @@
 
 ## 0. Trạng thái
 
-| Task | Nội dung | Trạng thái |
-|---|---|---|
-| 1 | Scaffold Astro + Tailwind v4 | Xong |
-| 2 | Schema Zod, dữ liệu placeholder, `format.ts`, `check-placeholders --strict` | Xong |
-| 3 | Collection `news`, Header/Footer, trang chủ, 404 | Plan đã duyệt (8 chỉnh sửa), cần xác nhận đã chạy xong |
-| 4 | Playwright, axe, `_headers`, `check-dist` | Chưa làm |
-| 5 | CI GitHub Actions | Chưa làm |
-| 6 | Design system | Chưa làm |
-| 7–11 | Các trang nội dung | Chưa làm |
-| 12–13 | CMS (có điều kiện) | Chưa làm |
-| 14–15 | SEO, bảo mật, hiệu năng | Chưa làm |
-| 16 | QA tổng, UAT | Chưa làm |
-| 17 | Go-live | Chưa làm |
-| 18 | Runbook | Chưa làm |
+| Task  | Nội dung                                                                    | Trạng thái                                             |
+| ----- | --------------------------------------------------------------------------- | ------------------------------------------------------ |
+| 1     | Scaffold Astro + Tailwind v4                                                | Xong                                                   |
+| 2     | Schema Zod, dữ liệu placeholder, `format.ts`, `check-placeholders --strict` | Xong                                                   |
+| 3     | Collection `news`, Header/Footer, trang chủ, 404                            | Plan đã duyệt (8 chỉnh sửa), cần xác nhận đã chạy xong |
+| 4     | Playwright, axe, `_headers`, `check-dist`                                   | Chưa làm                                               |
+| 5     | CI GitHub Actions                                                           | Chưa làm                                               |
+| 6     | Design system                                                               | Chưa làm                                               |
+| 7–11  | Các trang nội dung                                                          | Chưa làm                                               |
+| 12–13 | CMS (có điều kiện)                                                          | Chưa làm                                               |
+| 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm                                               |
+| 16    | QA tổng, UAT                                                                | Chưa làm                                               |
+| 17    | Go-live                                                                     | Chưa làm                                               |
+| 18    | Runbook                                                                     | Chưa làm                                               |
 
 **Điều kiện trước khi bắt đầu Task 4 (người dùng xác nhận):**
+
 - [ ] `AGENTS.md` có mục 4.1 (môi trường) và các số mục khớp với chỗ tham chiếu
 - [ ] Repo có `.gitattributes` (`* text=auto eol=lf`), `.editorconfig`, Prettier `endOfLine: "lf"`
 - [ ] `git ls-files --eol` không còn dòng nào có `crlf`
@@ -29,24 +30,16 @@
 ## 1. Giao thức chung (áp dụng cho mọi task)
 
 **Bắt đầu**
+
 1. Đọc `AGENTS.md`, mục này, và mục của task. Tóm tắt hiểu biết trong tối đa 5 dòng, kèm danh sách file sẽ tạo/sửa.
 2. Task ghi "Cần duyệt plan" thì dừng chờ người dùng. Các task còn lại thì làm luôn.
 
-**Trong khi làm**
-3. Chỉ làm đúng phạm vi task. Không "tiện tay" thêm việc.
-4. Chỉ cài gói trong bảng **Gói đã duyệt trước** của đúng task đó. Gói khác: dừng và hỏi.
-5. Ghi file bằng công cụ ghi file của IDE. Một cách ghi file lỗi 2 lần thì dừng và báo.
-6. Không đọc `node_modules` trừ khi bắt buộc. Khám phá tối đa 15 lệnh.
-7. Kiểm tra bằng trình duyệt tối đa **một lần ở cuối task**, tối đa 3 vòng sửa mỗi vấn đề.
+**Trong khi làm** 3. Chỉ làm đúng phạm vi task. Không "tiện tay" thêm việc. 4. Chỉ cài gói trong bảng **Gói đã duyệt trước** của đúng task đó. Gói khác: dừng và hỏi. 5. Ghi file bằng công cụ ghi file của IDE. Một cách ghi file lỗi 2 lần thì dừng và báo. 6. Không đọc `node_modules` trừ khi bắt buộc. Khám phá tối đa 15 lệnh. 7. Kiểm tra bằng trình duyệt tối đa **một lần ở cuối task**, tối đa 3 vòng sửa mỗi vấn đề.
 
-**Kết thúc (bắt buộc, theo thứ tự)**
-8. Chạy `npm run lint`, `npm run check`, `npm run build`, `npm test` (nếu đã có), `npm run check:dist` (nếu đã có). **Dán nguyên output** của từng lệnh.
-9. Chạy `git ls-files --eol` và xác nhận không có `crlf`.
-10. Chạy `/qa`, rồi `/review` trên `git diff` của task. Sửa mọi phát hiện mức "Chặn merge". Mức "Nên sửa" thì sửa nếu dưới 10 phút, không thì ghi vào báo cáo.
-11. Commit local (Conventional Commits), **không push**.
-12. Báo cáo theo mục "Quy trình làm việc của agent" trong `AGENTS.md`, thêm: output lệnh (bước 8), danh sách gói đã thêm, và kết quả đối chiếu **Tiêu chí hoàn thành** của task (từng dòng Đạt/Không đạt).
+**Kết thúc (bắt buộc, theo thứ tự)** 8. Chạy `npm run lint`, `npm run check`, `npm run build`, `npm test` (nếu đã có), `npm run check:dist` (nếu đã có). **Dán nguyên output** của từng lệnh. 9. Chạy `git ls-files --eol` và xác nhận không có `crlf`. 10. Chạy `/qa`, rồi `/review` trên `git diff` của task. Sửa mọi phát hiện mức "Chặn merge". Mức "Nên sửa" thì sửa nếu dưới 10 phút, không thì ghi vào báo cáo. 11. Commit local (Conventional Commits), **không push**. 12. Báo cáo theo mục "Quy trình làm việc của agent" trong `AGENTS.md`, thêm: output lệnh (bước 8), danh sách gói đã thêm, và kết quả đối chiếu **Tiêu chí hoàn thành** của task (từng dòng Đạt/Không đạt).
 
 **Dừng và hỏi (không tự quyết) khi**
+
 - Cần dữ liệu thật (số liệu, tên người, lãi suất, văn bản pháp lý, địa chỉ) mà chưa có trong repo
 - Cần sửa file thuộc nhóm "chỉ sửa khi được yêu cầu" mà task không nêu
 - Có chỗ trong `AGENTS.md` mâu thuẫn với task
@@ -56,32 +49,33 @@
 
 ## 2. Cổng duyệt của con người (không tự động hóa được)
 
-| Cổng | Sau task | Người dùng phải làm |
-|---|---|---|
-| G1 | 5 | Tạo repo GitHub, branch protection, kết nối Cloudflare Pages, kiểm tra header trên bản preview |
-| G2 | 6 | Xem giao diện thực trên điện thoại và máy tính, duyệt phong cách |
-| G3 | 11 | Điền nội dung thật, người của quỹ duyệt từng trang |
-| G4 | 13 | Thiết lập OAuth, Cloudflare Access (nếu làm CMS) |
-| G5 | 16 | Duyệt bảo mật tài khoản và kết quả QA, người của quỹ ký xác nhận |
-| G6 | 17 | Mua và cấu hình domain, go-live, kiểm tra sau go-live |
+| Cổng | Sau task | Người dùng phải làm                                                                            |
+| ---- | -------- | ---------------------------------------------------------------------------------------------- |
+| G1   | 5        | Tạo repo GitHub, branch protection, kết nối Cloudflare Pages, kiểm tra header trên bản preview |
+| G2   | 6        | Xem giao diện thực trên điện thoại và máy tính, duyệt phong cách                               |
+| G3   | 11       | Điền nội dung thật, người của quỹ duyệt từng trang                                             |
+| G4   | 13       | Thiết lập OAuth, Cloudflare Access (nếu làm CMS)                                               |
+| G5   | 16       | Duyệt bảo mật tài khoản và kết quả QA, người của quỹ ký xác nhận                               |
+| G6   | 17       | Mua và cấu hình domain, go-live, kiểm tra sau go-live                                          |
 
 ## 3. Gói đã duyệt trước
 
 Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói không tồn tại hoặc không tương thích: dừng và hỏi, không tự chọn gói thay thế.
 
-| Task | Gói |
-|---|---|
-| 4 | `@playwright/test`, `@axe-core/playwright` (devDependencies) |
-| 6 | Một gói font tự host dạng npm có bộ ký tự tiếng Việt (ví dụ họ `@fontsource`), nếu không có thì dừng và hỏi |
-| 14 | `@astrojs/sitemap` |
-| 15 | `@lhci/cli` (devDependency) |
-| 12–13 | Chưa duyệt trước, quyết định riêng |
+| Task  | Gói                                                                                                         |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| 4     | `@playwright/test`, `@axe-core/playwright` (devDependencies)                                                |
+| 6     | Một gói font tự host dạng npm có bộ ký tự tiếng Việt (ví dụ họ `@fontsource`), nếu không có thì dừng và hỏi |
+| 14    | `@astrojs/sitemap`                                                                                          |
+| 15    | `@lhci/cli` (devDependency)                                                                                 |
+| 12–13 | Chưa duyệt trước, quyết định riêng                                                                          |
 
 ---
 
 ## Task 3 — Collection news, layout, trang chủ (đang làm)
 
 **Tiêu chí hoàn thành (kiểm tra bằng lệnh):**
+
 - `npm run lint`, `npm run check`, `npm run build` pass
 - `Get-ChildItem dist -Recurse -Filter *.html | Select-String -Pattern '<script(?![^>]*\ssrc=)'` không có kết quả
 - `Get-ChildItem dist -Recurse -Filter *.html | Select-String -Pattern '<style'` không có kết quả
@@ -98,6 +92,7 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 **Model/chế độ:** Planning (Gemini Pro Medium) rồi thực thi (Flash hoặc Pro Low/Medium). **Cần duyệt plan:** không.
 
 **Việc cần làm**
+
 1. Cài gói đã duyệt trước, chạy `npx playwright install chromium`.
 2. `playwright.config.ts`: web server là bản build + `astro preview`, 3 project viewport: desktop 1280×800, tablet 768×1024, mobile 360×640.
 3. `tests/smoke.spec.ts` (chạy trên cả 3 project):
@@ -119,6 +114,7 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 9. Thêm `npm run check:dist` vào danh sách lệnh trong `AGENTS.md` mục 4.
 
 **Tiêu chí hoàn thành**
+
 - `npm test` pass ở cả 3 project, `npm run check:dist` thoát mã 0
 - Cố ý thêm thử một `<script>` inline và một `<img>` thiếu `alt`: `check:dist` phải fail (sau đó hoàn tác)
 - Cố ý thêm thử một `<script src="https://example.com/x.js">`: test CSP phải fail (sau đó hoàn tác)
@@ -131,6 +127,7 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 **Model:** Flash/Low. **Cần duyệt plan:** không.
 
 **Việc cần làm:** `.github/workflows/ci.yml`
+
 - Kích hoạt: `push` lên `main`, `pull_request`
 - `permissions: contents: read`, `concurrency` huỷ lượt cũ
 - Node theo `.nvmrc` (`actions/setup-node` với `node-version-file`), cache npm
@@ -140,10 +137,12 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 - Không dùng secret, không có bước deploy (Cloudflare tự build)
 
 **Tiêu chí hoàn thành**
+
 - File YAML hợp lệ, các lệnh trong CI khớp với `package.json`
 - Không có token hay secret nào trong file
 
 **Người dùng làm tay (cổng G1):**
+
 1. Tạo repo GitHub đứng tên pháp nhân/tổ chức của quỹ, bật 2FA. Đổi `origin` rồi push. Mở PR đầu tiên để CI chạy thử.
 2. Branch protection cho `main`: bắt buộc PR, bắt buộc check CI pass, cấm force push.
 3. Cloudflare Pages: kết nối repo, framework Astro, build `npm run build`, output `dist`, biến môi trường `NODE_VERSION=22` và `SITE_URL`.
@@ -159,6 +158,7 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 **Model:** Planning Medium. **Cần duyệt plan:** có (phong cách là chuyện cảm nhận).
 
 **Việc cần làm**
+
 1. Token trong `@theme`: bảng màu (brand, ink, surface, border, trạng thái), cỡ chữ (gốc 18px, thang `clamp`), khoảng cách, bo góc, bóng.
 2. `scripts/check-contrast.mjs`: tính tỉ lệ tương phản cho các cặp màu chữ/nền khai báo, fail nếu chữ thường < 4,5:1 hoặc chữ lớn < 3:1. Không cần thêm gói.
 3. Font tự host (gói đã duyệt), chỉ nạp subset latin và vietnamese, `font-display: swap`, chạy được với CSP `font-src 'self'`.
@@ -176,27 +176,33 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 Mỗi task dùng workflow `/new-page`. **Cần duyệt plan:** không (bố cục dùng component của Task 6). Toàn bộ nội dung là placeholder tới khi người dùng điền. **Không bịa nội dung.**
 
 **Task 7 — Giới thiệu và Ban lãnh đạo**
+
 - Thêm collection `pages` (title, description, updated) cho văn bản dài: `gioi-thieu`, `lich-su`, `su-menh`. Nội dung nháp là khung có `[CẦN BỔ SUNG]`.
 - Trang `/gioi-thieu`, `/lich-su`, `/ban-lanh-dao` (dùng `leadership`, ảnh chỉ hiện khi có và đã xác nhận quyền).
 
 **Task 8 — Quy mô, Sản phẩm, Lãi suất**
+
 - `/quy-mo`: số liệu từ `site.stats` kèm "tính đến …".
 - `/san-pham`: cho vay và tiền gửi (thêm collection/data `products`, placeholder).
 - `/lai-suat`: bảng đầy đủ từ `rates`, `effective_from`, luôn có `RATE_DISCLAIMER`. Một `<table>` duy nhất, mobile xếp thẻ.
 
 **Task 9 — Quy chế và văn bản**
+
 - Collection `documents` (title, date, file, category). PDF đặt trong `public/docs/`. Trang `/quy-che` liệt kê, mỗi mục có tên, ngày, dung lượng, link tải.
 - Placeholder: không đưa file PDF giả. Danh sách rỗng hiện "Đang cập nhật".
 
 **Task 10 — Tin tức và Thông báo**
+
 - `/tin-tuc` (danh sách có phân trang nếu > 10 bài) và `/tin-tuc/[slug]`, luôn lọc `draft` qua `lib/news.ts`.
 - `/thong-bao`: lịch làm việc và thông báo nghỉ từ `schedule`.
 
 **Task 11 — Liên hệ và Kênh chính thức**
+
 - `/lien-he`: địa chỉ, hotline, email, giờ làm việc, các điểm giao dịch. Bản đồ chỉ là **link mở Google Maps ở tab mới**, **không nhúng iframe** (vi phạm CSP và nguyên tắc không tải từ bên thứ ba).
 - `/kenh-chinh-thuc`: domain chính thức, hotline, cảnh báo giả mạo.
 
 **Tiêu chí hoàn thành chung cho Task 7–11**
+
 - `lint`, `check`, `build`, `npm test`, `check:dist` đều pass
 - Mọi trang mới có trong `nav.ts` và được smoke test bao phủ (test lấy danh sách trang từ `nav.ts`/sitemap, không liệt kê tay)
 - `grep` không có số liệu, tên người, địa chỉ, số điện thoại hard-code ngoài `src/data` và `src/content`
@@ -209,6 +215,7 @@ Mỗi task dùng workflow `/new-page`. **Cần duyệt plan:** không (bố cụ
 ## Task 12–13 — CMS (có điều kiện)
 
 **Quyết định trước khi làm (người dùng chọn):**
+
 - **Phương án A (đề xuất cho giai đoạn đầu):** sửa file YAML/Markdown trực tiếp trên GitHub (trình soạn thảo web) qua PR. CI và preview chạy sẵn, không cần thêm hạ tầng. Chỉ cần viết hướng dẫn ngắn trong runbook (Task 18).
 - **Phương án B:** CMS dạng giao diện (Decap hoặc Sveltia), dùng khi người khác ngoài bạn cần cập nhật nội dung.
 
@@ -221,6 +228,7 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 ## Task 14 — SEO
 
 **Việc cần làm**
+
 1. Mỗi trang có title, description, canonical, Open Graph (ảnh mặc định `/images/og-default.*`, nếu chưa có thì `[CẦN BỔ SUNG]`).
 2. `@astrojs/sitemap` (gói đã duyệt), thêm dòng `Sitemap:` vào `robots.txt` dựa trên `SITE_URL`.
 3. JSON-LD `FinancialService` sinh từ `contact.yaml`, **bỏ trường nào còn `null`**, không phát ra nếu thiếu dữ liệu cốt lõi.
@@ -233,6 +241,7 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 ## Task 15 — Bảo mật, hiệu năng, bảo trì
 
 **Việc cần làm**
+
 1. `@lhci/cli` với `staticDistDir`, ngưỡng mobile: Performance ≥ 90, Accessibility ≥ 90, Best Practices ≥ 95, SEO ≥ 95. Thêm vào CI.
 2. `.github/dependabot.yml`: cập nhật `npm` và `github-actions` hàng tuần.
 3. Bước `npm audit --omit=dev --audit-level=high` trong CI.
@@ -248,10 +257,12 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 **Model:** `/review` chạy ở mức High, một lần.
 
 **Việc cần làm (agent)**
+
 - Chạy toàn bộ lệnh kiểm tra, `/qa` và `/review` trên toàn repo. Báo cáo dạng bảng Hạng mục / Kết quả / Ghi chú.
 - Đối chiếu danh sách trang trong sitemap với trang trong `nav.ts`.
 
 **Người dùng làm (cổng G5)**
+
 - Test trên điện thoại thật (Android và iPhone), mạng chậm
 - Mở link trong trình duyệt tích hợp của **Zalo** và **Facebook**
 - Chữ lớn trong cài đặt hệ thống
@@ -277,6 +288,7 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 ## Task 18 — Runbook
 
 Agent viết `docs/RUNBOOK.md` (một trang, ngắn), gồm:
+
 - Cập nhật lãi suất (file nào, các trường, cách xem preview, cách merge)
 - Đăng tin/thông báo, đổi lịch nghỉ
 - Rollback

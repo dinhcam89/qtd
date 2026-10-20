@@ -53,42 +53,42 @@ const siteDescription =
         <!-- Lưới 4 cột trên Desktop, 2 cột trên Mobile -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-2">
           <!-- Thành viên -->
-          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
             <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
               Thành viên
             </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
               {formatNumber(site.stats.members_count)}
             </div>
             <span class="text-xs text-brand-muted block">thành viên</span>
           </div>
 
           <!-- Vốn điều lệ -->
-          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
             <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
               Vốn điều lệ
             </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
               {formatCurrency(site.stats.charter_capital)}
             </div>
           </div>
 
           <!-- Tổng tài sản -->
-          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
             <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
               Tổng tài sản
             </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
               {formatCurrency(site.stats.total_assets)}
             </div>
           </div>
 
           <!-- Tổng dư nợ cho vay -->
-          <div class="bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
+          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
             <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
               Dư nợ cho vay
             </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary">
+            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
               {formatCurrency(site.stats.total_loans)}
             </div>
           </div>
