@@ -9,7 +9,7 @@
 | 1    | Scaffold Astro + Tailwind v4                           | Xong            | 2026-10-20      | `f29037f`                       | Nền tảng dự án, tooling, lint                                       |
 | 2    | Schema Zod, dữ liệu placeholder, format.ts             | Xong            | 2026-10-20      | `e6eb322`                       | Zod schema, YAML, format vi-VN                                      |
 | 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `7aba935`, `b5598fd`, `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4 |
-| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `[TASK_4_COMMIT]`               | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass |
+| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb`                       | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass |
 | 5    | CI GitHub Actions                                      | Chưa làm        | —               | —                               | Task tiếp theo                                                      |
 | 6    | Design system                                          | Chưa làm        | —               | —                               |                                                                     |
 | 7    | Trang Giới thiệu và Ban lãnh đạo                       | Chưa làm        | —               | —                               |                                                                     |
