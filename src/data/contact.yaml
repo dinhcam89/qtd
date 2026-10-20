@@ -1,0 +1,12 @@
+address:
+  street: '[CẦN BỔ SUNG: địa chỉ đường/thôn]'
+  ward: '[CẦN BỔ SUNG: xã/phường]'
+  district: '[CẦN BỔ SUNG: quận/huyện]'
+  city: '[CẦN BỔ SUNG: tỉnh/thành phố]'
+  full: '[CẦN BỔ SUNG: địa chỉ đầy đủ]'
+phone: '[CẦN BỔ SUNG: số điện thoại]'
+hotline: null
+email: '[CẦN BỔ SUNG: email]'
+facebook: null
+zalo: null
+map_embed_url: null

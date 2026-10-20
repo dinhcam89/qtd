@@ -1,0 +1,30 @@
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { siteSchema } from './lib/schemas/site';
+import { ratesSchema } from './lib/schemas/rates';
+import { contactSchema } from './lib/schemas/contact';
+import { scheduleSchema } from './lib/schemas/schedule';
+import { leadershipSchema } from './lib/schemas/leadership';
+
+export const collections = {
+  site: defineCollection({
+    loader: glob({ pattern: 'site.yaml', base: 'src/data' }),
+    schema: siteSchema,
+  }),
+  rates: defineCollection({
+    loader: glob({ pattern: 'rates.yaml', base: 'src/data' }),
+    schema: ratesSchema,
+  }),
+  contact: defineCollection({
+    loader: glob({ pattern: 'contact.yaml', base: 'src/data' }),
+    schema: contactSchema,
+  }),
+  schedule: defineCollection({
+    loader: glob({ pattern: 'schedule.yaml', base: 'src/data' }),
+    schema: scheduleSchema,
+  }),
+  leadership: defineCollection({
+    loader: glob({ pattern: 'leadership.yaml', base: 'src/data' }),
+    schema: leadershipSchema,
+  }),
+};

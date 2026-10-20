@@ -1,0 +1,9 @@
+working_days: '[CẦN BỔ SUNG: ngày làm việc trong tuần]'
+morning_hours: '[CẦN BỔ SUNG: giờ làm việc buổi sáng]'
+afternoon_hours: '[CẦN BỔ SUNG: giờ làm việc buổi chiều]'
+notes: '[CẦN BỔ SUNG: lưu ý làm việc/nghỉ lễ]'
+holidays:
+  - title: '[CẦN BỔ SUNG: tên dịp nghỉ lễ]'
+    start_date: null
+    end_date: null
+    note: null

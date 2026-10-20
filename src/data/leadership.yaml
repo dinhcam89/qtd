@@ -1,0 +1,15 @@
+board_of_directors:
+  - position: '[CẦN BỔ SUNG: chức danh]'
+    name: '[CẦN BỔ SUNG: họ và tên]'
+    photo: '[CẦN XÁC NHẬN QUYỀN SỬ DỤNG ẢNH]'
+    term: null
+supervisory_board:
+  - position: '[CẦN BỔ SUNG: chức danh]'
+    name: '[CẦN BỔ SUNG: họ và tên]'
+    photo: null
+    term: null
+executive_board:
+  - position: '[CẦN BỔ SUNG: chức danh]'
+    name: '[CẦN BỔ SUNG: họ và tên]'
+    photo: null
+    term: null

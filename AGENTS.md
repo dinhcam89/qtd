@@ -77,12 +77,12 @@ npm test         # Playwright + axe
 npm run lhci     # Lighthouse CI (khi đã cấu hình)
 
 ```
-## Môi trường và công cụ
-- Dự án nằm trong WSL Ubuntu tại /home/cam/projects/qtd. Chạy lệnh trong WSL.
-- Tạo/sửa file bằng công cụ ghi file của IDE. KHÔNG ghi file bằng heredoc, base64, PowerShell hay Python qua wsl.exe.
-- Nếu một cách ghi file lỗi 2 lần, DỪNG và báo cáo, không thử cách vòng vèo khác.
-- Trước khi `npm install` bất kỳ gói nào (kể cả devDependency, @types/*, parser...), nêu danh sách và lý do để người dùng đồng ý.
-- Không tạo file tạm/script tạm ngoài repo để "đồng bộ" file.
+### 4.1 Môi trường và công cụ
+- Mã nguồn nằm tại D:\TaiLieu\projects\qtd, terminal là PowerShell. Chạy lệnh trực tiếp (npm, git, node), không dùng wsl. Nối lệnh bằng `;` thay vì `&&`.
+- Tạo và sửa file CHỈ bằng công cụ ghi file của IDE. KHÔNG ghi file bằng heredoc, base64, PowerShell hay Python, và không tạo script tạm để "đồng bộ" file.
+- Nếu một cách ghi file lỗi 2 lần: DỪNG và báo cáo, không thử cách vòng vèo khác.
+- Trước khi `npm install` bất kỳ gói nào (kể cả devDependency, @types/*, parser), nêu danh sách và lý do để người dùng đồng ý.
+- Không đọc mã nguồn trong node_modules trừ khi bắt buộc. Cần biết API thì ưu tiên docs chính thức hoặc file kiểu dữ liệu (.d.ts), tối đa 15 lệnh cho phần khám phá.
 
 ## 5. Quy tắc cứng về nội dung (QUAN TRỌNG NHẤT)
 
