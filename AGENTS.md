@@ -74,6 +74,7 @@ npm run build    # build static (phải pass)
 npm run lint     # ESLint + Prettier check
 npm run check    # astro check (type + content schema)
 npm test         # Playwright + axe
+npm run check:dist # kiểm tra toàn vẹn thư mục dist (không script/style inline, không vỡ link)
 npm run lhci     # Lighthouse CI (khi đã cấu hình)
 
 ```

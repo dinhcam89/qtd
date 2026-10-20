@@ -25,7 +25,6 @@ function initMenu(): void {
   function openMenu(): void {
     if (!toggleBtn || !panel) return;
     toggleBtn.setAttribute('aria-expanded', 'true');
-    toggleBtn.setAttribute('aria-label', 'Đóng danh mục điều hướng');
     panel.classList.remove('hidden');
     iconOpen?.classList.add('hidden');
     iconClose?.classList.remove('hidden');
@@ -34,7 +33,6 @@ function initMenu(): void {
   function closeMenu(restoreFocus = false): void {
     if (!toggleBtn || !panel) return;
     toggleBtn.setAttribute('aria-expanded', 'false');
-    toggleBtn.setAttribute('aria-label', 'Mở danh mục điều hướng');
     panel.classList.add('hidden');
     iconOpen?.classList.remove('hidden');
     iconClose?.classList.add('hidden');
