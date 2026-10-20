@@ -1,0 +1,34 @@
+{
+  "name": "qtd",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint . && prettier --check .",
+    "check": "astro check",
+    "test": "playwright test",
+    "check:placeholders": "node ./scripts/check-placeholders.mjs",
+    "lhci": "echo '[CHỜ CẤU HÌNH LHCI]'"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.1",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.11",
+    "@types/node": "^26.6.5",
+    "@typescript-eslint/parser": "^8.72.0",
+    "eslint": "^10.13.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "prettier": "^3.5.3",
+    "prettier-plugin-astro": "^1.1.1",
+    "typescript": "^5.8.2"
+  }
+}
