@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint, Check, Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code & formatting
+        run: npm run lint
+
+      - name: Astro type & schema check
+        run: npm run check
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Verify dist integrity
+        run: npm run check:dist
+
+      - name: Scan content placeholders (advisory)
+        run: npm run check:placeholders
+
+      - name: Install Playwright browsers & system deps
+        run: npx playwright install --with-deps chromium
+
+      - name: Run automated test suite (Playwright + Axe)
+        run: npm test
+
+      - name: Upload Playwright report on failure
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && failure() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
