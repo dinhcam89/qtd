@@ -75,7 +75,14 @@ npm run lint     # ESLint + Prettier check
 npm run check    # astro check (type + content schema)
 npm test         # Playwright + axe
 npm run lhci     # Lighthouse CI (khi đã cấu hình)
+
 ```
+## Môi trường và công cụ
+- Dự án nằm trong WSL Ubuntu tại /home/cam/projects/qtd. Chạy lệnh trong WSL.
+- Tạo/sửa file bằng công cụ ghi file của IDE. KHÔNG ghi file bằng heredoc, base64, PowerShell hay Python qua wsl.exe.
+- Nếu một cách ghi file lỗi 2 lần, DỪNG và báo cáo, không thử cách vòng vèo khác.
+- Trước khi `npm install` bất kỳ gói nào (kể cả devDependency, @types/*, parser...), nêu danh sách và lý do để người dùng đồng ý.
+- Không tạo file tạm/script tạm ngoài repo để "đồng bộ" file.
 
 ## 5. Quy tắc cứng về nội dung (QUAN TRỌNG NHẤT)
 
