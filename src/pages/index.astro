@@ -45,11 +45,24 @@ const siteDescription =
         <p class="text-lg sm:text-xl text-ink-muted leading-relaxed">
           {formatText(site.description)}
         </p>
-        <div class="flex flex-wrap items-center gap-4 pt-2">
-          <LinkButton href="#lai-suat" variant="primary">
+        <div
+          data-hero-actions
+          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2"
+        >
+          <LinkButton
+            data-hero-btn
+            href="#lai-suat"
+            variant="primary"
+            class="w-full sm:w-auto text-center"
+          >
             Xem biểu lãi suất
           </LinkButton>
-          <LinkButton href="#lien-he" variant="secondary">
+          <LinkButton
+            data-hero-btn
+            href="#lien-he"
+            variant="secondary"
+            class="w-full sm:w-auto text-center"
+          >
             Thông tin liên hệ
           </LinkButton>
         </div>

@@ -346,4 +346,47 @@ test.describe('Smoke tests', () => {
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
+
+  test('Hero trên mobile có hai nút cùng chiều rộng toàn dòng và xếp dọc; từ sm trở lên giữ dạng hàng ngang', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const heroActions = page.locator('[data-hero-actions]');
+    await expect(heroActions).toBeVisible();
+
+    const buttons = heroActions.locator('[data-hero-btn]');
+    expect(await buttons.count()).toBe(2);
+
+    const vp = page.viewportSize();
+    const isMobile = vp && vp.width < 640;
+
+    const btn1Box = await buttons.nth(0).boundingBox();
+    const btn2Box = await buttons.nth(1).boundingBox();
+    const containerBox = await heroActions.boundingBox();
+
+    expect(btn1Box).not.toBeNull();
+    expect(btn2Box).not.toBeNull();
+    expect(containerBox).not.toBeNull();
+
+    if (isMobile) {
+      // 1. Hai nút cùng chiều rộng toàn dòng
+      expect(Math.abs(btn1Box!.width - btn2Box!.width)).toBeLessThanOrEqual(2);
+      expect(Math.abs(btn1Box!.width - containerBox!.width)).toBeLessThanOrEqual(
+        2
+      );
+
+      // 2. Xếp dọc: nút 2 nằm dưới nút 1
+      expect(btn2Box!.y).toBeGreaterThanOrEqual(btn1Box!.y + btn1Box!.height - 1);
+    } else {
+      // Từ sm trở lên giữ dạng hàng ngang
+      expect(Math.abs(btn1Box!.y - btn2Box!.y)).toBeLessThanOrEqual(5);
+      // Nút 2 nằm bên phải nút 1
+      expect(btn2Box!.x).toBeGreaterThanOrEqual(btn1Box!.x + btn1Box!.width);
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
 });
