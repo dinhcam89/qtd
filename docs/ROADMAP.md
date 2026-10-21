@@ -2,6 +2,7 @@
 
 > Cách dùng: khi nhận một task, agent đọc `AGENTS.md`, mục **1. Giao thức chung** và **đúng mục của task đó** trong file này. Không cần đọc toàn bộ file (tiết kiệm token).
 > Nguyên tắc: mọi tiêu chí hoàn thành đều **kiểm tra bằng lệnh**. Agent phải dán kết quả thật của lệnh vào báo cáo, không tóm tắt bằng lời.
+> **Ghi chú hạ tầng:** Hạ tầng thực tế là Cloudflare Workers (static assets) trên domain `*.workers.dev`, không phải Pages.
 
 ## 0. Trạng thái
 
@@ -49,14 +50,14 @@
 
 ## 2. Cổng duyệt của con người (không tự động hóa được)
 
-| Cổng | Sau task | Người dùng phải làm                                                                            |
-| ---- | -------- | ---------------------------------------------------------------------------------------------- |
-| G1   | 5        | Tạo repo GitHub, branch protection, kết nối Cloudflare Pages, kiểm tra header trên bản preview |
-| G2   | 6        | Xem giao diện thực trên điện thoại và máy tính, duyệt phong cách                               |
-| G3   | 11       | Điền nội dung thật, người của quỹ duyệt từng trang                                             |
-| G4   | 13       | Thiết lập OAuth, Cloudflare Access (nếu làm CMS)                                               |
-| G5   | 16       | Duyệt bảo mật tài khoản và kết quả QA, người của quỹ ký xác nhận                               |
-| G6   | 17       | Mua và cấu hình domain, go-live, kiểm tra sau go-live                                          |
+| Cổng | Sau task | Người dùng phải làm                                                                                              |
+| ---- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| G1   | 5        | Tạo repo GitHub, branch protection, kết nối Cloudflare Workers (static assets), kiểm tra header trên bản preview |
+| G2   | 6        | Xem giao diện thực trên điện thoại và máy tính, duyệt phong cách                                                 |
+| G3   | 11       | Điền nội dung thật, người của quỹ duyệt từng trang                                                               |
+| G4   | 13       | Thiết lập OAuth, Cloudflare Access (nếu làm CMS)                                                                 |
+| G5   | 16       | Duyệt bảo mật tài khoản và kết quả QA, người của quỹ ký xác nhận                                                 |
+| G6   | 17       | Mua và cấu hình domain, go-live, kiểm tra sau go-live                                                            |
 
 ## 3. Gói đã duyệt trước
 
@@ -145,8 +146,8 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 
 1. Tạo repo GitHub đứng tên pháp nhân/tổ chức của quỹ, bật 2FA. Đổi `origin` rồi push. Mở PR đầu tiên để CI chạy thử.
 2. Branch protection cho `main`: bắt buộc PR, bắt buộc check CI pass, cấm force push.
-3. Cloudflare Pages: kết nối repo, framework Astro, build `npm run build`, output `dist`, biến môi trường `NODE_VERSION=22` và `SITE_URL`.
-4. Kiểm tra bản preview: `curl -I <url preview>` phải thấy CSP, nosniff và `X-Robots-Tag: noindex` trên `*.pages.dev`.
+3. Cloudflare Workers (static assets) [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm]: kết nối repo, build `npm run build`, output `dist`, biến môi trường `NODE_VERSION=22` và `SITE_URL`. Hạ tầng thực tế chạy trên domain `*.workers.dev`, không phải Pages.
+4. Kiểm tra bản preview: `curl -I <url preview>` phải thấy CSP, nosniff và `X-Robots-Tag: noindex` trên `*.workers.dev` (và `*.pages.dev` nếu có).
 5. Gắn tag `v0.1`.
 
 ---
@@ -245,10 +246,10 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 1. `@lhci/cli` với `staticDistDir`, ngưỡng mobile: Performance ≥ 90, Accessibility ≥ 90, Best Practices ≥ 95, SEO ≥ 95. Thêm vào CI.
 2. `.github/dependabot.yml`: cập nhật `npm` và `github-actions` hàng tuần.
 3. Bước `npm audit --omit=dev --audit-level=high` trong CI.
-4. `scripts/build-cf.mjs` (lệnh build cho Cloudflare): nếu `CF_PAGES_BRANCH === 'production'` thì chạy `check-placeholders --strict` trước khi build, ngược lại chỉ build. Với nhánh khác `production`, vẫn cho phép placeholder.
+4. `scripts/build-cf.mjs` (lệnh build cho Cloudflare): kiểm tra nhánh production [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm] (trước đây dự kiến dùng biến `CF_PAGES_BRANCH === 'production'`) thì chạy `check-placeholders --strict` trước khi build, ngược lại chỉ build. Với nhánh khác `production`, vẫn cho phép placeholder.
 5. Cập nhật `AGENTS.md` mục 4 với các lệnh mới.
 
-**Tiêu chí hoàn thành:** `lhci` đạt ngưỡng, CI xanh, chạy thử `CF_PAGES_BRANCH=production node scripts/build-cf.mjs` khi còn placeholder phải **fail**.
+**Tiêu chí hoàn thành:** `lhci` đạt ngưỡng, CI xanh, chạy thử lệnh build nhánh production [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm] khi còn placeholder phải **fail**.
 
 ---
 
@@ -275,12 +276,12 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 
 ## Task 17 — Go-live (chủ yếu người dùng làm)
 
-1. Domain .vn đứng tên pháp nhân của quỹ. Đưa DNS về Cloudflare (hoặc CNAME theo hướng dẫn Pages).
-2. Tạo nhánh `production` từ `main`, đặt làm Production branch trong Cloudflare Pages. `main` trở thành nhánh preview/staging.
-3. Gắn custom domain trong Pages, redirect `www` về domain chính, HTTPS bắt buộc.
+1. Domain .vn đứng tên pháp nhân của quỹ. Đưa DNS về Cloudflare (theo hướng dẫn Cloudflare Workers / Custom Domains) [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm].
+2. Tạo nhánh `production` từ `main`, cấu hình Production branch trong Cloudflare [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm]. `main` trở thành nhánh preview/staging.
+3. Gắn custom domain trong Cloudflare Workers [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm], redirect `www` về domain chính, HTTPS bắt buộc.
 4. Merge `main` vào `production`. Build production phải pass kiểm tra strict.
 5. Sau go-live: `curl -I https://<domain>`, kiểm tra CSP, HSTS, không còn `X-Robots-Tag: noindex` trên domain chính. Quét bằng công cụ kiểm tra header và SSL bên ngoài.
-6. Đăng ký Google Search Console, gửi sitemap. Bật theo dõi uptime. Diễn tập rollback một lần (rollback ở Cloudflare Pages hoặc `git revert`).
+6. Đăng ký Google Search Console, gửi sitemap. Bật theo dõi uptime. Diễn tập rollback một lần (rollback ở Cloudflare Workers hoặc `git revert`) [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm].
 7. Gắn tag `v1.0`.
 
 ---

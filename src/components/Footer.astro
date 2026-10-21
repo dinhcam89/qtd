@@ -15,12 +15,12 @@ const { site, contact, schedule } = Astro.props;
 
 /**
  * Kiểm tra xem một giá trị liên hệ có hợp lệ để gắn thẻ link tel: hoặc mailto: hay không.
- * Nếu là null hoặc placeholder [CẦN BỔ SUNG...] thì không gắn link.
+ * Nếu là null hoặc chưa có thông tin thực tế (dạng [placeholder]) thì không gắn link.
  */
 function isActionableContact(val: string | null | undefined): boolean {
   if (!val) return false;
   const trimmed = val.trim();
-  if (trimmed.startsWith('[') && trimmed.includes('CẦN BỔ SUNG')) {
+  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
     return false;
   }
   return trimmed.length > 0;
@@ -129,8 +129,8 @@ const currentYear = new Date().getFullYear();
     <!-- Dòng bản quyền và lưu ý -->
     <div class="border-t border-brand-border mt-8 pt-6 text-center text-xs text-brand-muted space-y-2">
       <p>
-        &copy; {currentYear}
-        {formatText(site.name)}. Tất cả các quyền được bảo lưu.
+        &copy; {currentYear} {formatText(site.name)}. Tất cả các quyền được bảo
+        lưu.
       </p>
       <p class="italic">{RATE_DISCLAIMER}</p>
     </div>

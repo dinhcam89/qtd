@@ -1,29 +1,30 @@
 # Tiến độ dự án — Website Quỹ tín dụng nhân dân [TÊN QUỸ]
 
 > Tài liệu theo dõi tiến độ chi tiết theo lộ trình `docs/ROADMAP.md` và quy trình `/next-task`.
+> **Ghi chú hạ tầng:** Hạ tầng thực tế là Cloudflare Workers (static assets) trên domain `*.workers.dev`, không phải Pages.
 
 ## 1. Bảng trạng thái tổng quan
 
-| Task | Nội dung                                               | Trạng thái      | Ngày hoàn thành | Commit    | Ghi chú                                                             |
-| ---- | ------------------------------------------------------ | --------------- | --------------- | --------- | ------------------------------------------------------------------- |
-| 1    | Scaffold Astro + Tailwind v4                           | Xong            | 2026-10-20      | `f29037f` | Nền tảng dự án, tooling, lint                                       |
-| 2    | Schema Zod, dữ liệu placeholder, format.ts             | Xong            | 2026-10-20      | `e6eb322` | Zod schema, YAML, format vi-VN                                      |
-| 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4 |
-| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass |
-| 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Workflow CI GitHub Actions chuẩn hóa mọi bước kiểm tra              |
-| 6    | Design system                                          | Chưa làm        | —               | —         | Task tiếp theo                                                      |
-| 7    | Trang Giới thiệu và Ban lãnh đạo                       | Chưa làm        | —               | —         |                                                                     |
-| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         |                                                                     |
-| 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                     |
-| 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                     |
-| 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                     |
-| 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                          |
-| 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                          |
-| 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                     |
-| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                     |
-| 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                     |
-| 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                     |
-| 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                     |
+| Task | Nội dung                                               | Trạng thái      | Ngày hoàn thành | Commit    | Ghi chú                                                                            |
+| ---- | ------------------------------------------------------ | --------------- | --------------- | --------- | ---------------------------------------------------------------------------------- |
+| 1    | Scaffold Astro + Tailwind v4                           | Xong            | 2026-10-20      | `f29037f` | Nền tảng dự án, tooling, lint                                                      |
+| 2    | Schema Zod, dữ liệu placeholder, format.ts             | Xong            | 2026-10-20      | `e6eb322` | Zod schema, YAML, format vi-VN                                                     |
+| 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4                |
+| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass                |
+| 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; việc G1 còn lại do người dùng |
+| 6    | Design system                                          | Chưa làm        | —               | —         | Task tiếp theo                                                                     |
+| 7    | Trang Giới thiệu và Ban lãnh đạo                       | Chưa làm        | —               | —         |                                                                                    |
+| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         |                                                                                    |
+| 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                    |
+| 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                                    |
+| 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                                    |
+| 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                         |
+| 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                         |
+| 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                                    |
+| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                                    |
+| 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                    |
+| 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                    |
+| 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                    |
 
 ---
 
@@ -61,7 +62,7 @@
 - **Kết quả đối chiếu tiêu chí hoàn thành (kiểm tra bằng lệnh):**
   1. File `.github/workflows/ci.yml` tồn tại và hợp lệ: **ĐẠT** (YAML hợp lệ, không lỗi cú pháp).
   2. Các lệnh trong workflow khớp 100% với `package.json`: **ĐẠT** (`npm ci`, `npm run lint`, `npm run check`, `npm run build`, `npm run check:dist`, `npm run check:placeholders`, `npx playwright install --with-deps chromium`, `npm test`).
-  3. Không có token, secret, khóa bí mật nào trong file: **ĐẠT** (Không sử dụng bất kỳ secret nào; việc deploy do Cloudflare Pages độc lập đảm nhiệm).
+  3. Không có token, secret, khóa bí mật nào trong file: **ĐẠT** (Không sử dụng bất kỳ secret nào; việc deploy do Cloudflare Workers (static assets) [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm] độc lập đảm nhiệm).
   4. Cấu hình workflow đầy đủ các tiêu chuẩn:
      - Kích hoạt trên `push` và `pull_request` nhánh `main`.
      - `permissions: contents: read`.
@@ -69,5 +70,6 @@
      - Sử dụng Node.js theo `.nvmrc` (`actions/setup-node@v4` với cache `npm`).
      - `check:placeholders` chạy cảnh báo, không làm gián đoạn build.
      - Tự động upload artifact `playwright-report/` khi có test thất bại.
-- **Số placeholder hiện tại:** 33.
-- **Việc người dùng cần làm tiếp:** Cổng G1 (chuẩn bị nội dung, kết nối Cloudflare Pages, xem checklist chi tiết trong báo cáo).
+- **Số placeholder hiện tại:** 29 (toàn bộ nằm trong `src/data` và `src/content`, không còn placeholder cứng trong UI).
+- **Đánh giá Task 5:** **ĐẠT**.
+- **Việc người dùng cần làm tiếp:** Cổng G1 do người dùng thực hiện (chuẩn bị repo GitHub, branch protection, kết nối Cloudflare Workers static assets [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm], kiểm tra headers trên preview URL).
