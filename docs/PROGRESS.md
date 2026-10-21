@@ -114,3 +114,23 @@
 - **Số placeholder hiện tại:** 40 (duy trì toàn vẹn trong data và content collections, 0 placeholder trong mã giao diện).
 - **Đánh giá Task 7:** **ĐẠT**.
 - **Việc người dùng cần làm tiếp:** Tiếp tục chạy `/next-task` để thực hiện Task 8 (Trang Sản phẩm và Lãi suất).
+
+---
+
+## 7. Cập nhật sửa lỗi Layout & Typography các trang nội dung (Task 7)
+
+- **Ngày thực hiện:** 2026-10-21
+- **Vấn đề xử lý:**
+  1. _Lỗi A (Layout):_ Khối nội dung chính và sidebar của các trang `/gioi-thieu`, `/lich-su`, `/ban-lanh-dao` tràn ra ngoài khung căn giữa (bắt đầu ở x=0 sát mép trình duyệt, chạm mép phải, cắt chữ trên mobile).
+  2. _Lỗi B (Typography):_ Các đề mục markdown (`h2`, `h3`...) hiển thị như đoạn văn thường do preflight Tailwind v4 reset heading.
+- **Giải pháp:**
+  - Viết bộ test kiểm thử hình học trước (`tests/layout.spec.ts`) bắt trọn vẹn lỗi: kiểm tra `rect.left >= 0`, `rect.right <= viewportWidth`, căn đều `Left H1 = Left Content = Left Header/Footer Brand` (sai số ≤ 1px), giới hạn `p.width <= 820px`, kiểm tra `h2` có `font-weight >= 600` và `font-size >= 1.2 * p.fontSize`. Test đã FAIL đúng 100% trước khi sửa.
+  - Sửa nguyên nhân gốc: Thêm thuộc tính `container?: boolean` cho component nền tảng `Section.astro`; bọc `Container` cho nội dung và sidebar của các trang `/gioi-thieu`, `/lich-su`, `/ban-lanh-dao`.
+  - Bổ sung bộ class typography `.content-body` thuần trong `src/styles/global.css` sử dụng CSS variables hiện có, áp dụng cho phần nội dung markdown (không cài thêm gói ngoài).
+- **Kết quả đối chiếu:**
+  1. `npm test`: **82 passed**, 0 failed trên cả 3 profile desktop, tablet, mobile.
+  2. `npm run check`: **0 errors, 0 warnings, 0 hints** trên 44 files.
+  3. `npm run lint`: **ĐẠT** (ESLint + Prettier check pass 100%).
+  4. `npm run build`: **ĐẠT** (Static build thành công 5 trang).
+  5. `npm run check:dist` & `npm run check:contrast`: **ĐẠT 100%**.
+  6. Kiểm tra ảnh màn hình `screenshots/` bằng mắt: Xác nhận các trang đã căn giữa chuẩn xác, lề đối xứng, đề mục nổi bật, không cắt viền/chữ ở cả 360px và 1280px.

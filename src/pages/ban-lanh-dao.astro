@@ -77,207 +77,213 @@ function isValidPhoto(photo: string | null | undefined): boolean {
 
   <!-- Hội đồng quản trị -->
   <Section class="bg-surface-page">
-    <div class="space-y-6">
-      <div class="border-b border-border-default pb-3">
-        <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
-          Hội đồng quản trị
-        </h2>
-        <p class="text-sm text-ink-muted mt-1">
-          Cơ quan quản lý Quỹ do Đại hội thành viên bầu ra, có toàn quyền nhân
-          danh Quỹ để quyết định và thực hiện các quyền, nghĩa vụ của Quỹ.
-        </p>
-      </div>
+    <Container>
+      <div data-page-content class="space-y-6">
+        <div class="border-b border-border-default pb-3">
+          <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
+            Hội đồng quản trị
+          </h2>
+          <p class="text-sm text-ink-muted mt-1">
+            Cơ quan quản lý Quỹ do Đại hội thành viên bầu ra, có toàn quyền nhân
+            danh Quỹ để quyết định và thực hiện các quyền, nghĩa vụ của Quỹ.
+          </p>
+        </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {leadership.board_of_directors.map((member: LeaderMember) => (
-          <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
-            <!-- Khối ảnh hoặc Avatar placeholder trung tính -->
-            <div class="mb-4">
-              {isValidPhoto(member.photo) ? (
-                <img
-                  src={member.photo!}
-                  alt={`Ảnh ${formatText(member.name)} - ${formatText(member.position)}`}
-                  width="96"
-                  height="96"
-                  loading="lazy"
-                  class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
-                />
-              ) : (
-                <div
-                  class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
-                  aria-hidden="true"
-                >
-                  <svg
-                    class="w-12 h-12"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    viewBox="0 0 24 24"
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {leadership.board_of_directors.map((member: LeaderMember) => (
+            <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
+              <!-- Khối ảnh hoặc Avatar placeholder trung tính -->
+              <div class="mb-4">
+                {isValidPhoto(member.photo) ? (
+                  <img
+                    src={member.photo!}
+                    alt={`Ảnh ${formatText(member.name)} - ${formatText(member.position)}`}
+                    width="96"
+                    height="96"
+                    loading="lazy"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
+                  />
+                ) : (
+                  <div
+                    class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
+                    aria-hidden="true"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
+                    <svg
+                      class="w-12 h-12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
 
-            <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
-              {formatText(member.position)}
-            </p>
-            <h3 class="text-lg font-bold text-ink-base">
-              {formatText(member.name)}
-            </h3>
-            {member.term && (
-              <p class="text-xs text-ink-muted mt-2">
-                Nhiệm kỳ: {formatText(member.term)}
+              <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
+                {formatText(member.position)}
               </p>
-            )}
-          </article>
-        ))}
+              <h3 class="text-lg font-bold text-ink-base">
+                {formatText(member.name)}
+              </h3>
+              {member.term && (
+                <p class="text-xs text-ink-muted mt-2">
+                  Nhiệm kỳ: {formatText(member.term)}
+                </p>
+              )}
+            </article>
+          ))}
+        </div>
       </div>
-    </div>
+    </Container>
   </Section>
 
   <!-- Ban kiểm soát -->
   <Section class="bg-surface-muted border-t border-border-default">
-    <div class="space-y-6">
-      <div class="border-b border-border-default pb-3">
-        <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
-          Ban kiểm soát
-        </h2>
-        <p class="text-sm text-ink-muted mt-1">
-          Cơ quan kiểm soát hoạt động của Quỹ, hoạt động độc lập nhằm kiểm tra,
-          giám sát việc chấp hành pháp luật và Điều lệ của Quỹ.
-        </p>
-      </div>
+    <Container>
+      <div class="space-y-6">
+        <div class="border-b border-border-default pb-3">
+          <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
+            Ban kiểm soát
+          </h2>
+          <p class="text-sm text-ink-muted mt-1">
+            Cơ quan kiểm soát hoạt động của Quỹ, hoạt động độc lập nhằm kiểm
+            tra, giám sát việc chấp hành pháp luật và Điều lệ của Quỹ.
+          </p>
+        </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {leadership.supervisory_board.map((member: LeaderMember) => (
-          <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
-            <div class="mb-4">
-              {isValidPhoto(member.photo) ? (
-                <img
-                  src={member.photo!}
-                  alt={`Ảnh ${formatText(member.name)} - ${formatText(member.position)}`}
-                  width="96"
-                  height="96"
-                  loading="lazy"
-                  class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
-                />
-              ) : (
-                <div
-                  class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
-                  aria-hidden="true"
-                >
-                  <svg
-                    class="w-12 h-12"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    viewBox="0 0 24 24"
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {leadership.supervisory_board.map((member: LeaderMember) => (
+            <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
+              <div class="mb-4">
+                {isValidPhoto(member.photo) ? (
+                  <img
+                    src={member.photo!}
+                    alt={`Ảnh ${formatText(member.name)} - ${formatText(member.position)}`}
+                    width="96"
+                    height="96"
+                    loading="lazy"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
+                  />
+                ) : (
+                  <div
+                    class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
+                    aria-hidden="true"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
+                    <svg
+                      class="w-12 h-12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
 
-            <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
-              {formatText(member.position)}
-            </p>
-            <h3 class="text-lg font-bold text-ink-base">
-              {formatText(member.name)}
-            </h3>
-            {member.term && (
-              <p class="text-xs text-ink-muted mt-2">
-                Nhiệm kỳ: {formatText(member.term)}
+              <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
+                {formatText(member.position)}
               </p>
-            )}
-          </article>
-        ))}
+              <h3 class="text-lg font-bold text-ink-base">
+                {formatText(member.name)}
+              </h3>
+              {member.term && (
+                <p class="text-xs text-ink-muted mt-2">
+                  Nhiệm kỳ: {formatText(member.term)}
+                </p>
+              )}
+            </article>
+          ))}
+        </div>
       </div>
-    </div>
+    </Container>
   </Section>
 
   <!-- Ban điều hành -->
   <Section class="bg-surface-page border-t border-border-default">
-    <div class="space-y-6">
-      <div class="border-b border-border-default pb-3">
-        <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
-          Ban điều hành
-        </h2>
-        <p class="text-sm text-ink-muted mt-1">
-          Chịu trách nhiệm trước Hội đồng quản trị về việc điều hành hoạt động
-          hàng ngày của Quỹ theo đúng thẩm quyền.
-        </p>
-      </div>
+    <Container>
+      <div class="space-y-6">
+        <div class="border-b border-border-default pb-3">
+          <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
+            Ban điều hành
+          </h2>
+          <p class="text-sm text-ink-muted mt-1">
+            Chịu trách nhiệm trước Hội đồng quản trị về việc điều hành hoạt động
+            hàng ngày của Quỹ theo đúng thẩm quyền.
+          </p>
+        </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {leadership.executive_board.map((member: LeaderMember) => (
-          <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
-            <div class="mb-4">
-              {isValidPhoto(member.photo) ? (
-                <img
-                  src={member.photo!}
-                  alt={`Ảnh ${formatText(member.name)} - ${formatText(member.position)}`}
-                  width="96"
-                  height="96"
-                  loading="lazy"
-                  class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
-                />
-              ) : (
-                <div
-                  class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
-                  aria-hidden="true"
-                >
-                  <svg
-                    class="w-12 h-12"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    viewBox="0 0 24 24"
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {leadership.executive_board.map((member: LeaderMember) => (
+            <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
+              <div class="mb-4">
+                {isValidPhoto(member.photo) ? (
+                  <img
+                    src={member.photo!}
+                    alt={`Ảnh ${formatText(member.name)} - ${formatText(member.position)}`}
+                    width="96"
+                    height="96"
+                    loading="lazy"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
+                  />
+                ) : (
+                  <div
+                    class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
+                    aria-hidden="true"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
+                    <svg
+                      class="w-12 h-12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
 
-            <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
-              {formatText(member.position)}
-            </p>
-            <h3 class="text-lg font-bold text-ink-base">
-              {formatText(member.name)}
-            </h3>
-            {member.term && (
-              <p class="text-xs text-ink-muted mt-2">
-                Nhiệm kỳ: {formatText(member.term)}
+              <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
+                {formatText(member.position)}
               </p>
-            )}
-          </article>
-        ))}
-      </div>
+              <h3 class="text-lg font-bold text-ink-base">
+                {formatText(member.name)}
+              </h3>
+              {member.term && (
+                <p class="text-xs text-ink-muted mt-2">
+                  Nhiệm kỳ: {formatText(member.term)}
+                </p>
+              )}
+            </article>
+          ))}
+        </div>
 
-      <!-- Điều hướng liên quan -->
-      <div class="pt-8 border-t border-border-default mt-8 flex flex-wrap gap-4">
-        <LinkButton href="/gioi-thieu" variant="secondary">
-          Quay lại trang Giới thiệu
-        </LinkButton>
-        <LinkButton href="/lich-su" variant="secondary">
-          Xem Lịch sử hình thành
-        </LinkButton>
+        <!-- Điều hướng liên quan -->
+        <div class="pt-8 border-t border-border-default mt-8 flex flex-wrap gap-4">
+          <LinkButton href="/gioi-thieu" variant="secondary">
+            Quay lại trang Giới thiệu
+          </LinkButton>
+          <LinkButton href="/lich-su" variant="secondary">
+            Xem Lịch sử hình thành
+          </LinkButton>
+        </div>
       </div>
-    </div>
+    </Container>
   </Section>
 </BaseLayout>

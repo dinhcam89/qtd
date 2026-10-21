@@ -59,79 +59,83 @@ const pageDescription = pageEntry.data.description;
 
   <!-- Thông tin pháp lý & tôn chỉ hoạt động -->
   <Section class="bg-surface-page">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Cột chính: Nội dung giới thiệu -->
-      <div class="lg:col-span-2 space-y-6">
-        <div class="prose max-w-none text-ink-base space-y-4">
-          <GioiThieuContent />
+    <Container>
+      <div data-page-content class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Cột chính: Nội dung giới thiệu -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="content-body">
+            <GioiThieuContent />
+          </div>
+
+          <!-- Khối điều hướng trang con liên quan -->
+          <div class="pt-8 border-t border-border-default">
+            <h2 class="text-xl font-bold text-brand-primary mb-4">
+              Tìm hiểu thêm về Quỹ
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Card
+                title="Lịch sử hình thành"
+                description="Xem chặng đường thành lập và các mốc phát triển quan trọng của Quỹ qua các thời kỳ."
+                href="/lich-su"
+              />
+              <Card
+                title="Ban lãnh đạo"
+                description="Cơ cấu Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ."
+                href="/ban-lanh-dao"
+              />
+            </div>
+          </div>
         </div>
 
-        <!-- Khối điều hướng trang con liên quan -->
-        <div class="pt-8 border-t border-border-default">
-          <h2 class="text-xl font-bold text-brand-primary mb-4">
-            Tìm hiểu thêm về Quỹ
-          </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card
-              title="Lịch sử hình thành"
-              description="Xem chặng đường thành lập và các mốc phát triển quan trọng của Quỹ qua các thời kỳ."
-              href="/lich-su"
-            />
-            <Card
-              title="Ban lãnh đạo"
-              description="Cơ cấu Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ."
-              href="/ban-lanh-dao"
-            />
+        <!-- Cột phụ: Thông tin tóm tắt pháp lý -->
+        <div class="space-y-6">
+          <div class="p-6 rounded-lg bg-surface-muted border border-border-default shadow-xs space-y-4">
+            <h2 class="text-lg font-bold text-brand-primary">
+              Thông tin pháp lý
+            </h2>
+            <dl class="space-y-3 text-sm">
+              <div>
+                <dt class="font-medium text-ink-base">Tên tổ chức:</dt>
+                <dd class="text-ink-muted mt-0.5">{formatText(site.name)}</dd>
+              </div>
+              {site.short_name && (
+                <div>
+                  <dt class="font-medium text-ink-base">Tên viết tắt:</dt>
+                  <dd class="text-ink-muted mt-0.5">
+                    {formatText(site.short_name)}
+                  </dd>
+                </div>
+              )}
+              <div>
+                <dt class="font-medium text-ink-base">Giấy phép hoạt động:</dt>
+                <dd class="text-ink-muted mt-0.5">
+                  {formatText(site.license_number)}
+                </dd>
+              </div>
+              <div>
+                <dt class="font-medium text-ink-base">Địa bàn hoạt động:</dt>
+                <dd class="text-ink-muted mt-0.5">
+                  {formatText(site.operating_area)}
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>
-
-      <!-- Cột phụ: Thông tin tóm tắt pháp lý -->
-      <div class="space-y-6">
-        <div class="p-6 rounded-lg bg-surface-muted border border-border-default shadow-xs space-y-4">
-          <h2 class="text-lg font-bold text-brand-primary">
-            Thông tin pháp lý
-          </h2>
-          <dl class="space-y-3 text-sm">
-            <div>
-              <dt class="font-medium text-ink-base">Tên tổ chức:</dt>
-              <dd class="text-ink-muted mt-0.5">{formatText(site.name)}</dd>
-            </div>
-            {site.short_name && (
-              <div>
-                <dt class="font-medium text-ink-base">Tên viết tắt:</dt>
-                <dd class="text-ink-muted mt-0.5">
-                  {formatText(site.short_name)}
-                </dd>
-              </div>
-            )}
-            <div>
-              <dt class="font-medium text-ink-base">Giấy phép hoạt động:</dt>
-              <dd class="text-ink-muted mt-0.5">
-                {formatText(site.license_number)}
-              </dd>
-            </div>
-            <div>
-              <dt class="font-medium text-ink-base">Địa bàn hoạt động:</dt>
-              <dd class="text-ink-muted mt-0.5">
-                {formatText(site.operating_area)}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </div>
-    </div>
+    </Container>
   </Section>
 
   <!-- Sứ mệnh và Tầm nhìn -->
   <Section class="bg-surface-muted border-t border-border-default">
-    <div class="max-w-3xl">
-      <h2 class="text-2xl font-bold text-brand-primary mb-4">
-        Sứ mệnh & Tầm nhìn
-      </h2>
-      <div class="prose max-w-none text-ink-base space-y-4">
-        <SuMenhContent />
+    <Container>
+      <div class="max-w-3xl">
+        <h2 class="text-2xl font-bold text-brand-primary mb-4">
+          Sứ mệnh & Tầm nhìn
+        </h2>
+        <div class="content-body">
+          <SuMenhContent />
+        </div>
       </div>
-    </div>
+    </Container>
   </Section>
 </BaseLayout>

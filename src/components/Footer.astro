@@ -37,7 +37,7 @@ const currentYear = new Date().getFullYear();
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
       <!-- Cột 1: Thông tin Quỹ -->
       <div class="space-y-3">
-        <h2 class="text-lg font-bold text-brand-primary">
+        <h2 data-site-footer-brand class="text-lg font-bold text-brand-primary">
           {formatText(site.name)}
         </h2>
         {site.short_name && (
