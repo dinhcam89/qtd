@@ -67,26 +67,28 @@ const pageDescription = pageEntry.data.description;
 
   <!-- Nội dung lịch sử -->
   <Section class="bg-surface-page">
-    <div class="max-w-3xl mx-auto space-y-8">
-      <div class="prose max-w-none text-ink-base space-y-4">
-        <LichSuContent />
-      </div>
+    <Container>
+      <div data-page-content class="space-y-8">
+        <div class="content-body max-w-3xl">
+          <LichSuContent />
+        </div>
 
-      <!-- Điều hướng tiếp -->
-      <div class="pt-8 border-t border-border-default">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card
-            title="Giới thiệu chung"
-            description="Tìm hiểu tôn chỉ, mục đích hoạt động và thông tin pháp lý của Quỹ."
-            href="/gioi-thieu"
-          />
-          <Card
-            title="Ban lãnh đạo"
-            description="Cơ cấu Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ."
-            href="/ban-lanh-dao"
-          />
+        <!-- Điều hướng tiếp -->
+        <div class="pt-8 border-t border-border-default">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Card
+              title="Giới thiệu chung"
+              description="Tìm hiểu tôn chỉ, mục đích hoạt động và thông tin pháp lý của Quỹ."
+              href="/gioi-thieu"
+            />
+            <Card
+              title="Ban lãnh đạo"
+              description="Cơ cấu Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ."
+              href="/ban-lanh-dao"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </Container>
   </Section>
 </BaseLayout>
