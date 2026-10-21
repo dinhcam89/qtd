@@ -22,7 +22,10 @@ export const DOCUMENT_CATEGORY_LABELS: Record<DocumentCategory, string> = {
 };
 
 /** Thư mục chứa PDF (đường dẫn tuyệt đối, tính từ thư mục gốc dự án khi build). */
-export const DOCS_DIR = path.resolve(process.cwd(), 'public', 'docs');
+export const DOCS_DIR =
+  process.env.QTD_FIXTURES === '1'
+    ? path.resolve(process.cwd(), 'src', 'fixtures', 'public', 'docs')
+    : path.resolve(process.cwd(), 'public', 'docs');
 
 export const documentsSchema = z.object({
   title: z.string().trim().min(1, 'Văn bản phải có tên'),
