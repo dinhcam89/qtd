@@ -19,7 +19,7 @@ Website **tĩnh** để giới thiệu quỹ cho khách hàng cũ và mới: gi�
 - Danh sách thành viên cá nhân. Chỉ hiển thị **số liệu tổng hợp** (số thành viên, vốn điều lệ, tổng tài sản…)
 - Backend/database riêng. Mọi thứ là file tĩnh trong Git
 
-Người dùng chính: người dân, đa số dùng điện thoại, nhưng bản **desktop là bản thiết kế chuẩn**. Toàn bộ giao diện bằng **tiếng Việt**.
+Người dùng chính: khách hàng cũ và mới của quỹ, nhiều độ tuổi, dùng cả điện thoại và máy tính; desktop là bản thiết kế chuẩn, mobile phải hoàn chỉnh như nhau. Toàn bộ giao diện bằng **tiếng Việt**.
 
 ## 2. Stack (không tự ý thay đổi)
 
@@ -115,8 +115,8 @@ Nếu lãi suất, số liệu hay văn bản pháp lý không có trong nguồn
 
 ## 7. Thiết kế và khả năng truy cập
 
-- Cỡ chữ gốc **18px**, line-height ~1.6, độ tương phản đạt **WCAG AA** trở lên.
-- Vùng bấm tối thiểu **44×44px**. Trạng thái focus nhìn thấy rõ.
+- Cỡ chữ gốc **16px** (mặc định trình duyệt), line-height ~1.6, độ tương phản đạt **WCAG AA** trở lên.
+- Vùng bấm tối thiểu **44×44px** trên mobile. Trạng thái focus nhìn thấy rõ.
 - Font tự host, subset có tiếng Việt (ví dụ Be Vietnam Pro hoặc Noto Sans). Không tải font từ Google Fonts hay CDN.
 - Màu và logo lấy từ bộ nhận diện của quỹ. Nếu chưa có, dùng bảng màu tạm trung tính và ghi `[CẦN BỔ SUNG: logo/màu]`.
 - Hiệu ứng tối giản, tôn trọng `prefers-reduced-motion`. Không autoplay video/âm thanh.
