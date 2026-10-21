@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import { getSite } from '../lib/data';
+import { getDocumentGroups } from '../lib/documents';
+import { formatText, formatDate, formatFileSize } from '../lib/format';
+import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+
+const site = await getSite();
+const groups = await getDocumentGroups();
+
+const pageTitle = `Quy chế và văn bản — Quỹ tín dụng nhân dân ${formatText(site.name)}`;
+const pageDescription = `Danh mục điều lệ, quy chế hoạt động, biểu mẫu và các văn bản công khai của Quỹ tín dụng nhân dân ${formatText(site.name)}.`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <PageHeader
+    title="Quy chế và văn bản"
+    description="Các văn bản, quy chế hoạt động và biểu mẫu công khai của Quỹ."
+    breadcrumb={[
+      { label: 'Trang chủ', href: '/' },
+      { label: 'Giới thiệu', href: '/gioi-thieu' },
+      { label: 'Quy chế và văn bản' },
+    ]}
+  />
+
+  <Section class="bg-surface-page">
+    <Container>
+      <div data-page-content class="space-y-10">
+        {groups.length === 0 ? (
+          <div
+            data-documents-empty
+            class="p-8 text-center rounded-lg border border-border-default bg-surface-muted"
+          >
+            <p class="text-ink-muted text-base sm:text-lg">
+              {DEFAULT_FALLBACK_TEXT}
+            </p>
+          </div>
+        ) : (
+          groups.map((group) => (
+            <div class="space-y-4">
+              <h2 class="text-xl sm:text-2xl font-bold text-brand-primary border-b border-border-default pb-2">
+                {group.label}
+              </h2>
+              <ul class="divide-y divide-border-default border border-border-default rounded-lg bg-surface-page overflow-hidden">
+                {group.items.map((doc) => {
+                  const dateText = formatDate(doc.date);
+                  const sizeText = formatFileSize(doc.sizeBytes);
+                  const downloadAria = `Tải xuống: ${doc.title} (PDF, ${sizeText})`;
+
+                  return (
+                    <li class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-surface-muted/50 transition-colors">
+                      <div class="space-y-1">
+                        <h3 class="text-base sm:text-lg font-semibold text-ink-base">
+                          {doc.title}
+                        </h3>
+                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-muted">
+                          <span>
+                            Ngày văn bản:{' '}
+                            {doc.date ? dateText : DEFAULT_FALLBACK_TEXT}
+                          </span>
+                          <span aria-hidden="true" class="text-border-strong">
+                            •
+                          </span>
+                          <span>Định dạng: PDF ({sizeText})</span>
+                        </div>
+                      </div>
+
+                      <div class="shrink-0">
+                        <a
+                          href={doc.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={downloadAria}
+                          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-md bg-brand-primary text-white text-sm font-medium hover:bg-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus transition-colors"
+                        >
+                          <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                            />
+                          </svg>
+                          <span>Tải xuống</span>
+                        </a>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))
+        )}
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>
