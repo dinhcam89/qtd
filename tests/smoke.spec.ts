@@ -54,10 +54,10 @@ test.describe('Smoke tests', () => {
   test('tương tác menu trên mobile: hamburger đổi aria-expanded và tự đóng khi bấm link', async ({
     page,
   }, testInfo) => {
-    // Chỉ kiểm tra tương tác mobile navigation trên project mobile
+    // Menu hamburger hiển thị khi viewport < 1024px (mobile và tablet), ẩn trên desktop
     test.skip(
-      testInfo.project.name !== 'mobile',
-      'Chỉ áp dụng cho project mobile'
+      testInfo.project.name === 'desktop',
+      'Desktop sử dụng menu ngang thanh điều hướng, không dùng menu hamburger'
     );
 
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
