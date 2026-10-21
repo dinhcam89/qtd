@@ -160,7 +160,7 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 
 **Việc cần làm**
 
-1. Token trong `@theme`: bảng màu (brand, ink, surface, border, trạng thái), cỡ chữ (gốc 18px, thang `clamp`), khoảng cách, bo góc, bóng.
+1. Token trong `@theme`: bảng màu (brand, ink, surface, border, trạng thái), cỡ chữ (gốc 16px, thang mặc định Tailwind + `--text-stat`), khoảng cách, bo góc, bóng.
 2. `scripts/check-contrast.mjs`: tính tỉ lệ tương phản cho các cặp màu chữ/nền khai báo, fail nếu chữ thường < 4,5:1 hoặc chữ lớn < 3:1. Không cần thêm gói.
 3. Font tự host (gói đã duyệt), chỉ nạp subset latin và vietnamese, `font-display: swap`, chạy được với CSP `font-src 'self'`.
 4. Component nền, chỉ tạo cái nào sẽ dùng ngay: `Container`, `Section`, `PageHeader`, `Card`, `Button`/`LinkButton`, `StatItem`, `DataTable` (bảng, mobile xếp thẻ), `Notice`, `Breadcrumb`.
@@ -266,7 +266,7 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 
 - Test trên điện thoại thật (Android và iPhone), mạng chậm
 - Mở link trong trình duyệt tích hợp của **Zalo** và **Facebook**
-- Chữ lớn trong cài đặt hệ thống
+- Chữ lớn trong cài đặt hệ thống (tuỳ chọn)
 - Người của quỹ duyệt nội dung toàn bộ trang bằng văn bản (tin nhắn/email)
 - Bật 2FA (GitHub, Cloudflare, nhà đăng ký tên miền), khoá tên miền
 

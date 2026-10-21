@@ -65,7 +65,7 @@
 
 - Khởi tạo git repo và dọn dẹp workflow trùng ở thư mục gốc (chỉ giữ trong `.agent/workflows/`).
 - Tạo cấu hình gốc: `.nvmrc`, `package.json` (kèm `engines`, scripts), `.gitignore`, `astro.config.mjs` (Tailwind v4 qua Vite, `inlineStylesheets: "never"`), `tsconfig.json`, `eslint.config.mjs`, `.prettierrc`, `.prettierignore`.
-- Tạo `src/styles/global.css` (cỡ chữ gốc 18px, import Tailwind v4).
+- Tạo `src/styles/global.css` (cỡ chữ gốc 16px mặc định trình duyệt, import Tailwind v4).
 - Tạo `src/layouts/BaseLayout.astro` (layout khung rỗng tối giản, semantic HTML, `lang="vi"`).
 - Tạo `src/pages/index.astro` (trang chủ tối giản, thẻ h1 tiếng Việt, không bịa thông tin).
 - Tạo script placeholder cơ bản `scripts/check-placeholders.mjs`.
