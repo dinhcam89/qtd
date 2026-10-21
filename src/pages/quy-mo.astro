@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import StatItem from '../components/ui/StatItem.astro';
+import { getSite } from '../lib/data';
+import {
+  formatAsOf,
+  formatDate,
+  formatNumber,
+  formatCurrency,
+  formatText,
+} from '../lib/format';
+import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+
+const site = await getSite();
+const stats = site.stats;
+
+const pageTitle = `Quy mô hoạt động — Quỹ tín dụng nhân dân ${formatText(site.name)}`;
+const pageDescription = `Số liệu quy mô hoạt động tổng hợp của Quỹ tín dụng nhân dân ${formatText(site.name)}: thành viên, vốn điều lệ, tổng tài sản, huy động vốn và dư nợ cho vay.`;
+
+const asOf = stats.as_of ? formatDate(stats.as_of) : null;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <PageHeader
+    title="Quy mô hoạt động"
+    description="Các số liệu tổng hợp về quy mô hoạt động của Quỹ."
+    breadcrumb={[
+      { label: 'Trang chủ', href: '/' },
+      { label: 'Giới thiệu', href: '/gioi-thieu' },
+      { label: 'Quy mô' },
+    ]}
+  >
+    <p class="mt-2 text-sm text-ink-muted">
+      {stats.as_of
+        ? `Số liệu ${formatAsOf(stats.as_of)}`
+        : `Số liệu: ${DEFAULT_FALLBACK_TEXT}`}
+    </p>
+  </PageHeader>
+
+  <Section class="bg-surface-page">
+    <Container>
+      <div data-page-content>
+        <!-- Lưới thẻ quy mô: 1 cột dưới 480px, 2 cột từ 480px đến dưới lg, 4 cột từ lg -->
+        <div class="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
+          <StatItem
+            label="Tổng thành viên"
+            value={
+              stats.members_count != null
+                ? formatNumber(stats.members_count)
+                : null
+            }
+            unit="thành viên"
+            asOf={asOf}
+          />
+          <StatItem
+            label="Vốn điều lệ"
+            value={
+              stats.charter_capital != null
+                ? formatCurrency(stats.charter_capital)
+                : null
+            }
+            asOf={asOf}
+          />
+          <StatItem
+            label="Tổng tài sản"
+            value={
+              stats.total_assets != null
+                ? formatCurrency(stats.total_assets)
+                : null
+            }
+            asOf={asOf}
+          />
+          <StatItem
+            label="Tiền gửi huy động"
+            value={
+              stats.total_deposits != null
+                ? formatCurrency(stats.total_deposits)
+                : null
+            }
+            asOf={asOf}
+          />
+          <StatItem
+            label="Dư nợ cho vay"
+            value={
+              stats.total_loans != null
+                ? formatCurrency(stats.total_loans)
+                : null
+            }
+            asOf={asOf}
+          />
+        </div>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

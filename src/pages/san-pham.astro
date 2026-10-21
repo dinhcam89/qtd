@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import { getSite, getProducts } from '../lib/data';
+import { formatText } from '../lib/format';
+import type { ProductItem } from '../lib/schemas/products';
+
+const site = await getSite();
+const products = await getProducts();
+
+const pageTitle = `Sản phẩm — Quỹ tín dụng nhân dân ${formatText(site.name)}`;
+const pageDescription = `Các sản phẩm cho vay và tiền gửi của Quỹ tín dụng nhân dân ${formatText(site.name)}.`;
+
+const groups: Array<{ id: string; title: string; items: ProductItem[] }> = [
+  { id: 'cho-vay', title: 'Sản phẩm cho vay', items: products.loan_products },
+  {
+    id: 'tien-gui',
+    title: 'Sản phẩm tiền gửi',
+    items: products.deposit_products,
+  },
+];
+
+const fields: Array<{ key: keyof ProductItem; label: string }> = [
+  { key: 'summary', label: 'Mô tả' },
+  { key: 'target_customers', label: 'Đối tượng' },
+  { key: 'amount_limit', label: 'Hạn mức' },
+  { key: 'term', label: 'Kỳ hạn' },
+  { key: 'conditions', label: 'Điều kiện' },
+  { key: 'required_documents', label: 'Hồ sơ cần chuẩn bị' },
+];
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <PageHeader
+    title="Sản phẩm"
+    description="Các sản phẩm cho vay và tiền gửi của Quỹ."
+    breadcrumb={[{ label: 'Trang chủ', href: '/' }, { label: 'Sản phẩm' }]}
+  />
+
+  <Section class="bg-surface-page">
+    <Container>
+      <div data-page-content class="space-y-12">
+        {groups.map((group) => (
+          <section id={group.id} class="space-y-6 scroll-mt-20">
+            <h2 class="text-xl sm:text-2xl font-bold text-brand-primary border-b border-border-default pb-3">
+              {group.title}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+              {group.items.map((item) => (
+                <article
+                  data-product-card
+                  class="h-full p-6 rounded-lg bg-surface-page border border-border-default shadow-xs space-y-4"
+                >
+                  <h3 class="text-xl font-semibold text-ink-base">
+                    {formatText(item.name)}
+                  </h3>
+                  <dl class="space-y-3 text-base">
+                    {fields.map((field) => (
+                      <div>
+                        <dt class="font-medium text-ink-base">{field.label}</dt>
+                        <dd class="text-ink-muted mt-0.5">
+                          {formatText(item[field.key] as string | null)}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>
