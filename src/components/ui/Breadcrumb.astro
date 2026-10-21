@@ -1,0 +1,45 @@
+---
+interface BreadcrumbItem {
+  label: string;
+  /** Không có href: mục hiện tại (trang đang xem) */
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+---
+
+<nav
+  aria-label="Đường dẫn điều hướng"
+  class:list={['text-sm text-ink-muted', className]}
+>
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
+    {items.map((item, index) => (
+      <>
+        {index > 0 && (
+          <li aria-hidden="true" class="text-border-strong">
+            /
+          </li>
+        )}
+        {item.href ? (
+          <li>
+            <a
+              href={item.href}
+              class="hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+            >
+              {item.label}
+            </a>
+          </li>
+        ) : (
+          <li class="font-medium text-ink-base" aria-current="page">
+            {item.label}
+          </li>
+        )}
+      </>
+    ))}
+  </ol>
+</nav>

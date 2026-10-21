@@ -14,21 +14,31 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop',
+      testIgnore: ['**/layout.spec.ts'],
       use: {
         viewport: { width: 1280, height: 800 },
       },
     },
     {
       name: 'tablet',
+      testIgnore: ['**/layout.spec.ts'],
       use: {
         viewport: { width: 768, height: 1024 },
       },
     },
     {
       name: 'mobile',
+      testIgnore: ['**/layout.spec.ts'],
       use: {
         viewport: { width: 360, height: 640 },
         isMobile: true,
+      },
+    },
+    {
+      name: 'layout',
+      testMatch: ['**/layout.spec.ts'],
+      use: {
+        viewport: { width: 1280, height: 800 },
       },
     },
   ],

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import RatesTables from '../components/RatesTables.astro';
+import { getSite, getRates } from '../lib/data';
+import { formatDate, formatText } from '../lib/format';
+
+const site = await getSite();
+const rates = await getRates();
+
+const pageTitle = `Lãi suất — Quỹ tín dụng nhân dân ${formatText(site.name)}`;
+const pageDescription = `Biểu lãi suất tiền gửi và cho vay tham khảo của Quỹ tín dụng nhân dân ${formatText(site.name)}.`;
+
+// Thời điểm áp dụng lấy từ effective_from; chưa có thì hiện "Đang cập nhật" (không ghép "tính đến")
+const effectiveFrom = formatDate(rates.effective_from);
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <PageHeader
+    title="Lãi suất"
+    description="Biểu lãi suất tiền gửi và cho vay của Quỹ."
+    breadcrumb={[{ label: 'Trang chủ', href: '/' }, { label: 'Lãi suất' }]}
+  />
+
+  <Section class="bg-surface-page">
+    <Container>
+      <div data-page-content class="space-y-8">
+        <p data-rates-effective class="text-base text-ink-muted">
+          <span class="font-medium text-ink-base">Thời điểm áp dụng:</span>{' '}
+          {effectiveFrom}
+        </p>
+        <RatesTables rates={rates} headingLevel="h2" />
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

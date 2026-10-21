@@ -4,9 +4,8 @@ import Container from '../components/ui/Container.astro';
 import Section from '../components/ui/Section.astro';
 import LinkButton from '../components/ui/LinkButton.astro';
 import StatItem from '../components/ui/StatItem.astro';
-import DataTable from '../components/ui/DataTable.astro';
-import Notice from '../components/ui/Notice.astro';
 import Card from '../components/ui/Card.astro';
+import RatesTables from '../components/RatesTables.astro';
 import { getSite, getRates } from '../lib/data';
 import { getPublishedNews } from '../lib/news';
 import {
@@ -14,10 +13,9 @@ import {
   formatDate,
   formatNumber,
   formatCurrency,
-  formatPercent,
   formatText,
 } from '../lib/format';
-import { RATE_DISCLAIMER, DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
 
 const site = await getSite();
 const rates = await getRates();
@@ -153,109 +151,7 @@ const siteDescription =
           </p>
         </div>
 
-        <!-- Bảng 1: Lãi suất tiền gửi (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
-        <div class="space-y-3">
-          <h3 class="text-xl font-semibold text-brand-primary">
-            Lãi suất tiền gửi
-          </h3>
-          <DataTable class="shadow-xs">
-            <thead>
-              <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
-                <th scope="col" class="py-3.5 px-4 text-left">
-                  Kỳ hạn
-                </th>
-                <th scope="col" class="py-3.5 px-4 text-right">
-                  Lãi suất (%/năm)
-                </th>
-                <th scope="col" class="py-3.5 px-4 text-left">
-                  Ghi chú
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border-default text-base">
-              {rates.deposit_rates.map((item) => (
-                <tr class="hover:bg-surface-muted/50 transition-colors">
-                  <td
-                    data-label="Kỳ hạn"
-                    class="py-3.5 px-4 font-medium text-ink-base text-left"
-                  >
-                    {formatText(item.term)}
-                  </td>
-                  <td
-                    data-label="Lãi suất (%/năm)"
-                    class="py-3.5 px-4 font-bold text-brand-primary text-right"
-                  >
-                    {formatPercent(item.rate)}
-                  </td>
-                  <td
-                    data-label="Ghi chú"
-                    class="py-3.5 px-4 text-ink-muted text-left"
-                  >
-                    {formatText(item.note, '—')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </DataTable>
-        </div>
-
-        <!-- Bảng 2: Lãi suất cho vay (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
-        <div class="space-y-3 pt-2">
-          <h3 class="text-xl font-semibold text-brand-primary">
-            Lãi suất cho vay
-          </h3>
-          <DataTable class="shadow-xs">
-            <thead>
-              <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
-                <th scope="col" class="py-3.5 px-4 text-left">
-                  Mục đích vay
-                </th>
-                <th scope="col" class="py-3.5 px-4 text-left">
-                  Kỳ hạn
-                </th>
-                <th scope="col" class="py-3.5 px-4 text-right">
-                  Lãi suất (%/năm)
-                </th>
-                <th scope="col" class="py-3.5 px-4 text-left">
-                  Ghi chú
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border-default text-base">
-              {rates.loan_rates.map((item) => (
-                <tr class="hover:bg-surface-muted/50 transition-colors">
-                  <td
-                    data-label="Mục đích vay"
-                    class="py-3.5 px-4 font-medium text-ink-base text-left"
-                  >
-                    {formatText(item.purpose)}
-                  </td>
-                  <td
-                    data-label="Kỳ hạn"
-                    class="py-3.5 px-4 text-ink-muted text-left"
-                  >
-                    {formatText(item.term, '—')}
-                  </td>
-                  <td
-                    data-label="Lãi suất (%/năm)"
-                    class="py-3.5 px-4 font-bold text-brand-primary text-right"
-                  >
-                    {formatPercent(item.rate)}
-                  </td>
-                  <td
-                    data-label="Ghi chú"
-                    class="py-3.5 px-4 text-ink-muted text-left"
-                  >
-                    {formatText(item.note, '—')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </DataTable>
-        </div>
-
-        <!-- Dòng lưu ý lãi suất bắt buộc (Notice component, >= 16px, không in nghiêng) -->
-        <Notice variant="warning">{RATE_DISCLAIMER}</Notice>
+        <RatesTables rates={rates} headingLevel="h3" />
       </div>
     </Container>
   </Section>

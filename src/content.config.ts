@@ -7,6 +7,7 @@ import { scheduleSchema } from './lib/schemas/schedule';
 import { leadershipSchema } from './lib/schemas/leadership';
 import { newsSchema } from './lib/schemas/news';
 import { pageSchema } from './lib/schemas/pages';
+import { productsSchema } from './lib/schemas/products';
 
 export const collections = {
   site: defineCollection({
@@ -16,6 +17,10 @@ export const collections = {
   rates: defineCollection({
     loader: glob({ pattern: 'rates.yaml', base: 'src/data' }),
     schema: ratesSchema,
+  }),
+  products: defineCollection({
+    loader: glob({ pattern: 'products.yaml', base: 'src/data' }),
+    schema: productsSchema,
   }),
   contact: defineCollection({
     loader: glob({ pattern: 'contact.yaml', base: 'src/data' }),

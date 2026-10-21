@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { getNavRoutes } from '../src/lib/nav';
+import { setupPageGuards } from './helpers';
+import { getNavRoutes, PRIMARY_NAV_ITEMS } from '../src/lib/nav';
 
 const VIEWPORTS = [
   { name: '360px', width: 360, height: 640 },
@@ -15,13 +16,7 @@ test.describe('Kiểm tra hình học và căn chỉnh layout', () => {
     for (const vp of VIEWPORTS) {
       test(`kiểm tra layout trang ${pageInfo.name} (${pageInfo.path}) ở viewport ${vp.name}`, async ({
         page,
-      }, testInfo) => {
-        // Chỉ chạy trên project desktop để độc lập kiểm tra từng viewport định nghĩa
-        test.skip(
-          testInfo.project.name !== 'desktop',
-          'Đã kiểm tra viewport qua danh sách định nghĩa trên project desktop'
-        );
-
+      }) => {
         await page.setViewportSize({ width: vp.width, height: vp.height });
         await page.goto(pageInfo.path, { waitUntil: 'networkidle' });
 
@@ -225,5 +220,90 @@ test.describe('Kiểm tra hình học và căn chỉnh layout', () => {
         `Font-size của h2 (${item.fontSize}px) phải lớn hơn ít nhất 20% so với p (${item.pFontSize}px)`
       ).toBeGreaterThanOrEqual(item.pFontSize * 1.2);
     }
+  });
+
+  test('ở 1024px menu ngang không xuống dòng, không đè lên brand, không tràn khung', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.setViewportSize({ width: 1024, height: 768 });
+
+    // Kiểm tra trên trang con (nội dung dài nhất) và với tên quỹ dài giả lập
+    for (const path of ['/gioi-thieu', '/']) {
+      for (const longBrand of [false, true]) {
+        await page.goto(path, { waitUntil: 'networkidle' });
+        if (longBrand) {
+          await page.evaluate(() => {
+            const brand = document.querySelector('[data-header-brand]');
+            if (brand) brand.textContent = 'Quỹ tín dụng nhân dân Phường Ví Dụ';
+          });
+        }
+
+        const m = await page.evaluate(() => {
+          const rect = (el: Element | null) => {
+            if (!el) return null;
+            const r = el.getBoundingClientRect();
+            return {
+              left: r.left,
+              right: r.right,
+              top: r.top,
+              bottom: r.bottom,
+            };
+          };
+          const nav = document.querySelector('[data-desktop-nav]');
+          const links = Array.from(nav?.querySelectorAll('a') ?? []);
+          return {
+            brand: rect(document.querySelector('[data-header-brand]')),
+            nav: rect(nav),
+            navDisplay: nav ? getComputedStyle(nav).display : null,
+            navScrollOverflow: nav ? nav.scrollWidth > nav.clientWidth : null,
+            inner: rect(document.querySelector('#site-header > div > div')),
+            links: links.map((a) => ({
+              text: a.textContent?.trim() ?? '',
+              ...rect(a)!,
+              lineCount: a.getClientRects().length,
+            })),
+            pageOverflow:
+              document.documentElement.scrollWidth >
+              document.documentElement.clientWidth,
+          };
+        });
+        const ctx = `${path}${longBrand ? ' (tên quỹ dài)' : ''}`;
+
+        expect(
+          m.navDisplay,
+          `menu ngang phải hiển thị ở 1024px ${ctx}`
+        ).not.toBe('none');
+        expect(m.links.length, ctx).toBe(PRIMARY_NAV_ITEMS.length);
+
+        // Không xuống dòng: mọi mục cùng một hàng và mỗi mục một dòng chữ
+        const tops = m.links.map((l) => Math.round(l.top));
+        expect(
+          Math.max(...tops) - Math.min(...tops),
+          `các mục menu nằm khác hàng ${ctx}: ${JSON.stringify(tops)}`
+        ).toBeLessThanOrEqual(2);
+        for (const l of m.links) {
+          expect(l.lineCount, `mục "${l.text}" bị ngắt dòng ${ctx}`).toBe(1);
+        }
+
+        // Không đè lên brand
+        expect(m.brand).not.toBeNull();
+        expect(
+          m.brand!.right,
+          `brand (${m.brand!.right}) chạm/đè menu (${m.nav!.left}) ${ctx}`
+        ).toBeLessThanOrEqual(m.nav!.left + 0.5);
+
+        // Không tràn khung header và không tràn trang
+        expect(
+          m.nav!.right,
+          `menu tràn khung header ${ctx}`
+        ).toBeLessThanOrEqual(m.inner!.right + 1);
+        expect(m.navScrollOverflow, ctx).toBe(false);
+        expect(m.pageOverflow, `trang cuộn ngang ${ctx}`).toBe(false);
+      }
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
   });
 });

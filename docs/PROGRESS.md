@@ -14,7 +14,7 @@
 | 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; Cổng G1 đã hoàn thành           |
 | 6    | Design system                                          | Xong            | 2026-10-21      | `6ed277a` | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt   |
 | 7    | Trang Giới thiệu và Ban lãnh đạo                       | Xong            | 2026-10-21      | `6553a03` | Collection pages, /gioi-thieu, /lich-su, /ban-lanh-dao, nav.ts động, 59/59 test pass |
-| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         | Task tiếp theo                                                                       |
+| 8    | Trang Quy mô, Sản phẩm và Lãi suất                     | Xong            | 2026-10-21      | `6f988ed` | /quy-mo, /san-pham, /lai-suat, nav `primary`, 137 test pass                          |
 | 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                      |
 | 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                                      |
 | 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                                      |
@@ -134,3 +134,19 @@
   4. `npm run build`: **ĐẠT** (Static build thành công 5 trang).
   5. `npm run check:dist` & `npm run check:contrast`: **ĐẠT 100%**.
   6. Kiểm tra ảnh màn hình `screenshots/` bằng mắt: Xác nhận các trang đã căn giữa chuẩn xác, lề đối xứng, đề mục nổi bật, không cắt viền/chữ ở cả 360px và 1280px.
+
+---
+
+## 8. Chi tiết đánh giá Task 8 (Quy mô, Sản phẩm, Lãi suất)
+
+- **Ngày đánh giá:** 2026-10-21 (nhánh `task-8-quy-mo-san-pham-lai-suat`, tạo từ `origin/main` sau khi merge PR #7)
+- **Commit:** `8a56bf4` (data), `305f682` (ui), `6f988ed` (pages), `870b76b` (nav), `29135bb` (test), `d7bdd99` (shots)
+- **Kết quả:**
+  1. Menu: `nav.ts` có `primary: boolean`; menu ngang desktop chỉ hiển thị 5 mục primary (tối đa 6); panel mobile và footer có đủ 8 mục: **ĐẠT**.
+  2. Các mục menu trỏ thẳng `/quy-mo`, `/san-pham`, `/lai-suat`, `/#lien-he`; test bấm từng mục từ `/gioi-thieu` và không chứa `/gioi-thieu#`: **ĐẠT**.
+  3. `/quy-mo`, `/san-pham`, `/lai-suat` dùng `PageHeader`, `Breadcrumb`, `Container` bọc khối `data-page-content`; test hình học `layout.spec.ts` tự phủ qua `getNavRoutes()`: **ĐẠT**. Ba trang mới chưa có nội dung markdown nên chưa dùng `.content-body`.
+  4. Dữ liệu sản phẩm `src/data/products.yaml` là khung placeholder theo schema Zod; bảng lãi suất luôn kèm `RATE_DISCLAIMER` (trong `RatesTables`); "Thời điểm áp dụng" lấy từ `effective_from`, null thì "Đang cập nhật": **ĐẠT**.
+  5. `tests/helpers.ts` không sửa; không làm yếu test nào: **ĐẠT**.
+  6. `npm test`: 137 passed, 70 skipped (trước đó 82 passed, 41 skipped); `lint`, `check`, `build`, `check:dist`, `check:contrast` pass.
+- **Số placeholder hiện tại:** 42 (thêm 2 trong `products.yaml`).
+- **Việc người dùng cần làm tiếp:** cung cấp nội dung thật cho sản phẩm, lãi suất, số liệu quy mô (G3).

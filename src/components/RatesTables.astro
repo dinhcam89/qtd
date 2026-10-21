@@ -1,0 +1,130 @@
+---
+import DataTable from './ui/DataTable.astro';
+import Notice from './ui/Notice.astro';
+import type { RatesData } from '../lib/schemas/rates';
+import { formatPercent, formatText } from '../lib/format';
+import { RATE_DISCLAIMER, DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+
+interface Props {
+  rates: RatesData;
+  /** Cấp heading của tiêu đề từng bảng (h3 trên trang chủ, h2 trên trang Lãi suất) */
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { rates, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel as any;
+---
+
+<div data-rates-tables class="space-y-8">
+  <!-- Bảng 1: Lãi suất tiền gửi (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
+  <div class="space-y-3">
+    <Heading class="text-xl font-semibold text-brand-primary">
+      Lãi suất tiền gửi
+    </Heading>
+    {rates.deposit_rates.length > 0 ? (
+      <DataTable class="shadow-xs md:table-fixed">
+        <thead>
+          <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
+            <th scope="col" class="py-3.5 px-4 text-left">
+              Kỳ hạn
+            </th>
+            <th scope="col" class="py-3.5 px-4 text-right md:w-48">
+              Lãi suất (%/năm)
+            </th>
+            <th scope="col" class="py-3.5 px-4 text-left md:w-40">
+              Ghi chú
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-default text-base">
+          {rates.deposit_rates.map((item) => (
+            <tr class="hover:bg-surface-muted/50 transition-colors">
+              <td
+                data-label="Kỳ hạn"
+                class="py-3.5 px-4 font-medium text-ink-base text-left"
+              >
+                {formatText(item.term)}
+              </td>
+              <td
+                data-label="Lãi suất (%/năm)"
+                class="py-3.5 px-4 font-bold text-brand-primary text-right"
+              >
+                {formatPercent(item.rate)}
+              </td>
+              <td
+                data-label="Ghi chú"
+                class="py-3.5 px-4 text-ink-muted text-left"
+              >
+                {formatText(item.note, '—')}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </DataTable>
+    ) : (
+      <p class="text-base text-ink-muted">{DEFAULT_FALLBACK_TEXT}</p>
+    )}
+  </div>
+
+  <!-- Bảng 2: Lãi suất cho vay (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
+  <div class="space-y-3">
+    <Heading class="text-xl font-semibold text-brand-primary">
+      Lãi suất cho vay
+    </Heading>
+    {rates.loan_rates.length > 0 ? (
+      <DataTable class="shadow-xs md:table-fixed">
+        <thead>
+          <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
+            <th scope="col" class="py-3.5 px-4 text-left">
+              Mục đích vay
+            </th>
+            <th scope="col" class="py-3.5 px-4 text-left md:w-36">
+              Kỳ hạn
+            </th>
+            <th scope="col" class="py-3.5 px-4 text-right md:w-48">
+              Lãi suất (%/năm)
+            </th>
+            <th scope="col" class="py-3.5 px-4 text-left md:w-40">
+              Ghi chú
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-default text-base">
+          {rates.loan_rates.map((item) => (
+            <tr class="hover:bg-surface-muted/50 transition-colors">
+              <td
+                data-label="Mục đích vay"
+                class="py-3.5 px-4 font-medium text-ink-base text-left"
+              >
+                {formatText(item.purpose)}
+              </td>
+              <td
+                data-label="Kỳ hạn"
+                class="py-3.5 px-4 text-ink-muted text-left"
+              >
+                {formatText(item.term, '—')}
+              </td>
+              <td
+                data-label="Lãi suất (%/năm)"
+                class="py-3.5 px-4 font-bold text-brand-primary text-right"
+              >
+                {formatPercent(item.rate)}
+              </td>
+              <td
+                data-label="Ghi chú"
+                class="py-3.5 px-4 text-ink-muted text-left"
+              >
+                {formatText(item.note, '—')}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </DataTable>
+    ) : (
+      <p class="text-base text-ink-muted">{DEFAULT_FALLBACK_TEXT}</p>
+    )}
+  </div>
+
+  <!-- Dòng lưu ý lãi suất bắt buộc, luôn nằm ngay cạnh các bảng -->
+  <Notice variant="warning">{RATE_DISCLAIMER}</Notice>
+</div>
