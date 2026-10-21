@@ -373,12 +373,14 @@ test.describe('Smoke tests', () => {
     if (isMobile) {
       // 1. Hai nút cùng chiều rộng toàn dòng
       expect(Math.abs(btn1Box!.width - btn2Box!.width)).toBeLessThanOrEqual(2);
-      expect(Math.abs(btn1Box!.width - containerBox!.width)).toBeLessThanOrEqual(
-        2
-      );
+      expect(
+        Math.abs(btn1Box!.width - containerBox!.width)
+      ).toBeLessThanOrEqual(2);
 
       // 2. Xếp dọc: nút 2 nằm dưới nút 1
-      expect(btn2Box!.y).toBeGreaterThanOrEqual(btn1Box!.y + btn1Box!.height - 1);
+      expect(btn2Box!.y).toBeGreaterThanOrEqual(
+        btn1Box!.y + btn1Box!.height - 1
+      );
     } else {
       // Từ sm trở lên giữ dạng hàng ngang
       expect(Math.abs(btn1Box!.y - btn2Box!.y)).toBeLessThanOrEqual(5);

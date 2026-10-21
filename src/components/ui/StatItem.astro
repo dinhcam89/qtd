@@ -24,7 +24,10 @@ let formattedAsOfDate: string | null = null;
 if (asOf && asOf !== DEFAULT_FALLBACK_TEXT && asOf !== 'Đang cập nhật') {
   if (typeof asOf === 'string' && asOf.startsWith('tính đến ')) {
     formattedAsOfDate = asOf.replace(/^tính đến\s+/i, '').trim();
-  } else if (asOf instanceof Date || (typeof asOf === 'string' && !isNaN(Date.parse(asOf)))) {
+  } else if (
+    asOf instanceof Date ||
+    (typeof asOf === 'string' && !isNaN(Date.parse(asOf)))
+  ) {
     const formatted = formatDate(asOf, '');
     if (formatted && formatted !== DEFAULT_FALLBACK_TEXT) {
       formattedAsOfDate = formatted;
@@ -64,7 +67,10 @@ if (asOf && asOf !== DEFAULT_FALLBACK_TEXT && asOf !== 'Đang cập nhật') {
       >
         {value}
         {unit && (
-          <span data-stat-unit class="text-base font-normal text-ink-muted ml-1">
+          <span
+            data-stat-unit
+            class="text-base font-normal text-ink-muted ml-1"
+          >
             {unit}
           </span>
         )}

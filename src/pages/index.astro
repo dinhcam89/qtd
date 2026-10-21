@@ -90,26 +90,42 @@ const siteDescription =
         >
           <StatItem
             label="Tổng thành viên"
-            value={site.stats.members_count != null ? formatNumber(site.stats.members_count) : null}
+            value={
+              site.stats.members_count != null
+                ? formatNumber(site.stats.members_count)
+                : null
+            }
             unit="thành viên"
             asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
 
           <StatItem
             label="Vốn điều lệ"
-            value={site.stats.charter_capital != null ? formatCurrency(site.stats.charter_capital) : null}
+            value={
+              site.stats.charter_capital != null
+                ? formatCurrency(site.stats.charter_capital)
+                : null
+            }
             asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
 
           <StatItem
             label="Tổng tài sản"
-            value={site.stats.total_assets != null ? formatCurrency(site.stats.total_assets) : null}
+            value={
+              site.stats.total_assets != null
+                ? formatCurrency(site.stats.total_assets)
+                : null
+            }
             asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
 
           <StatItem
             label="Dư nợ cho vay"
-            value={site.stats.total_loans != null ? formatCurrency(site.stats.total_loans) : null}
+            value={
+              site.stats.total_loans != null
+                ? formatCurrency(site.stats.total_loans)
+                : null
+            }
             asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
         </div>
@@ -118,7 +134,12 @@ const siteDescription =
   </Section>
 
   <!-- 3. Khối Lãi suất tóm tắt (#lai-suat) -->
-  <Section id="lai-suat" data-rates-section variant="default" class="scroll-mt-20">
+  <Section
+    id="lai-suat"
+    data-rates-section
+    variant="default"
+    class="scroll-mt-20"
+  >
     <Container>
       <div class="space-y-8">
         <div>
