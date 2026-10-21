@@ -254,9 +254,6 @@ test.describe('Smoke tests', () => {
           // Chỉ 1 dòng thì không có mồ côi
           return false;
         }
-        // Nếu có nhiều hơn 1 dòng, kiểm tra dòng cuối cùng
-        const lastWord = words[words.length - 1];
-        // Kiểm tra xem dòng cuối có phải chỉ chứa mỗi từ cuối cùng đứng cô độc không
         // Với text-balance / [text-wrap:pretty], các dòng được cân đối
         return false;
       });
