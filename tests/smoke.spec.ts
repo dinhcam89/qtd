@@ -389,4 +389,75 @@ test.describe('Smoke tests', () => {
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
+
+  test('kiểm tra chuẩn thiết kế và không tràn ngang trên trang chủ (yêu cầu 7a, 7b, 7c)', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    // 7a) Với mỗi giá trị thẻ quy mô đang là "Đang cập nhật":
+    // chiều cao hộp chữ <= 1,3 lần line-height (tức một dòng) và font-size <= 28px
+    const fallbacks = page.locator('[data-scale-section] [data-stat-fallback]');
+    const fallbackCount = await fallbacks.count();
+    expect(fallbackCount).toBeGreaterThan(0);
+
+    for (let i = 0; i < fallbackCount; i++) {
+      const fb = fallbacks.nth(i);
+      await expect(fb).toHaveText('Đang cập nhật');
+      const metrics = await fb.evaluate((node) => {
+        const style = window.getComputedStyle(node);
+        const fontSize = parseFloat(style.fontSize);
+        let lineHeight = parseFloat(style.lineHeight);
+        if (isNaN(lineHeight)) lineHeight = fontSize * 1.5;
+        const height = node.getBoundingClientRect().height;
+        return { fontSize, lineHeight, height };
+      });
+      expect(metrics.fontSize).toBeLessThanOrEqual(28);
+      expect(metrics.height).toBeLessThanOrEqual(metrics.lineHeight * 1.3);
+    }
+
+    // 7b) Toàn trang không có đoạn khớp /tính đến\s+đang cập nhật/i và không có "Đang cập nhật" đứng liền trước đơn vị như "thành viên"
+    const bodyText = await page.locator('body').innerText();
+    expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
+    expect(bodyText).not.toMatch(/đang cập nhật\s+thành viên/i);
+
+    // 7c) Ở viewport mobile (360px): không có phần tử nào trong khối quy mô và khối lãi suất có scrollWidth > clientWidth
+    const vp = page.viewportSize();
+    if (vp && vp.width <= 360) {
+      const overflowingElements = await page.evaluate(() => {
+        const sections = document.querySelectorAll(
+          '[data-scale-section], [data-rates-section]'
+        );
+        const overflows: string[] = [];
+        sections.forEach((section) => {
+          if (section.scrollWidth > section.clientWidth) {
+            overflows.push(
+              `${section.tagName}#${section.id || ''}: scrollWidth=${section.scrollWidth} > clientWidth=${section.clientWidth}`
+            );
+          }
+          const allDescendants = section.querySelectorAll('*');
+          allDescendants.forEach((node) => {
+            const el = node as HTMLElement;
+            const cs = window.getComputedStyle(el);
+            if (
+              cs.display !== 'none' &&
+              cs.display !== 'inline' &&
+              cs.visibility !== 'hidden' &&
+              el.scrollWidth > el.clientWidth
+            ) {
+              overflows.push(
+                `${el.tagName}.${el.className}: scrollWidth=${el.scrollWidth} > clientWidth=${el.clientWidth}`
+              );
+            }
+          });
+        });
+        return overflows;
+      });
+      expect(overflowingElements).toEqual([]);
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
 });

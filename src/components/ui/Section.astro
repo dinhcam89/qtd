@@ -11,6 +11,7 @@ const {
   class: className = '',
   variant = 'default',
   as = 'section',
+  ...rest
 } = Astro.props;
 
 const Tag = as as any;
@@ -29,6 +30,7 @@ const variantClasses = {
     variantClasses[variant] || variantClasses.default,
     className,
   ]}
+  {...rest}
 >
   <slot />
 </Tag>
