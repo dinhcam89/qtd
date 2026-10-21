@@ -3,7 +3,6 @@ import type { ContactData } from '../lib/schemas/contact';
 import type { ScheduleData } from '../lib/schemas/schedule';
 import type { SiteData } from '../lib/schemas/site';
 import { formatText } from '../lib/format';
-import { RATE_DISCLAIMER } from '../lib/constants';
 import Container from './ui/Container.astro';
 
 interface Props {
@@ -131,12 +130,11 @@ const currentYear = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Dòng bản quyền và lưu ý -->
-    <div class="border-t border-border-default mt-10 pt-6 text-center text-sm text-ink-muted space-y-2">
+    <!-- Dòng bản quyền -->
+    <div class="border-t border-border-default mt-10 pt-6 text-center text-sm text-ink-muted">
       <p id="footer-copyright">
         {`© ${currentYear} ${formatText(site.name)}. Tất cả các quyền được bảo lưu.`}
       </p>
-      <p class="not-italic text-sm text-ink-muted">{RATE_DISCLAIMER}</p>
     </div>
   </Container>
 </footer>

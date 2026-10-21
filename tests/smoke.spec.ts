@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { setupPageGuards } from './helpers';
+import { getNavRoutes } from '../src/lib/nav';
 
-const testPages = [
-  { path: '/', name: 'Trang chủ' },
-  { path: '/404', name: 'Trang 404' },
-];
+const testPages = getNavRoutes();
 
 test.describe('Smoke tests', () => {
   for (const pageInfo of testPages) {

@@ -18,6 +18,9 @@ const VIEWPORTS = [
 
 const PAGES = [
   { path: '/', slug: 'index' },
+  { path: '/gioi-thieu', slug: 'gioi-thieu' },
+  { path: '/lich-su', slug: 'lich-su' },
+  { path: '/ban-lanh-dao', slug: 'ban-lanh-dao' },
   { path: '/404', slug: '404' },
 ];
 

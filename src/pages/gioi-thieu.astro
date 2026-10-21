@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import Card from '../components/ui/Card.astro';
+import { getSite, getPageEntry } from '../lib/data';
+import { formatText, formatDate } from '../lib/format';
+import { render } from 'astro:content';
+
+const site = await getSite();
+const pageEntry = await getPageEntry('gioi-thieu');
+const suMenhEntry = await getPageEntry('su-menh');
+
+const { Content: GioiThieuContent } = await render(pageEntry);
+const { Content: SuMenhContent } = await render(suMenhEntry);
+
+const pageTitle = `Giới thiệu — Quỹ tín dụng nhân dân ${formatText(site.name)}`;
+const pageDescription = pageEntry.data.description;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <!-- Hero / Tiêu đề trang -->
+  <section class="border-b border-border-default bg-surface-muted py-8 md:py-12">
+    <Container>
+      <!-- Breadcrumb -->
+      <nav
+        aria-label="Đường dẫn điều hướng"
+        class="mb-4 text-sm text-ink-muted"
+      >
+        <ol class="flex items-center space-x-2">
+          <li>
+            <a
+              href="/"
+              class="hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+            >
+              Trang chủ
+            </a>
+          </li>
+          <li aria-hidden="true" class="text-border-strong">
+            /
+          </li>
+          <li class="font-medium text-ink-base" aria-current="page">
+            Giới thiệu
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-brand-primary">
+        Giới thiệu chung
+      </h1>
+      <p class="mt-3 text-base sm:text-lg text-ink-muted max-w-3xl">
+        {pageEntry.data.description}
+      </p>
+      <p class="mt-2 text-sm text-ink-subtle">
+        Cập nhật: {formatDate(pageEntry.data.updated)}
+      </p>
+    </Container>
+  </section>
+
+  <!-- Thông tin pháp lý & tôn chỉ hoạt động -->
+  <Section class="bg-surface-page">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Cột chính: Nội dung giới thiệu -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="prose max-w-none text-ink-base space-y-4">
+          <GioiThieuContent />
+        </div>
+
+        <!-- Khối điều hướng trang con liên quan -->
+        <div class="pt-8 border-t border-border-default">
+          <h2 class="text-xl font-bold text-brand-primary mb-4">
+            Tìm hiểu thêm về Quỹ
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Card
+              title="Lịch sử hình thành"
+              description="Xem chặng đường thành lập và các mốc phát triển quan trọng của Quỹ qua các thời kỳ."
+              href="/lich-su"
+            />
+            <Card
+              title="Ban lãnh đạo"
+              description="Cơ cấu Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ."
+              href="/ban-lanh-dao"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Cột phụ: Thông tin tóm tắt pháp lý -->
+      <div class="space-y-6">
+        <div class="p-6 rounded-lg bg-surface-muted border border-border-default shadow-xs space-y-4">
+          <h2 class="text-lg font-bold text-brand-primary">
+            Thông tin pháp lý
+          </h2>
+          <dl class="space-y-3 text-sm">
+            <div>
+              <dt class="font-medium text-ink-base">Tên tổ chức:</dt>
+              <dd class="text-ink-muted mt-0.5">{formatText(site.name)}</dd>
+            </div>
+            {site.short_name && (
+              <div>
+                <dt class="font-medium text-ink-base">Tên viết tắt:</dt>
+                <dd class="text-ink-muted mt-0.5">
+                  {formatText(site.short_name)}
+                </dd>
+              </div>
+            )}
+            <div>
+              <dt class="font-medium text-ink-base">Giấy phép hoạt động:</dt>
+              <dd class="text-ink-muted mt-0.5">
+                {formatText(site.license_number)}
+              </dd>
+            </div>
+            <div>
+              <dt class="font-medium text-ink-base">Địa bàn hoạt động:</dt>
+              <dd class="text-ink-muted mt-0.5">
+                {formatText(site.operating_area)}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Sứ mệnh và Tầm nhìn -->
+  <Section class="bg-surface-muted border-t border-border-default">
+    <div class="max-w-3xl">
+      <h2 class="text-2xl font-bold text-brand-primary mb-4">
+        Sứ mệnh & Tầm nhìn
+      </h2>
+      <div class="prose max-w-none text-ink-base space-y-4">
+        <SuMenhContent />
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

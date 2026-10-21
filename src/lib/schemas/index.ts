@@ -4,3 +4,4 @@ export * from './contact';
 export * from './schedule';
 export * from './leadership';
 export * from './news';
+export * from './pages';
