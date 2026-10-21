@@ -177,6 +177,31 @@ function checkDistHtmlFiles() {
     }
   }
 
+  // 6. Kiểm tra file _headers trong dist
+  const headersPath = path.join(distDir, '_headers');
+  if (!fs.existsSync(headersPath)) {
+    errors.push(`dist: Thiếu file '_headers' trong thư mục đầu ra.`);
+  } else {
+    const headersContent = fs.readFileSync(headersPath, 'utf-8');
+    const hasPagesDev =
+      headersContent.includes('pages.dev/*') &&
+      headersContent.includes('X-Robots-Tag: noindex');
+    const hasWorkersDev =
+      headersContent.includes('workers.dev/*') &&
+      headersContent.includes('X-Robots-Tag: noindex');
+
+    if (!hasPagesDev) {
+      errors.push(
+        `_headers: Thiếu rule chặn index (X-Robots-Tag: noindex) cho host pages.dev.`
+      );
+    }
+    if (!hasWorkersDev) {
+      errors.push(
+        `_headers: Thiếu rule chặn index (X-Robots-Tag: noindex) cho host workers.dev.`
+      );
+    }
+  }
+
   if (errors.length > 0) {
     console.error(`\n[THẤT BẠI] Phát hiện ${errors.length} lỗi trong dist:`);
     errors.forEach((err, idx) => console.error(`  ${idx + 1}. ${err}`));
