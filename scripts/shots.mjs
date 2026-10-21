@@ -12,6 +12,7 @@ if (!existsSync(SCREENSHOTS_DIR)) {
 const VIEWPORTS = [
   { name: '360px', width: 360, height: 640, isMobile: true },
   { name: '768px', width: 768, height: 1024, isMobile: true },
+  { name: '1024px', width: 1024, height: 768, isMobile: false },
   { name: '1280px', width: 1280, height: 800, isMobile: false },
   { name: '1920px', width: 1920, height: 1080, isMobile: false },
 ];
@@ -21,6 +22,9 @@ const PAGES = [
   { path: '/gioi-thieu', slug: 'gioi-thieu' },
   { path: '/lich-su', slug: 'lich-su' },
   { path: '/ban-lanh-dao', slug: 'ban-lanh-dao' },
+  { path: '/quy-mo', slug: 'quy-mo' },
+  { path: '/san-pham', slug: 'san-pham' },
+  { path: '/lai-suat', slug: 'lai-suat' },
   { path: '/404', slug: '404' },
 ];
 
@@ -101,7 +105,7 @@ async function run() {
       await context.close();
     }
     console.log(
-      `\n[THÀNH CÔNG] Đã lưu 8 ảnh chụp màn hình vào thư mục: ${SCREENSHOTS_DIR}`
+      `\n[THÀNH CÔNG] Đã lưu ${VIEWPORTS.length * PAGES.length} ảnh chụp màn hình vào thư mục: ${SCREENSHOTS_DIR}`
     );
   } finally {
     await browser.close();
