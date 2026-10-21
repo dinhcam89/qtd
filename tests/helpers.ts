@@ -63,15 +63,19 @@ export async function setupPageGuards(page: Page) {
   });
 
   await page.route('**/*', async (route) => {
-    const response = await route.fetch();
-    const originalHeaders = response.headers();
-    await route.fulfill({
-      response,
-      headers: {
-        ...originalHeaders,
-        ...securityHeaders,
-      },
-    });
+    try {
+      const response = await route.fetch();
+      const originalHeaders = response.headers();
+      await route.fulfill({
+        response,
+        headers: {
+          ...originalHeaders,
+          ...securityHeaders,
+        },
+      });
+    } catch {
+      // Bỏ qua lỗi khi request hoàn tất sau khi test context đã đóng
+    }
   });
 
   return { consoleErrors, cspViolations };
