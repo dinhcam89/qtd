@@ -94,9 +94,24 @@ test.describe('Smoke tests', () => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/404');
 
-    const homeLink = page.locator('a[href="/"]');
+    const homeLink = page.locator('main a[href="/"]');
     await expect(homeLink).toBeVisible();
     await expect(homeLink).toContainText('Quay về trang chủ');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('ở trang 404 bấm logo ở header thì điều hướng về trang chủ "/"', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/404');
+
+    const headerLogo = page.locator('#site-header a[data-header-brand]');
+    await expect(headerLogo).toBeVisible();
+    await headerLogo.click();
+    await expect(page).toHaveURL(/\/$/);
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
