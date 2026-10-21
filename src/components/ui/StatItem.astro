@@ -1,4 +1,6 @@
 ---
+import { DEFAULT_FALLBACK_TEXT } from '../../lib/constants';
+
 interface Props {
   label: string;
   value?: string | number | null;
@@ -9,27 +11,43 @@ interface Props {
 
 const { label, value, unit, asOf, class: className = '' } = Astro.props;
 
-const isNullValue = value === null || value === undefined || value === '';
+const isNullValue =
+  value === null ||
+  value === undefined ||
+  value === '' ||
+  value === DEFAULT_FALLBACK_TEXT ||
+  value === 'Đang cập nhật';
 ---
 
 <div
+  data-stat-card
   class:list={[
     'flex flex-col justify-between h-full p-5 sm:p-6 rounded-lg bg-surface-page border border-border-default shadow-xs',
     className,
   ]}
 >
   <div>
-    <div class="text-base font-medium text-ink-muted mb-2">{label}</div>
+    <div data-stat-label class="text-base font-medium text-ink-muted mb-2">
+      {label}
+    </div>
 
     {isNullValue ? (
-      <div class="text-lg font-semibold text-ink-muted whitespace-nowrap py-2">
+      <div
+        data-stat-fallback
+        class="text-lg font-medium text-ink-muted whitespace-nowrap leading-snug"
+      >
         Đang cập nhật
       </div>
     ) : (
-      <div class="text-stat font-bold text-brand-primary tracking-tight leading-none">
+      <div
+        data-stat-value
+        class="text-stat font-bold text-brand-primary tracking-tight leading-none"
+      >
         {value}
         {unit && (
-          <span class="text-base font-normal text-ink-muted ml-1">{unit}</span>
+          <span data-stat-unit class="text-base font-normal text-ink-muted ml-1">
+            {unit}
+          </span>
         )}
       </div>
     )}

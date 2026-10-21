@@ -132,4 +132,59 @@ test.describe('Smoke tests', () => {
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
+
+  test('thẻ StatItem khi giá trị null hiển thị "Đang cập nhật" text-lg ink-muted một dòng không kèm đơn vị và các thẻ cao bằng nhau', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const cards = page.locator('[data-stat-card]');
+    const count = await cards.count();
+    expect(count).toBeGreaterThan(0);
+
+    const fallbacks = page.locator('[data-stat-fallback]');
+    const fallbackCount = await fallbacks.count();
+    expect(fallbackCount).toBe(count); // tất cả thẻ quy mô hiện tại đều null
+
+    for (let i = 0; i < fallbackCount; i++) {
+      const fb = fallbacks.nth(i);
+      await expect(fb).toHaveText('Đang cập nhật');
+
+      const style = await fb.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        const fontSize = parseFloat(cs.fontSize);
+        let lineHeight = parseFloat(cs.lineHeight);
+        if (isNaN(lineHeight)) lineHeight = fontSize * 1.5;
+        const height = el.getBoundingClientRect().height;
+        return {
+          fontSize,
+          lineHeight,
+          height,
+          color: cs.color,
+          whiteSpace: cs.whiteSpace,
+        };
+      });
+
+      expect(style.fontSize).toBeLessThanOrEqual(28); // text-lg (< 28px)
+      expect(style.height).toBeLessThanOrEqual(style.lineHeight * 1.3); // 1 dòng
+      expect(style.whiteSpace).toBe('nowrap');
+    }
+
+    // Không có đơn vị hiển thị
+    const units = page.locator('[data-stat-unit]');
+    expect(await units.count()).toBe(0);
+
+    // Kiểm tra các thẻ có cùng chiều cao (nếu trên cùng hàng)
+    const cardHeights = await cards.evaluateAll((list) =>
+      list.map((el) => Math.round(el.getBoundingClientRect().height))
+    );
+    const firstHeight = cardHeights[0];
+    for (const h of cardHeights) {
+      expect(Math.abs(h - firstHeight)).toBeLessThanOrEqual(2);
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
 });
