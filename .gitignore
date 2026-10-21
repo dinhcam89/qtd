@@ -20,6 +20,7 @@ yarn-error.log*
 test-results/
 playwright-report/
 screenshots/
+reports/
 
 # OS
 .DS_Store
