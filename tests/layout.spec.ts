@@ -253,6 +253,10 @@ test.describe('Kiểm tra hình học và căn chỉnh layout', () => {
           const nav = document.querySelector('[data-desktop-nav]');
           const links = Array.from(nav?.querySelectorAll('a') ?? []);
           return {
+            brandLineCount:
+              document
+                .querySelector('[data-header-brand]')
+                ?.getClientRects().length ?? 0,
             brand: rect(document.querySelector('[data-header-brand]')),
             nav: rect(nav),
             navDisplay: nav ? getComputedStyle(nav).display : null,
@@ -286,8 +290,18 @@ test.describe('Kiểm tra hình học và căn chỉnh layout', () => {
           expect(l.lineCount, `mục "${l.text}" bị ngắt dòng ${ctx}`).toBe(1);
         }
 
+        // Brand không bị ép xuống dòng vì menu quá tải
+        expect(
+          m.brandLineCount,
+          `brand bị ngắt dòng do menu quá tải ${ctx}`
+        ).toBe(1);
+
         // Không đè lên brand
         expect(m.brand).not.toBeNull();
+        expect(
+          m.nav!.left - m.brand!.right,
+          `khoảng cách brand-menu quá hẹp ${ctx}`
+        ).toBeGreaterThanOrEqual(16);
         expect(
           m.brand!.right,
           `brand (${m.brand!.right}) chạm/đè menu (${m.nav!.left}) ${ctx}`
