@@ -70,8 +70,11 @@ const siteDescription =
           </p>
         </div>
 
-        <!-- Lưới 4 cột trên Desktop, 2 cột trên Mobile (các thẻ cao bằng nhau) -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
+        <!-- Lưới thẻ quy mô: 1 cột dưới 480px, 2 cột từ 480px đến dưới lg, 4 cột từ lg -->
+        <div
+          data-scale-grid
+          class="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch"
+        >
           <StatItem
             label="Tổng thành viên"
             value={site.stats.members_count != null ? formatNumber(site.stats.members_count) : null}

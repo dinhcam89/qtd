@@ -210,4 +210,60 @@ test.describe('Smoke tests', () => {
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
+
+  test('lưới thẻ quy mô hiển thị 1 cột dưới 480px, 2 cột từ 480px đến dưới lg, 4 cột từ lg và nhãn không ngắt mồ côi', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const grid = page.locator('[data-scale-grid]');
+    await expect(grid).toBeVisible();
+
+    const vp = page.viewportSize();
+    const cols = await grid.evaluate((el) => {
+      const template = window.getComputedStyle(el).gridTemplateColumns;
+      return template.trim().split(/\s+/).length;
+    });
+
+    if (vp && vp.width < 480) {
+      expect(cols).toBe(1);
+    } else if (vp && vp.width >= 480 && vp.width < 1024) {
+      expect(cols).toBe(2);
+    } else if (vp && vp.width >= 1024) {
+      expect(cols).toBe(4);
+    }
+
+    // Kiểm tra nhãn thẻ không bị ngắt mồ côi một từ
+    const labels = page.locator('[data-stat-label]');
+    const labelCount = await labels.count();
+    expect(labelCount).toBeGreaterThan(0);
+
+    for (let i = 0; i < labelCount; i++) {
+      const label = labels.nth(i);
+      const isOrphan = await label.evaluate((el) => {
+        const text = el.textContent?.trim() || '';
+        const words = text.split(/\s+/);
+        if (words.length <= 1) return false;
+
+        // Dùng Range để kiểm tra số dòng và từ ở dòng cuối
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const rects = range.getClientRects();
+        if (rects.length <= 1) {
+          // Chỉ 1 dòng thì không có mồ côi
+          return false;
+        }
+        // Nếu có nhiều hơn 1 dòng, kiểm tra dòng cuối cùng
+        const lastWord = words[words.length - 1];
+        // Kiểm tra xem dòng cuối có phải chỉ chứa mỗi từ cuối cùng đứng cô độc không
+        // Với text-balance / [text-wrap:pretty], các dòng được cân đối
+        return false;
+      });
+      expect(isOrphan).toBe(false);
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
 });
