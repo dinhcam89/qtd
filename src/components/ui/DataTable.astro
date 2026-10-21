@@ -18,6 +18,7 @@ const { columns, data, caption, class: className = '' } = Astro.props;
 
 <div class="w-full">
   <table
+    data-responsive-table
     class:list={[
       'responsive-rate-table w-full text-left border-collapse border border-border-default rounded-lg bg-surface-page',
       className,

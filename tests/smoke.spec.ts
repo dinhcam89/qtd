@@ -266,4 +266,84 @@ test.describe('Smoke tests', () => {
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
+
+  test('DataTable trên mobile dưới md xếp nhãn trên giá trị dưới, mỗi dòng thành thẻ, thead ẩn giữ ngữ nghĩa, không viền kép, chữ >= 16px, desktop giữ nguyên', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const table = page.locator('[data-responsive-table]').first();
+    await expect(table).toBeVisible();
+
+    const vp = page.viewportSize();
+    const isMobile = vp && vp.width < 768;
+
+    if (isMobile) {
+      // 1. thead vẫn nằm trong DOM (giữ ngữ nghĩa) nhưng bị ẩn trực quan
+      const thead = table.locator('thead');
+      await expect(thead).toBeAttached();
+      const theadRect = await thead.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        return {
+          position: cs.position,
+          width: parseFloat(cs.width),
+          height: parseFloat(cs.height),
+        };
+      });
+      expect(theadRect.position).toBe('absolute');
+      expect(theadRect.width).toBeLessThanOrEqual(1);
+
+      // 2. Không viền kép ở đáy thẻ: border của table là none / 0px
+      const tableBorder = await table.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        return cs.borderBottomWidth;
+      });
+      expect(tableBorder).toBe('0px');
+
+      // 3. Mỗi tr là 1 thẻ
+      const firstRow = table.locator('tbody tr').first();
+      const trDisplay = await firstRow.evaluate(
+        (el) => window.getComputedStyle(el).display
+      );
+      expect(trDisplay).toBe('block');
+
+      // 4. Mỗi ô td xếp nhãn ở trên, giá trị ở dưới, toàn chiều rộng
+      const firstCell = firstRow.locator('td').first();
+      const tdStyles = await firstCell.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        const pseudoCs = window.getComputedStyle(el, '::before');
+        return {
+          flexDirection: cs.flexDirection,
+          alignItems: cs.alignItems,
+          tdFontSize: parseFloat(cs.fontSize),
+          labelFontSize: parseFloat(pseudoCs.fontSize),
+          borderBottomWidth: cs.borderBottomWidth,
+        };
+      });
+      expect(tdStyles.flexDirection).toBe('column');
+      expect(tdStyles.alignItems).toBe('flex-start');
+      expect(tdStyles.tdFontSize).toBeGreaterThanOrEqual(16);
+      expect(tdStyles.labelFontSize).toBeGreaterThanOrEqual(16);
+      expect(tdStyles.borderBottomWidth).toBe('1px'); // đường kẻ giữa các ô
+
+      // Ô cuối cùng không có border-bottom (tránh viền kép với đáy thẻ tr)
+      const lastCell = firstRow.locator('td').last();
+      const lastCellBorder = await lastCell.evaluate(
+        (el) => window.getComputedStyle(el).borderBottomWidth
+      );
+      expect(lastCellBorder).toBe('0px');
+    } else {
+      // Desktop giữ nguyên
+      const thead = table.locator('thead');
+      await expect(thead).toBeVisible();
+      const display = await table.evaluate(
+        (el) => window.getComputedStyle(el).display
+      );
+      expect(display).toBe('table');
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
 });
