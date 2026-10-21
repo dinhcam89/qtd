@@ -6,6 +6,7 @@ import { contactSchema } from './lib/schemas/contact';
 import { scheduleSchema } from './lib/schemas/schedule';
 import { leadershipSchema } from './lib/schemas/leadership';
 import { newsSchema } from './lib/schemas/news';
+import { pageSchema } from './lib/schemas/pages';
 
 export const collections = {
   site: defineCollection({
@@ -31,5 +32,9 @@ export const collections = {
   news: defineCollection({
     loader: glob({ pattern: '**/*.{md,mdx}', base: 'src/content/news' }),
     schema: newsSchema,
+  }),
+  pages: defineCollection({
+    loader: glob({ pattern: '**/*.{md,mdx}', base: 'src/content/pages' }),
+    schema: pageSchema,
   }),
 };

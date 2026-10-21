@@ -65,3 +65,14 @@ export async function getLeadership(): Promise<LeadershipData> {
   }
   return entry.data;
 }
+
+/**
+ * Lấy nội dung văn bản từ collection pages theo slug (gioi-thieu, lich-su, su-menh).
+ */
+export async function getPageEntry(slug: 'gioi-thieu' | 'lich-su' | 'su-menh') {
+  const entry = await getEntry('pages', slug);
+  if (!entry) {
+    throw new Error(`Không tìm thấy trang '${slug}' trong collection pages`);
+  }
+  return entry;
+}

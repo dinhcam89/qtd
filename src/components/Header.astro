@@ -26,13 +26,13 @@ const { siteName = '' } = Astro.props;
 
       <!-- Menu ngang trên Desktop (lg+) -->
       <nav
-        class="hidden lg:flex items-center space-x-1"
+        class="hidden lg:flex items-center space-x-0.5 xl:space-x-1"
         aria-label="Điều hướng chính"
       >
         {NAV_ITEMS.map((item) => (
           <a
             href={item.href}
-            class="px-4 py-2 min-h-[44px] inline-flex items-center text-base font-medium text-ink-base hover:text-brand-primary hover:bg-surface-muted rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+            class="px-2.5 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center text-sm xl:text-base font-medium text-ink-base hover:text-brand-primary hover:bg-surface-muted rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
           >
             {item.label}
           </a>
