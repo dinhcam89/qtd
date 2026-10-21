@@ -94,7 +94,7 @@ test.describe('Smoke tests', () => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/404');
 
-    const homeLink = page.locator('main a[href="/"]');
+    const homeLink = page.locator('a[href="/"]');
     await expect(homeLink).toBeVisible();
     await expect(homeLink).toContainText('Quay về trang chủ');
 
