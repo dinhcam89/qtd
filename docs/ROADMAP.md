@@ -14,7 +14,9 @@
 | 4     | Playwright, axe, `_headers`, `check-dist`                                   | Xong       |
 | 5     | CI GitHub Actions                                                           | Xong       |
 | 6     | Design system                                                               | Xong       |
-| 7–11  | Các trang nội dung                                                          | Chưa làm   |
+| 7     | Giới thiệu và Ban lãnh đạo                                                  | Xong       |
+| 8     | Quy mô, Sản phẩm, Lãi suất                                                  | Xong       |
+| 9–11  | Các trang nội dung (Quy chế, Tin tức, Liên hệ)                              | Chưa làm   |
 | 12–13 | CMS (có điều kiện)                                                          | Chưa làm   |
 | 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm   |
 | 16    | QA tổng, UAT                                                                | Chưa làm   |
