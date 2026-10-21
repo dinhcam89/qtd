@@ -44,3 +44,4 @@ description: Làm task tiếp theo trong docs/ROADMAP.md, kiểm thử hồi quy
 - Không đọc node_modules trừ khi bắt buộc. Khám phá tối đa 15 lệnh.
 - Không push, không merge, không đụng secret.
 - Tình huống thuộc "Dừng và hỏi" ở ROADMAP.md mục 1: dừng và hỏi, không tự quyết.
+- Báo cáo chỉ được ghi 'hoàn thành' khi đã chạy npm run verify (log đầy đủ ở reports/verify-latest.log) và đã chạy /qa và /review. Thiếu một trong ba thì dòng đầu báo cáo phải là 'CHƯA HOÀN THÀNH: thiếu ...' và làm nốt ngay trong cùng phiên.
