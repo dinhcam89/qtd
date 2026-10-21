@@ -59,23 +59,41 @@ function getContrastRatio(foregroundHex, backgroundHex) {
   return (brightest + 0.05) / (darkest + 0.05);
 }
 
-// Bảng màu thực tế sử dụng trong hệ thống
-/** @type {Record<string, string>} */
-const PALETTE = {
-  'surface-page': '#FFFFFF',
-  'surface-muted': '#F8FAFC',
-  'surface-brand-subtle': '#EFF6FF',
-  'brand-primary': '#0F3666',
-  'brand-dark': '#081C36',
-  'ink-base': '#1F2937',
-  'ink-muted': '#4B5563',
-  'ink-subtle': '#596579',
-  'ink-inverse': '#FFFFFF',
-  'status-info-bg': '#EFF6FF',
-  'status-info-text': '#1E40AF',
-  'status-warn-bg': '#FFFBEB',
-  'status-warn-text': '#92400E',
-};
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const GLOBAL_CSS_PATH = resolve(__dirname, '../src/styles/global.css');
+
+/**
+ * Đọc và parse các biến --color-* từ khối @theme trong src/styles/global.css
+ * @param {string} cssPath
+ * @returns {Record<string, string>}
+ */
+function loadPaletteFromCss(cssPath) {
+  const css = readFileSync(cssPath, 'utf-8');
+  /** @type {Record<string, string>} */
+  const palette = {};
+
+  // Trích xuất khối @theme { ... }
+  const themeMatch = css.match(/@theme\s*\{([\s\S]*?)\}/);
+  const searchArea = themeMatch ? themeMatch[1] : css;
+
+  const colorRegex = /--color-([a-zA-Z0-9_-]+)\s*:\s*(#[0-9a-fA-F]{3,8})/g;
+  let match;
+  while ((match = colorRegex.exec(searchArea)) !== null) {
+    const [, tokenName, hexValue] = match;
+    palette[tokenName] = hexValue.toUpperCase();
+    palette[`--color-${tokenName}`] = hexValue.toUpperCase();
+  }
+
+  return palette;
+}
+
+// Bảng màu đọc trực tiếp từ khối @theme của src/styles/global.css
+const PALETTE = loadPaletteFromCss(GLOBAL_CSS_PATH);
 
 /**
  * @typedef {Object} ColorPair
