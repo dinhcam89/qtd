@@ -12,7 +12,7 @@
 | 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4                |
 | 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass                |
 | 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; Cổng G1 đã hoàn thành         |
-| 6    | Design system                                          | Xong            | 2026-10-21      | `task-6`  | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt |
+| 6    | Design system                                          | Xong            | 2026-10-21      | `6ed277a` | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt |
 | 7    | Trang Giới thiệu và Ban lãnh đạo                       | Chưa làm        | —               | —         | Task tiếp theo                                                                     |
 | 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         |                                                                                    |
 | 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                    |
