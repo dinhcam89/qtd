@@ -254,9 +254,8 @@ test.describe('Kiểm tra hình học và căn chỉnh layout', () => {
           const links = Array.from(nav?.querySelectorAll('a') ?? []);
           return {
             brandLineCount:
-              document
-                .querySelector('[data-header-brand]')
-                ?.getClientRects().length ?? 0,
+              document.querySelector('[data-header-brand]')?.getClientRects()
+                .length ?? 0,
             brand: rect(document.querySelector('[data-header-brand]')),
             nav: rect(nav),
             navDisplay: nav ? getComputedStyle(nav).display : null,

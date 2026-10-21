@@ -75,14 +75,37 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     expect(cspViolations).toEqual([]);
   });
 
-  test('trang Giới thiệu có thẻ liên kết tới các trang con (Lịch sử, Ban lãnh đạo, Quy mô)', async ({
+  test('trang Giới thiệu có thẻ liên kết tới các trang con (Lịch sử, Ban lãnh đạo, Quy mô, Quy chế)', async ({
     page,
   }) => {
     await page.goto('/gioi-thieu');
-    for (const href of ['/lich-su', '/ban-lanh-dao', '/quy-mo']) {
+    for (const href of ['/lich-su', '/ban-lanh-dao', '/quy-mo', '/quy-che']) {
       await expect(
         page.locator(`main a[href="${href}"]`).first()
       ).toBeVisible();
     }
+  });
+
+  test('/quy-che: có đúng 1 h1, trạng thái rỗng hiển thị "Đang cập nhật", không có liên kết tới file không tồn tại', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/quy-che');
+
+    // 1. Có đúng 1 h1 với tiêu đề chuẩn
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Quy chế và văn bản');
+
+    // 2. Trạng thái rỗng hiển thị "Đang cập nhật"
+    const emptyBox = page.locator('[data-documents-empty]');
+    await expect(emptyBox).toBeVisible();
+    await expect(emptyBox).toHaveText('Đang cập nhật');
+
+    // 3. Không có liên kết nào tới file không tồn tại hoặc file giả
+    const docLinks = page.locator('main a[href^="/docs/"]');
+    await expect(docLinks).toHaveCount(0);
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
   });
 });

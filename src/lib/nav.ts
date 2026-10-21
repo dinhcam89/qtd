@@ -22,6 +22,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Lịch sử hình thành', href: '/lich-su', primary: false },
   { label: 'Ban lãnh đạo', href: '/ban-lanh-dao', primary: false },
   { label: 'Quy mô', href: '/quy-mo', primary: false },
+  { label: 'Quy chế và văn bản', href: '/quy-che', primary: false },
   { label: 'Sản phẩm', href: '/san-pham', primary: true },
   { label: 'Lãi suất', href: '/lai-suat', primary: true },
   { label: 'Liên hệ', href: '/#lien-he', primary: true },

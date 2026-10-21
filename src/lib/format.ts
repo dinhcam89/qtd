@@ -63,6 +63,30 @@ export function formatNumber(
 }
 
 /**
+ * Định dạng dung lượng file theo vi-VN: dưới 1 MB hiển thị KB (số nguyên), từ 1 MB hiển thị MB (tối đa 1 chữ số thập phân, dấu phẩy).
+ * Quy ước 1 KB = 1024 byte. Trả về "Đang cập nhật" khi null/undefined/âm.
+ */
+export function formatFileSize(
+  bytes: number | null | undefined,
+  fallback = DEFAULT_FALLBACK_TEXT
+): string {
+  if (bytes === null || bytes === undefined || !(bytes >= 0)) {
+    return fallback;
+  }
+  const KB = 1024;
+  const MB = KB * 1024;
+  if (bytes < MB) {
+    const kb = Math.max(1, Math.round(bytes / KB));
+    return `${new Intl.NumberFormat(LOCALE_VI).format(kb)} KB`;
+  }
+  const mb = new Intl.NumberFormat(LOCALE_VI, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(bytes / MB);
+  return `${mb} MB`;
+}
+
+/**
  * Định dạng tiền tệ VNĐ theo chuẩn Mục 5.7 AGENTS.md (ví dụ: 1.000.000 đồng).
  * Trả về "Đang cập nhật" khi null/undefined.
  */
