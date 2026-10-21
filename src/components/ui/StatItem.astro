@@ -1,0 +1,89 @@
+---
+import { DEFAULT_FALLBACK_TEXT } from '../../lib/constants';
+import { formatDate } from '../../lib/format';
+
+interface Props {
+  label: string;
+  value?: string | number | null;
+  unit?: string;
+  asOf?: Date | string | null;
+  class?: string;
+}
+
+const { label, value, unit, asOf, class: className = '' } = Astro.props;
+
+const isNullValue =
+  value === null ||
+  value === undefined ||
+  value === '' ||
+  value === DEFAULT_FALLBACK_TEXT ||
+  value === 'Đang cập nhật';
+
+// Dòng "Tính đến ..." chỉ hiển thị khi as_of có giá trị hợp lệ (khác null / "Đang cập nhật")
+let formattedAsOfDate: string | null = null;
+if (asOf && asOf !== DEFAULT_FALLBACK_TEXT && asOf !== 'Đang cập nhật') {
+  if (typeof asOf === 'string' && asOf.startsWith('tính đến ')) {
+    formattedAsOfDate = asOf.replace(/^tính đến\s+/i, '').trim();
+  } else if (
+    asOf instanceof Date ||
+    (typeof asOf === 'string' && !isNaN(Date.parse(asOf)))
+  ) {
+    const formatted = formatDate(asOf, '');
+    if (formatted && formatted !== DEFAULT_FALLBACK_TEXT) {
+      formattedAsOfDate = formatted;
+    }
+  } else if (typeof asOf === 'string' && asOf.trim() !== '') {
+    formattedAsOfDate = asOf.trim();
+  }
+}
+---
+
+<div
+  data-stat-card
+  class:list={[
+    'flex flex-col justify-between h-full p-5 sm:p-6 rounded-lg bg-surface-page border border-border-default shadow-xs',
+    className,
+  ]}
+>
+  <div>
+    <div
+      data-stat-label
+      class="text-base font-medium text-ink-muted mb-2 text-balance [text-wrap:pretty]"
+    >
+      {label}
+    </div>
+
+    {isNullValue ? (
+      <div
+        data-stat-fallback
+        class="text-lg font-medium text-ink-muted whitespace-nowrap leading-snug"
+      >
+        Đang cập nhật
+      </div>
+    ) : (
+      <div
+        data-stat-value
+        class="text-stat font-bold text-brand-primary tracking-tight leading-none"
+      >
+        {value}
+        {unit && (
+          <span
+            data-stat-unit
+            class="text-base font-normal text-ink-muted ml-1"
+          >
+            {unit}
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+
+  {formattedAsOfDate && (
+    <div
+      data-stat-asof
+      class="text-sm text-ink-muted mt-4 pt-3 border-t border-border-default"
+    >
+      Tính đến {formattedAsOfDate}
+    </div>
+  )}
+</div>

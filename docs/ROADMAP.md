@@ -2,24 +2,24 @@
 
 > Cách dùng: khi nhận một task, agent đọc `AGENTS.md`, mục **1. Giao thức chung** và **đúng mục của task đó** trong file này. Không cần đọc toàn bộ file (tiết kiệm token).
 > Nguyên tắc: mọi tiêu chí hoàn thành đều **kiểm tra bằng lệnh**. Agent phải dán kết quả thật của lệnh vào báo cáo, không tóm tắt bằng lời.
-> **Ghi chú hạ tầng:** Hạ tầng thực tế là Cloudflare Workers (static assets) trên domain `*.workers.dev`, không phải Pages.
+> **Ghi chú hạ tầng:** Hạ tầng thực tế là Cloudflare Workers Builds (static assets) trên domain `*.workers.dev`. Production dùng `npx wrangler deploy`, nhánh khác dùng `npx wrangler preview`, cấu hình ở `wrangler.jsonc` (có khối `previews`).
 
 ## 0. Trạng thái
 
-| Task  | Nội dung                                                                    | Trạng thái                                             |
-| ----- | --------------------------------------------------------------------------- | ------------------------------------------------------ |
-| 1     | Scaffold Astro + Tailwind v4                                                | Xong                                                   |
-| 2     | Schema Zod, dữ liệu placeholder, `format.ts`, `check-placeholders --strict` | Xong                                                   |
-| 3     | Collection `news`, Header/Footer, trang chủ, 404                            | Plan đã duyệt (8 chỉnh sửa), cần xác nhận đã chạy xong |
-| 4     | Playwright, axe, `_headers`, `check-dist`                                   | Chưa làm                                               |
-| 5     | CI GitHub Actions                                                           | Chưa làm                                               |
-| 6     | Design system                                                               | Chưa làm                                               |
-| 7–11  | Các trang nội dung                                                          | Chưa làm                                               |
-| 12–13 | CMS (có điều kiện)                                                          | Chưa làm                                               |
-| 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm                                               |
-| 16    | QA tổng, UAT                                                                | Chưa làm                                               |
-| 17    | Go-live                                                                     | Chưa làm                                               |
-| 18    | Runbook                                                                     | Chưa làm                                               |
+| Task  | Nội dung                                                                    | Trạng thái |
+| ----- | --------------------------------------------------------------------------- | ---------- |
+| 1     | Scaffold Astro + Tailwind v4                                                | Xong       |
+| 2     | Schema Zod, dữ liệu placeholder, `format.ts`, `check-placeholders --strict` | Xong       |
+| 3     | Collection `news`, Header/Footer, trang chủ, 404                            | Xong       |
+| 4     | Playwright, axe, `_headers`, `check-dist`                                   | Xong       |
+| 5     | CI GitHub Actions                                                           | Xong       |
+| 6     | Design system                                                               | Xong       |
+| 7–11  | Các trang nội dung                                                          | Chưa làm   |
+| 12–13 | CMS (có điều kiện)                                                          | Chưa làm   |
+| 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm   |
+| 16    | QA tổng, UAT                                                                | Chưa làm   |
+| 17    | Go-live                                                                     | Chưa làm   |
+| 18    | Runbook                                                                     | Chưa làm   |
 
 **Điều kiện trước khi bắt đầu Task 4 (người dùng xác nhận):**
 
@@ -50,14 +50,14 @@
 
 ## 2. Cổng duyệt của con người (không tự động hóa được)
 
-| Cổng | Sau task | Người dùng phải làm                                                                                              |
-| ---- | -------- | ---------------------------------------------------------------------------------------------------------------- |
-| G1   | 5        | Tạo repo GitHub, branch protection, kết nối Cloudflare Workers (static assets), kiểm tra header trên bản preview |
-| G2   | 6        | Xem giao diện thực trên điện thoại và máy tính, duyệt phong cách                                                 |
-| G3   | 11       | Điền nội dung thật, người của quỹ duyệt từng trang                                                               |
-| G4   | 13       | Thiết lập OAuth, Cloudflare Access (nếu làm CMS)                                                                 |
-| G5   | 16       | Duyệt bảo mật tài khoản và kết quả QA, người của quỹ ký xác nhận                                                 |
-| G6   | 17       | Mua và cấu hình domain, go-live, kiểm tra sau go-live                                                            |
+| Cổng | Sau task | Người dùng phải làm                                                                                                               |
+| ---- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| G1   | 5        | Tạo repo GitHub, branch protection, kết nối Cloudflare Workers Builds (static assets), kiểm tra header trên bản preview (Đã xong) |
+| G2   | 6        | Xem giao diện thực trên điện thoại và máy tính, duyệt phong cách                                                                  |
+| G3   | 11       | Điền nội dung thật, người của quỹ duyệt từng trang                                                                                |
+| G4   | 13       | Thiết lập OAuth, Cloudflare Access (nếu làm CMS)                                                                                  |
+| G5   | 16       | Duyệt bảo mật tài khoản và kết quả QA, người của quỹ ký xác nhận                                                                  |
+| G6   | 17       | Mua và cấu hình domain, go-live, kiểm tra sau go-live                                                                             |
 
 ## 3. Gói đã duyệt trước
 
@@ -142,11 +142,11 @@ Agent chỉ cài những gói này, và chỉ ở task tương ứng. Nếu gói
 - File YAML hợp lệ, các lệnh trong CI khớp với `package.json`
 - Không có token hay secret nào trong file
 
-**Người dùng làm tay (cổng G1):**
+**Người dùng làm tay (cổng G1 — Đã xong):**
 
 1. Tạo repo GitHub đứng tên pháp nhân/tổ chức của quỹ, bật 2FA. Đổi `origin` rồi push. Mở PR đầu tiên để CI chạy thử.
 2. Branch protection cho `main`: bắt buộc PR, bắt buộc check CI pass, cấm force push.
-3. Cloudflare Workers (static assets) [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm]: kết nối repo, build `npm run build`, output `dist`, biến môi trường `NODE_VERSION=22` và `SITE_URL`. Hạ tầng thực tế chạy trên domain `*.workers.dev`, không phải Pages.
+3. Cloudflare Workers Builds (static assets): kết nối repo, cấu hình `wrangler.jsonc` (có khối `previews`), production dùng `npx wrangler deploy`, nhánh khác dùng `npx wrangler preview`, build `npm run build`, output `dist`, biến môi trường `NODE_VERSION=22` và `SITE_URL`. Hạ tầng thực tế chạy trên domain `*.workers.dev`, không phải Pages.
 4. Kiểm tra bản preview: `curl -I <url preview>` phải thấy CSP, nosniff và `X-Robots-Tag: noindex` trên `*.workers.dev` (và `*.pages.dev` nếu có).
 5. Gắn tag `v0.1`.
 
@@ -246,10 +246,10 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 1. `@lhci/cli` với `staticDistDir`, ngưỡng mobile: Performance ≥ 90, Accessibility ≥ 90, Best Practices ≥ 95, SEO ≥ 95. Thêm vào CI.
 2. `.github/dependabot.yml`: cập nhật `npm` và `github-actions` hàng tuần.
 3. Bước `npm audit --omit=dev --audit-level=high` trong CI.
-4. `scripts/build-cf.mjs` (lệnh build cho Cloudflare): kiểm tra nhánh production [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm] (trước đây dự kiến dùng biến `CF_PAGES_BRANCH === 'production'`) thì chạy `check-placeholders --strict` trước khi build, ngược lại chỉ build. Với nhánh khác `production`, vẫn cho phép placeholder.
+4. `scripts/build-cf.mjs` (lệnh build cho Cloudflare Workers Builds): kiểm tra nhánh production thì chạy `check-placeholders --strict` trước khi build, ngược lại chỉ build. Với nhánh khác `production` (dùng `npx wrangler preview`), vẫn cho phép placeholder.
 5. Cập nhật `AGENTS.md` mục 4 với các lệnh mới.
 
-**Tiêu chí hoàn thành:** `lhci` đạt ngưỡng, CI xanh, chạy thử lệnh build nhánh production [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm] khi còn placeholder phải **fail**.
+**Tiêu chí hoàn thành:** `lhci` đạt ngưỡng, CI xanh, chạy thử lệnh build nhánh production khi còn placeholder phải **fail**.
 
 ---
 
@@ -276,12 +276,12 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 
 ## Task 17 — Go-live (chủ yếu người dùng làm)
 
-1. Domain .vn đứng tên pháp nhân của quỹ. Đưa DNS về Cloudflare (theo hướng dẫn Cloudflare Workers / Custom Domains) [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm].
-2. Tạo nhánh `production` từ `main`, cấu hình Production branch trong Cloudflare [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm]. `main` trở thành nhánh preview/staging.
-3. Gắn custom domain trong Cloudflare Workers [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm], redirect `www` về domain chính, HTTPS bắt buộc.
+1. Domain .vn đứng tên pháp nhân của quỹ. Đưa DNS về Cloudflare (theo hướng dẫn Cloudflare Workers Custom Domains).
+2. Tạo nhánh `production` từ `main`, cấu hình Production branch trong Cloudflare Workers Builds (`npx wrangler deploy`). `main` trở thành nhánh preview/staging (`npx wrangler preview`).
+3. Gắn custom domain trong Cloudflare Workers, redirect `www` về domain chính, HTTPS bắt buộc.
 4. Merge `main` vào `production`. Build production phải pass kiểm tra strict.
 5. Sau go-live: `curl -I https://<domain>`, kiểm tra CSP, HSTS, không còn `X-Robots-Tag: noindex` trên domain chính. Quét bằng công cụ kiểm tra header và SSL bên ngoài.
-6. Đăng ký Google Search Console, gửi sitemap. Bật theo dõi uptime. Diễn tập rollback một lần (rollback ở Cloudflare Workers hoặc `git revert`) [CẦN XÁC MINH theo docs Cloudflare Workers Builds trước khi làm].
+6. Đăng ký Google Search Console, gửi sitemap. Bật theo dõi uptime. Diễn tập rollback một lần (rollback ở Cloudflare Workers dashboard hoặc `git revert`).
 7. Gắn tag `v1.0`.
 
 ---

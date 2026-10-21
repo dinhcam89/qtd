@@ -25,7 +25,7 @@ const {
 
 const canonicalURL = new URL(
   Astro.url.pathname,
-  Astro.site ?? 'https://qtd.pages.dev'
+  Astro.site ?? 'https://qtd.workers.dev'
 );
 ---
 
@@ -38,15 +38,12 @@ const canonicalURL = new URL(
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
   </head>
-  <body class="min-h-screen flex flex-col bg-white text-brand-text">
+  <body class="min-h-screen flex flex-col bg-surface-page text-ink-base">
     <SkipLink targetId="main-content" />
 
     <Header siteName={site.name} />
 
-    <main
-      id="main-content"
-      class="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 py-8"
-    >
+    <main id="main-content" class="flex-1 w-full">
       <slot />
     </main>
 

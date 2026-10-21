@@ -1,0 +1,36 @@
+---
+interface Props {
+  id?: string;
+  class?: string;
+  variant?: 'default' | 'muted' | 'brand-subtle';
+  as?: 'section' | 'div' | 'article' | 'aside';
+}
+
+const {
+  id,
+  class: className = '',
+  variant = 'default',
+  as = 'section',
+  ...rest
+} = Astro.props;
+
+const Tag = as as any;
+
+const variantClasses = {
+  default: 'bg-surface-page',
+  muted: 'bg-surface-muted',
+  'brand-subtle': 'bg-surface-brand-subtle',
+};
+---
+
+<Tag
+  id={id}
+  class:list={[
+    'py-10 sm:py-14 lg:py-18',
+    variantClasses[variant] || variantClasses.default,
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>

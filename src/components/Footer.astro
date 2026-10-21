@@ -4,6 +4,7 @@ import type { ScheduleData } from '../lib/schemas/schedule';
 import type { SiteData } from '../lib/schemas/site';
 import { formatText } from '../lib/format';
 import { RATE_DISCLAIMER } from '../lib/constants';
+import Container from './ui/Container.astro';
 
 interface Props {
   site: SiteData;
@@ -31,9 +32,9 @@ const currentYear = new Date().getFullYear();
 
 <footer
   id="lien-he"
-  class="border-t border-brand-border bg-brand-surface text-brand-text mt-auto"
+  class="border-t border-border-default bg-surface-muted text-ink-base mt-auto"
 >
-  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 py-10 lg:py-12">
+  <Container class="py-12 lg:py-16">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
       <!-- Cột 1: Thông tin Quỹ -->
       <div class="space-y-3">
@@ -41,31 +42,34 @@ const currentYear = new Date().getFullYear();
           {formatText(site.name)}
         </h2>
         {site.short_name && (
-          <p class="text-sm text-brand-muted">
-            Tên viết tắt: {formatText(site.short_name)}
+          <p class="text-sm text-ink-muted">
+            <span class="font-medium text-ink-base">Tên viết tắt:</span>{' '}
+            {formatText(site.short_name)}
           </p>
         )}
-        <p class="text-sm text-brand-muted">
-          Giấy phép hoạt động: {formatText(site.license_number)}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Giấy phép hoạt động:</span>{' '}
+          {formatText(site.license_number)}
         </p>
-        <p class="text-sm text-brand-muted">
-          Địa bàn hoạt động: {formatText(site.operating_area)}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Địa bàn hoạt động:</span>{' '}
+          {formatText(site.operating_area)}
         </p>
       </div>
 
       <!-- Cột 2: Thông tin liên hệ -->
       <div class="space-y-3">
         <h2 class="text-lg font-bold text-brand-primary">Thông tin liên hệ</h2>
-        <p class="text-sm text-brand-muted">
-          <span class="font-medium text-brand-text">Địa chỉ:</span>{' '}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Địa chỉ:</span>{' '}
           {formatText(contact.address.full)}
         </p>
-        <p class="text-sm text-brand-muted">
-          <span class="font-medium text-brand-text">Điện thoại:</span>{' '}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Điện thoại:</span>{' '}
           {isActionableContact(contact.phone) ? (
             <a
               href={`tel:${contact.phone}`}
-              class="text-brand-primary hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-focus"
+              class="text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
             >
               {contact.phone}
             </a>
@@ -74,12 +78,12 @@ const currentYear = new Date().getFullYear();
           )}
         </p>
         {contact.hotline && (
-          <p class="text-sm text-brand-muted">
-            <span class="font-medium text-brand-text">Đường dây nóng:</span>{' '}
+          <p class="text-sm text-ink-muted">
+            <span class="font-medium text-ink-base">Đường dây nóng:</span>{' '}
             {isActionableContact(contact.hotline) ? (
               <a
                 href={`tel:${contact.hotline}`}
-                class="text-brand-primary hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-focus"
+                class="text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
               >
                 {contact.hotline}
               </a>
@@ -88,12 +92,12 @@ const currentYear = new Date().getFullYear();
             )}
           </p>
         )}
-        <p class="text-sm text-brand-muted">
-          <span class="font-medium text-brand-text">Email:</span>{' '}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Email:</span>{' '}
           {isActionableContact(contact.email) ? (
             <a
               href={`mailto:${contact.email}`}
-              class="text-brand-primary hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-focus"
+              class="text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
             >
               {contact.email}
             </a>
@@ -106,33 +110,33 @@ const currentYear = new Date().getFullYear();
       <!-- Cột 3: Thời gian làm việc -->
       <div class="space-y-3">
         <h2 class="text-lg font-bold text-brand-primary">Thời gian làm việc</h2>
-        <p class="text-sm text-brand-muted">
-          <span class="font-medium text-brand-text">Ngày làm việc:</span>{' '}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Ngày làm việc:</span>{' '}
           {formatText(schedule.working_days)}
         </p>
-        <p class="text-sm text-brand-muted">
-          <span class="font-medium text-brand-text">Buổi sáng:</span>{' '}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Buổi sáng:</span>{' '}
           {formatText(schedule.morning_hours)}
         </p>
-        <p class="text-sm text-brand-muted">
-          <span class="font-medium text-brand-text">Buổi chiều:</span>{' '}
+        <p class="text-sm text-ink-muted">
+          <span class="font-medium text-ink-base">Buổi chiều:</span>{' '}
           {formatText(schedule.afternoon_hours)}
         </p>
         {schedule.notes && (
-          <p class="text-xs text-brand-muted italic">
-            Lưu ý: {formatText(schedule.notes)}
+          <p class="text-sm text-ink-muted">
+            <span class="font-medium text-ink-base">Lưu ý:</span>{' '}
+            {formatText(schedule.notes)}
           </p>
         )}
       </div>
     </div>
 
     <!-- Dòng bản quyền và lưu ý -->
-    <div class="border-t border-brand-border mt-8 pt-6 text-center text-xs text-brand-muted space-y-2">
-      <p>
-        &copy; {currentYear} {formatText(site.name)}. Tất cả các quyền được bảo
-        lưu.
+    <div class="border-t border-border-default mt-10 pt-6 text-center text-sm text-ink-muted space-y-2">
+      <p id="footer-copyright">
+        {`© ${currentYear} ${formatText(site.name)}. Tất cả các quyền được bảo lưu.`}
       </p>
-      <p class="italic">{RATE_DISCLAIMER}</p>
+      <p class="not-italic text-sm text-ink-muted">{RATE_DISCLAIMER}</p>
     </div>
-  </div>
+  </Container>
 </footer>

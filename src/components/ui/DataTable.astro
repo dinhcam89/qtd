@@ -1,0 +1,74 @@
+---
+interface Column {
+  key: string;
+  label: string;
+  align?: 'left' | 'center' | 'right';
+  class?: string;
+}
+
+interface Props {
+  columns?: Column[];
+  data?: Record<string, any>[];
+  caption?: string;
+  class?: string;
+}
+
+const { columns, data, caption, class: className = '' } = Astro.props;
+---
+
+<div class="w-full">
+  <table
+    data-responsive-table
+    class:list={[
+      'responsive-rate-table w-full text-left border-collapse border border-border-default rounded-lg bg-surface-page',
+      className,
+    ]}
+  >
+    {caption && <caption class="sr-only">{caption}</caption>}
+    {columns && (
+      <thead>
+        <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
+          {columns.map((col) => (
+            <th
+              scope="col"
+              class:list={[
+                'py-3.5 px-4',
+                col.align === 'right'
+                  ? 'text-right'
+                  : col.align === 'center'
+                    ? 'text-center'
+                    : 'text-left',
+                col.class,
+              ]}
+            >
+              {col.label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+    )}
+    <slot name="thead" />
+    {data && columns && (
+      <tbody class="divide-y divide-border-default text-base">
+        {data.map((row) => (
+          <tr class="hover:bg-surface-muted/60 transition-colors">
+            {columns.map((col) => (
+              <td
+                data-label={col.label}
+                class:list={[
+                  'py-3.5 px-4',
+                  col.align === 'right'
+                    ? 'text-right font-bold text-brand-primary'
+                    : 'text-left text-ink-base',
+                ]}
+              >
+                {row[col.key]}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    )}
+    <slot />
+  </table>
+</div>

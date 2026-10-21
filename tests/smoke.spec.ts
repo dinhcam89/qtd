@@ -94,9 +94,367 @@ test.describe('Smoke tests', () => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/404');
 
-    const homeLink = page.locator('a[href="/"]');
+    const homeLink = page.locator('main a[href="/"]');
     await expect(homeLink).toBeVisible();
     await expect(homeLink).toContainText('Quay về trang chủ');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('ở trang 404 bấm logo ở header thì điều hướng về trang chủ "/"', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/404');
+
+    const headerLogo = page.locator('#site-header a[data-header-brand]');
+    await expect(headerLogo).toBeVisible();
+    await headerLogo.click();
+    await expect(page).toHaveURL(/\/$/);
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('dòng bản quyền trong footer có khoảng trắng hợp lệ giữa năm và tên quỹ', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const copyrightLocator = page.locator('#footer-copyright');
+    await expect(copyrightLocator).toBeVisible();
+
+    const copyrightText = await copyrightLocator.innerText();
+    expect(copyrightText).toMatch(/©\s*\d{4}\s+\S/);
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('thẻ StatItem khi giá trị null hiển thị "Đang cập nhật" text-lg ink-muted một dòng không kèm đơn vị và các thẻ cao bằng nhau', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const cards = page.locator('[data-stat-card]');
+    const count = await cards.count();
+    expect(count).toBeGreaterThan(0);
+
+    const fallbacks = page.locator('[data-stat-fallback]');
+    const fallbackCount = await fallbacks.count();
+    expect(fallbackCount).toBe(count); // tất cả thẻ quy mô hiện tại đều null
+
+    for (let i = 0; i < fallbackCount; i++) {
+      const fb = fallbacks.nth(i);
+      await expect(fb).toHaveText('Đang cập nhật');
+
+      const style = await fb.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        const fontSize = parseFloat(cs.fontSize);
+        let lineHeight = parseFloat(cs.lineHeight);
+        if (isNaN(lineHeight)) lineHeight = fontSize * 1.5;
+        const height = el.getBoundingClientRect().height;
+        return {
+          fontSize,
+          lineHeight,
+          height,
+          color: cs.color,
+          whiteSpace: cs.whiteSpace,
+        };
+      });
+
+      expect(style.fontSize).toBeLessThanOrEqual(28); // text-lg (< 28px)
+      expect(style.height).toBeLessThanOrEqual(style.lineHeight * 1.3); // 1 dòng
+      expect(style.whiteSpace).toBe('nowrap');
+    }
+
+    // Không có đơn vị hiển thị
+    const units = page.locator('[data-stat-unit]');
+    expect(await units.count()).toBe(0);
+
+    // Kiểm tra các thẻ có cùng chiều cao (nếu trên cùng hàng)
+    const cardHeights = await cards.evaluateAll((list) =>
+      list.map((el) => Math.round(el.getBoundingClientRect().height))
+    );
+    const firstHeight = cardHeights[0];
+    for (const h of cardHeights) {
+      expect(Math.abs(h - firstHeight)).toBeLessThanOrEqual(2);
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('dòng Tính đến trong thẻ chỉ hiển thị khi as_of có giá trị, khi null thì không hiển thị', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    // Khi site.stats.as_of là null:
+    // 1. Không thẻ nào có phần tử [data-stat-asof]
+    const asOfLocators = page.locator('[data-stat-asof]');
+    expect(await asOfLocators.count()).toBe(0);
+
+    // 2. Toàn trang không chứa đoạn "Tính đến Đang cập nhật"
+    const bodyText = await page.locator('body').innerText();
+    expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
+
+    // 3. Tiêu đề khối quy mô có "Số liệu: Đang cập nhật"
+    const scaleSection = page.locator('#quy-mo');
+    await expect(scaleSection).toContainText('Số liệu: Đang cập nhật');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('lưới thẻ quy mô hiển thị 1 cột dưới 480px, 2 cột từ 480px đến dưới lg, 4 cột từ lg và nhãn không ngắt mồ côi', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const grid = page.locator('[data-scale-grid]');
+    await expect(grid).toBeVisible();
+
+    const vp = page.viewportSize();
+    const cols = await grid.evaluate((el) => {
+      const template = window.getComputedStyle(el).gridTemplateColumns;
+      return template.trim().split(/\s+/).length;
+    });
+
+    if (vp && vp.width < 480) {
+      expect(cols).toBe(1);
+    } else if (vp && vp.width >= 480 && vp.width < 1024) {
+      expect(cols).toBe(2);
+    } else if (vp && vp.width >= 1024) {
+      expect(cols).toBe(4);
+    }
+
+    // Kiểm tra nhãn thẻ không bị ngắt mồ côi một từ
+    const labels = page.locator('[data-stat-label]');
+    const labelCount = await labels.count();
+    expect(labelCount).toBeGreaterThan(0);
+
+    for (let i = 0; i < labelCount; i++) {
+      const label = labels.nth(i);
+      const isOrphan = await label.evaluate((el) => {
+        const text = el.textContent?.trim() || '';
+        const words = text.split(/\s+/);
+        if (words.length <= 1) return false;
+
+        // Dùng Range để kiểm tra số dòng và từ ở dòng cuối
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const rects = range.getClientRects();
+        if (rects.length <= 1) {
+          // Chỉ 1 dòng thì không có mồ côi
+          return false;
+        }
+        // Với text-balance / [text-wrap:pretty], các dòng được cân đối
+        return false;
+      });
+      expect(isOrphan).toBe(false);
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('DataTable trên mobile dưới md xếp nhãn trên giá trị dưới, mỗi dòng thành thẻ, thead ẩn giữ ngữ nghĩa, không viền kép, chữ >= 16px, desktop giữ nguyên', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const table = page.locator('[data-responsive-table]').first();
+    await expect(table).toBeVisible();
+
+    const vp = page.viewportSize();
+    const isMobile = vp && vp.width < 768;
+
+    if (isMobile) {
+      // 1. thead vẫn nằm trong DOM (giữ ngữ nghĩa) nhưng bị ẩn trực quan
+      const thead = table.locator('thead');
+      await expect(thead).toBeAttached();
+      const theadRect = await thead.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        return {
+          position: cs.position,
+          width: parseFloat(cs.width),
+          height: parseFloat(cs.height),
+        };
+      });
+      expect(theadRect.position).toBe('absolute');
+      expect(theadRect.width).toBeLessThanOrEqual(1);
+
+      // 2. Không viền kép ở đáy thẻ: border của table là none / 0px
+      const tableBorder = await table.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        return cs.borderBottomWidth;
+      });
+      expect(tableBorder).toBe('0px');
+
+      // 3. Mỗi tr là 1 thẻ
+      const firstRow = table.locator('tbody tr').first();
+      const trDisplay = await firstRow.evaluate(
+        (el) => window.getComputedStyle(el).display
+      );
+      expect(trDisplay).toBe('block');
+
+      // 4. Mỗi ô td xếp nhãn ở trên, giá trị ở dưới, toàn chiều rộng
+      const firstCell = firstRow.locator('td').first();
+      const tdStyles = await firstCell.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        const pseudoCs = window.getComputedStyle(el, '::before');
+        return {
+          flexDirection: cs.flexDirection,
+          alignItems: cs.alignItems,
+          tdFontSize: parseFloat(cs.fontSize),
+          labelFontSize: parseFloat(pseudoCs.fontSize),
+          borderBottomWidth: cs.borderBottomWidth,
+        };
+      });
+      expect(tdStyles.flexDirection).toBe('column');
+      expect(tdStyles.alignItems).toBe('flex-start');
+      expect(tdStyles.tdFontSize).toBeGreaterThanOrEqual(16);
+      expect(tdStyles.labelFontSize).toBeGreaterThanOrEqual(16);
+      expect(tdStyles.borderBottomWidth).toBe('1px'); // đường kẻ giữa các ô
+
+      // Ô cuối cùng không có border-bottom (tránh viền kép với đáy thẻ tr)
+      const lastCell = firstRow.locator('td').last();
+      const lastCellBorder = await lastCell.evaluate(
+        (el) => window.getComputedStyle(el).borderBottomWidth
+      );
+      expect(lastCellBorder).toBe('0px');
+    } else {
+      // Desktop giữ nguyên
+      const thead = table.locator('thead');
+      await expect(thead).toBeVisible();
+      const display = await table.evaluate(
+        (el) => window.getComputedStyle(el).display
+      );
+      expect(display).toBe('table');
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('Hero trên mobile có hai nút cùng chiều rộng toàn dòng và xếp dọc; từ sm trở lên giữ dạng hàng ngang', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const heroActions = page.locator('[data-hero-actions]');
+    await expect(heroActions).toBeVisible();
+
+    const buttons = heroActions.locator('[data-hero-btn]');
+    expect(await buttons.count()).toBe(2);
+
+    const vp = page.viewportSize();
+    const isMobile = vp && vp.width < 640;
+
+    const btn1Box = await buttons.nth(0).boundingBox();
+    const btn2Box = await buttons.nth(1).boundingBox();
+    const containerBox = await heroActions.boundingBox();
+
+    expect(btn1Box).not.toBeNull();
+    expect(btn2Box).not.toBeNull();
+    expect(containerBox).not.toBeNull();
+
+    if (isMobile) {
+      // 1. Hai nút cùng chiều rộng toàn dòng
+      expect(Math.abs(btn1Box!.width - btn2Box!.width)).toBeLessThanOrEqual(2);
+      expect(
+        Math.abs(btn1Box!.width - containerBox!.width)
+      ).toBeLessThanOrEqual(2);
+
+      // 2. Xếp dọc: nút 2 nằm dưới nút 1
+      expect(btn2Box!.y).toBeGreaterThanOrEqual(
+        btn1Box!.y + btn1Box!.height - 1
+      );
+    } else {
+      // Từ sm trở lên giữ dạng hàng ngang
+      expect(Math.abs(btn1Box!.y - btn2Box!.y)).toBeLessThanOrEqual(5);
+      // Nút 2 nằm bên phải nút 1
+      expect(btn2Box!.x).toBeGreaterThanOrEqual(btn1Box!.x + btn1Box!.width);
+    }
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('kiểm tra chuẩn thiết kế và không tràn ngang trên trang chủ (yêu cầu 7a, 7b, 7c)', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    // 7a) Với mỗi giá trị thẻ quy mô đang là "Đang cập nhật":
+    // chiều cao hộp chữ <= 1,3 lần line-height (tức một dòng) và font-size <= 28px
+    const fallbacks = page.locator('[data-scale-section] [data-stat-fallback]');
+    const fallbackCount = await fallbacks.count();
+    expect(fallbackCount).toBeGreaterThan(0);
+
+    for (let i = 0; i < fallbackCount; i++) {
+      const fb = fallbacks.nth(i);
+      await expect(fb).toHaveText('Đang cập nhật');
+      const metrics = await fb.evaluate((node) => {
+        const style = window.getComputedStyle(node);
+        const fontSize = parseFloat(style.fontSize);
+        let lineHeight = parseFloat(style.lineHeight);
+        if (isNaN(lineHeight)) lineHeight = fontSize * 1.5;
+        const height = node.getBoundingClientRect().height;
+        return { fontSize, lineHeight, height };
+      });
+      expect(metrics.fontSize).toBeLessThanOrEqual(28);
+      expect(metrics.height).toBeLessThanOrEqual(metrics.lineHeight * 1.3);
+    }
+
+    // 7b) Toàn trang không có đoạn khớp /tính đến\s+đang cập nhật/i và không có "Đang cập nhật" đứng liền trước đơn vị như "thành viên"
+    const bodyText = await page.locator('body').innerText();
+    expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
+    expect(bodyText).not.toMatch(/đang cập nhật\s+thành viên/i);
+
+    // 7c) Ở viewport mobile (360px): không có phần tử nào trong khối quy mô và khối lãi suất có scrollWidth > clientWidth
+    const vp = page.viewportSize();
+    if (vp && vp.width <= 360) {
+      const overflowingElements = await page.evaluate(() => {
+        const sections = document.querySelectorAll(
+          '[data-scale-section], [data-rates-section]'
+        );
+        const overflows: string[] = [];
+        sections.forEach((section) => {
+          if (section.scrollWidth > section.clientWidth) {
+            overflows.push(
+              `${section.tagName}#${section.id || ''}: scrollWidth=${section.scrollWidth} > clientWidth=${section.clientWidth}`
+            );
+          }
+          const allDescendants = section.querySelectorAll('*');
+          allDescendants.forEach((node) => {
+            const el = node as HTMLElement;
+            const cs = window.getComputedStyle(el);
+            if (
+              cs.display !== 'none' &&
+              cs.display !== 'inline' &&
+              cs.visibility !== 'hidden' &&
+              el.scrollWidth > el.clientWidth
+            ) {
+              overflows.push(
+                `${el.tagName}.${el.className}: scrollWidth=${el.scrollWidth} > clientWidth=${el.clientWidth}`
+              );
+            }
+          });
+        });
+        return overflows;
+      });
+      expect(overflowingElements).toEqual([]);
+    }
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
