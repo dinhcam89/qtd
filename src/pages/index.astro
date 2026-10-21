@@ -74,27 +74,27 @@ const siteDescription =
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
           <StatItem
             label="Tổng thành viên"
-            value={formatNumber(site.stats.members_count)}
+            value={site.stats.members_count != null ? formatNumber(site.stats.members_count) : null}
             unit="thành viên"
-            asOf={formatAsOf(site.stats.as_of)}
+            asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
 
           <StatItem
             label="Vốn điều lệ"
-            value={formatCurrency(site.stats.charter_capital)}
-            asOf={formatAsOf(site.stats.as_of)}
+            value={site.stats.charter_capital != null ? formatCurrency(site.stats.charter_capital) : null}
+            asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
 
           <StatItem
             label="Tổng tài sản"
-            value={formatCurrency(site.stats.total_assets)}
-            asOf={formatAsOf(site.stats.as_of)}
+            value={site.stats.total_assets != null ? formatCurrency(site.stats.total_assets) : null}
+            asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
 
           <StatItem
             label="Dư nợ cho vay"
-            value={formatCurrency(site.stats.total_loans)}
-            asOf={formatAsOf(site.stats.as_of)}
+            value={site.stats.total_loans != null ? formatCurrency(site.stats.total_loans) : null}
+            asOf={site.stats.as_of ? formatDate(site.stats.as_of) : null}
           />
         </div>
       </div>

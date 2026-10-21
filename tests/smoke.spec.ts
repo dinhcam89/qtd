@@ -187,4 +187,27 @@ test.describe('Smoke tests', () => {
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
+
+  test('dòng Tính đến trong thẻ chỉ hiển thị khi as_of có giá trị, khi null thì không hiển thị', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    // Khi site.stats.as_of là null:
+    // 1. Không thẻ nào có phần tử [data-stat-asof]
+    const asOfLocators = page.locator('[data-stat-asof]');
+    expect(await asOfLocators.count()).toBe(0);
+
+    // 2. Toàn trang không chứa đoạn "Tính đến Đang cập nhật"
+    const bodyText = await page.locator('body').innerText();
+    expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
+
+    // 3. Tiêu đề khối quy mô có "Số liệu: Đang cập nhật"
+    const scaleSection = page.locator('#quy-mo');
+    await expect(scaleSection).toContainText('Số liệu: Đang cập nhật');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
 });
