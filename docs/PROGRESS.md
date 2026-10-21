@@ -13,8 +13,8 @@
 | 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass                |
 | 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; Cổng G1 đã hoàn thành         |
 | 6    | Design system                                          | Xong            | 2026-10-21      | `6ed277a` | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt |
-| 7    | Trang Giới thiệu và Ban lãnh đạo                       | Chưa làm        | —               | —         | Task tiếp theo                                                                     |
-| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         |                                                                                    |
+| 7    | Trang Giới thiệu và Ban lãnh đạo                       | Xong            | 2026-10-21      | `6553a03` | Collection pages, /gioi-thieu, /lich-su, /ban-lanh-dao, nav.ts động, 59/59 test pass |
+| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         | Task tiếp theo                                                                     |
 | 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                    |
 | 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                                    |
 | 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                                    |
@@ -92,4 +92,25 @@
   10. Chụp ảnh màn hình tự động `npm run shots`: **ĐẠT** (8 file ảnh chất lượng cao lưu tại `screenshots/` ở 360, 768, 1280, 1920px).
 - **Số placeholder hiện tại:** 29 (duy trì toàn vẹn trong data và content, không phát sinh mới).
 - **Đánh giá Task 6:** **ĐẠT**.
-- **Việc người dùng cần làm tiếp:** Cổng G2 (Xem ảnh chụp giao diện trong thư mục `screenshots/` hoặc xem web trên điện thoại và máy tính, duyệt phong cách thiết kế).
+- **Việc người dùng cần làm tiếp:** Cổng G2 (Đã duyệt hoàn thành).
+
+---
+
+## 6. Chi tiết đánh giá Task 7
+
+- **Ngày đánh giá:** 2026-10-21
+- **Kết quả đối chiếu tiêu chí hoàn thành (kiểm tra bằng lệnh):**
+  1. `npm run lint` (ESLint + Prettier check): **ĐẠT** (Codebase đúng định dạng, không lỗi ESLint hay cảnh báo Prettier).
+  2. `npm run check` (Astro check): **ĐẠT** (0 errors, 0 warnings, 0 hints trên 43 files).
+  3. `npm run build`: **ĐẠT** (Build tĩnh thành công 5 trang: `/`, `/404`, `/gioi-thieu`, `/lich-su`, `/ban-lanh-dao`).
+  4. `npm run check:dist`: **ĐẠT** (Không có script/style inline, không vỡ liên kết, đầy đủ metadata SEO và a11y).
+  5. `npm test` (Playwright + Axe accessibility): **ĐẠT** (59 passed, 1 skipped trên 3 viewports desktop, tablet, mobile).
+  6. Kiểm tra vi phạm CSP cố ý (`<script is:inline src="https://example.com/x.js">`): **ĐẠT** (Cả `check:dist` và Playwright CSP assertions fail chuẩn xác, sau đó hoàn tác sạch sẽ).
+  7. Danh sách trang trong `tests/smoke.spec.ts` và `tests/a11y.spec.ts` được lấy tự động từ `getNavRoutes()` trong `src/lib/nav.ts`, không hard-code thủ công: **ĐẠT**.
+  8. Collection `pages` (Zod schema với `title`, `description`, `updated`) và 3 tài liệu markdown (`gioi-thieu.md`, `lich-su.md`, `su-menh.md`): **ĐẠT**.
+  9. Không có số liệu, tên người, địa chỉ, số điện thoại hard-code ngoài `src/data` và `src/content`: **ĐẠT**.
+  10. Ảnh thành viên ban lãnh đạo chỉ hiển thị khi có đường dẫn ảnh thật hợp lệ; khi null hoặc placeholder thì hiển thị avatar silhouette SVG trung tính: **ĐẠT**.
+  11. Chụp ảnh màn hình tự động `npm run shots`: **ĐẠT** (20 file ảnh chất lượng cao lưu tại `screenshots/` ở 360, 768, 1280, 1920px cho 5 trang).
+- **Số placeholder hiện tại:** 40 (duy trì toàn vẹn trong data và content collections, 0 placeholder trong mã giao diện).
+- **Đánh giá Task 7:** **ĐẠT**.
+- **Việc người dùng cần làm tiếp:** Tiếp tục chạy `/next-task` để thực hiện Task 8 (Trang Sản phẩm và Lãi suất).
