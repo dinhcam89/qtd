@@ -334,7 +334,12 @@ async function runTests() {
       `[fixtures] Server đã sẵn sàng. Chạy Playwright project fixtures...`
     );
 
-    const playwrightArgs = ['playwright', 'test', '--project=fixtures'];
+    const playwrightArgs = [
+      'playwright',
+      'test',
+      '--project=fixtures',
+      '--project=unit',
+    ];
     const testRes = spawnSync('npx', playwrightArgs, {
       shell: true,
       stdio: 'inherit',

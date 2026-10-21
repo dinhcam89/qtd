@@ -16,7 +16,9 @@
 | 6     | Design system                                                               | Xong       |
 | 7     | Giới thiệu và Ban lãnh đạo                                                  | Xong       |
 | 8     | Quy mô, Sản phẩm, Lãi suất                                                  | Xong       |
-| 9–11  | Các trang nội dung (Quy chế, Tin tức, Liên hệ)                              | Chưa làm   |
+| 9     | Quy chế và văn bản                                                          | Xong       |
+| 9b    | Test trạng thái có dữ liệu                                                  | Xong       |
+| 10–11 | Các trang nội dung (Tin tức, Liên hệ)                                       | Chưa làm   |
 | 12–13 | CMS (có điều kiện)                                                          | Chưa làm   |
 | 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm   |
 | 16    | QA tổng, UAT                                                                | Chưa làm   |
@@ -193,6 +195,14 @@ Mỗi task dùng workflow `/new-page`. **Cần duyệt plan:** không (bố cụ
 
 - Collection `documents` (title, date, file, category). PDF đặt trong `public/docs/`. Trang `/quy-che` liệt kê, mỗi mục có tên, ngày, dung lượng, link tải.
 - Placeholder: không đưa file PDF giả. Danh sách rỗng hiện "Đang cập nhật".
+
+**Task 9b — Test trạng thái có dữ liệu**
+
+- Chế độ fixture qua biến môi trường `QTD_FIXTURES=1`, dữ liệu cô lập dưới `src/fixtures/`, build ra `dist-fixtures/`.
+- Unit test thuần tại `tests/unit.spec.ts` cho `format.ts`, `news.ts`, `documents.ts`.
+- Fixture test tại `tests/fixtures/quy-che.spec.ts` kiểm thử giao diện đầy đủ dữ liệu ở các viewport 360, 768, 1280.
+- Hàng rào chống lọt trong `scripts/check-dist.mjs`.
+- **Ghi chú bắt buộc:** Mọi trang động mới từ Task 10 trở đi phải có fixture và test tương ứng.
 
 **Task 10 — Tin tức và Thông báo**
 

@@ -13,6 +13,8 @@
     "lint": "eslint . && prettier --check .",
     "check": "astro check",
     "test": "playwright test",
+    "test:unit": "playwright test --project=unit",
+    "test:fixtures": "node ./scripts/fixtures.mjs",
     "verify": "node ./scripts/verify.mjs",
     "check:contrast": "node ./scripts/check-contrast.mjs",
     "shots": "node ./scripts/shots.mjs",

@@ -74,6 +74,8 @@ npm run build    # build static (phải pass)
 npm run lint     # ESLint + Prettier check
 npm run check    # astro check (type + content schema)
 npm test         # Playwright + axe
+npm run test:unit # chạy unit tests thuần (format, news, documents)
+npm run test:fixtures # build fixture và chạy tests với dữ liệu fixture
 npm run verify   # chạy toàn bộ kiểm tra chất lượng trước khi chốt task
 npm run check:dist # kiểm tra toàn vẹn thư mục dist (không script/style inline, không vỡ link)
 npm run lhci     # Lighthouse CI (khi đã cấu hình)
