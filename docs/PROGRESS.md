@@ -5,26 +5,26 @@
 
 ## 1. Bảng trạng thái tổng quan
 
-| Task | Nội dung                                               | Trạng thái      | Ngày hoàn thành | Commit    | Ghi chú                                                                    |
-| ---- | ------------------------------------------------------ | --------------- | --------------- | --------- | -------------------------------------------------------------------------- |
-| 1    | Scaffold Astro + Tailwind v4                           | Xong            | 2026-10-20      | `f29037f` | Nền tảng dự án, tooling, lint                                              |
-| 2    | Schema Zod, dữ liệu placeholder, format.ts             | Xong            | 2026-10-20      | `e6eb322` | Zod schema, YAML, format vi-VN                                             |
-| 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4        |
-| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass        |
-| 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; Cổng G1 đã hoàn thành |
-| 6    | Design system                                          | Chưa làm        | —               | —         | Task tiếp theo                                                             |
-| 7    | Trang Giới thiệu và Ban lãnh đạo                       | Chưa làm        | —               | —         |                                                                            |
-| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         |                                                                            |
-| 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                            |
-| 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                            |
-| 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                            |
-| 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                 |
-| 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                 |
-| 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                            |
-| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                            |
-| 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                            |
-| 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                            |
-| 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                            |
+| Task | Nội dung                                               | Trạng thái      | Ngày hoàn thành | Commit    | Ghi chú                                                                            |
+| ---- | ------------------------------------------------------ | --------------- | --------------- | --------- | ---------------------------------------------------------------------------------- |
+| 1    | Scaffold Astro + Tailwind v4                           | Xong            | 2026-10-20      | `f29037f` | Nền tảng dự án, tooling, lint                                                      |
+| 2    | Schema Zod, dữ liệu placeholder, format.ts             | Xong            | 2026-10-20      | `e6eb322` | Zod schema, YAML, format vi-VN                                                     |
+| 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4                |
+| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass                |
+| 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; Cổng G1 đã hoàn thành         |
+| 6    | Design system                                          | Xong            | 2026-10-21      | `task-6`  | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt |
+| 7    | Trang Giới thiệu và Ban lãnh đạo                       | Chưa làm        | —               | —         | Task tiếp theo                                                                     |
+| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         |                                                                                    |
+| 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                    |
+| 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                                    |
+| 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                                    |
+| 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                         |
+| 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                         |
+| 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                                    |
+| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                                    |
+| 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                    |
+| 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                    |
+| 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                    |
 
 ---
 
@@ -72,4 +72,24 @@
      - Tự động upload artifact `playwright-report/` khi có test thất bại.
 - **Số placeholder hiện tại:** 29 (toàn bộ nằm trong `src/data` và `src/content`, không còn placeholder cứng trong UI).
 - **Đánh giá Task 5:** **ĐẠT**.
-- **Việc người dùng cần làm tiếp:** Cổng G1 đã hoàn thành (repo GitHub, branch protection, kết nối Cloudflare Workers Builds static assets với `wrangler.jsonc` đã xong; production deploy bằng `npx wrangler deploy`, preview nhánh khác bằng `npx wrangler preview`, headers trên preview URL đã kiểm tra đạt). Bắt đầu Task 6 Design System.
+- **Việc người dùng cần làm tiếp:** Cổng G1 đã hoàn thành. Chuyển sang thực hiện Task 6.
+
+---
+
+## 5. Chi tiết đánh giá Task 6
+
+- **Ngày đánh giá:** 2026-10-21
+- **Kết quả đối chiếu tiêu chí hoàn thành (kiểm tra bằng lệnh):**
+  1. `npm run check:contrast` thoát mã 0: **ĐẠT** (Toàn bộ 15/15 cặp màu thực tế sử dụng đều đạt WCAG AA và AAA; chữ thường ≥ 4.5:1, chữ lớn ≥ 3.0:1).
+  2. `npm run check` (Astro check): **ĐẠT** (0 errors, 0 warnings, 0 hints trên 39 files).
+  3. `npm run lint` (ESLint + Prettier check): **ĐẠT** (Toàn bộ codebase đúng quy chuẩn định dạng).
+  4. `npm run build`: **ĐẠT** (Build tĩnh thành công, đóng gói toàn bộ tài nguyên font cục bộ cùng origin).
+  5. `npm test` (Playwright + Axe accessibility): **ĐẠT** (20 passed, 1 skipped trên 3 viewports desktop, tablet, mobile).
+  6. `npm run check:dist`: **ĐẠT** (Không có script/style inline, không vỡ liên kết, đầy đủ metadata SEO và a11y).
+  7. Tự host font Be Vietnam Pro qua `@fontsource/be-vietnam-pro`: **ĐẠT** (Chỉ nạp subset `latin` và `vietnamese`, trọng số 400, 600, 700; CSP `font-src 'self'` pass 100%).
+  8. Hệ thống 7 UI components nền tảng (`Container`, `Section`, `Button`/`LinkButton`, `StatItem`, `DataTable`, `Notice`, `Card`): **ĐẠT** (StatItem hỗ trợ null hiển thị 'Đang cập nhật' text-lg, DataTable chuyển thẻ mobile bằng data-label không cuộn ngang, Notice có icon SVG nhúng inline aria-hidden, câu lưu ý lãi suất ≥ 16px không in nghiêng).
+  9. Kiểm tra hiển thị copyright Footer: **ĐẠT** (Đảm bảo khoảng trắng giữa năm và tên quỹ khớp `/©\s*\d{4}\s+\S/`).
+  10. Chụp ảnh màn hình tự động `npm run shots`: **ĐẠT** (8 file ảnh chất lượng cao lưu tại `screenshots/` ở 360, 768, 1280, 1920px).
+- **Số placeholder hiện tại:** 29 (duy trì toàn vẹn trong data và content, không phát sinh mới).
+- **Đánh giá Task 6:** **ĐẠT**.
+- **Việc người dùng cần làm tiếp:** Cổng G2 (Xem ảnh chụp giao diện trong thư mục `screenshots/` hoặc xem web trên điện thoại và máy tính, duyệt phong cách thiết kế).

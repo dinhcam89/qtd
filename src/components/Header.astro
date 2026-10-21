@@ -1,5 +1,6 @@
 ---
 import { NAV_ITEMS } from '../lib/nav';
+import Container from './ui/Container.astro';
 
 interface Props {
   siteName?: string;
@@ -9,15 +10,15 @@ const { siteName = '' } = Astro.props;
 ---
 
 <header
-  class="border-b border-brand-border bg-white sticky top-0 z-40"
+  class="border-b border-border-default bg-surface-page sticky top-0 z-40"
   id="site-header"
 >
-  <div class="max-w-[1200px] mx-auto px-4 sm:px-6">
+  <Container>
     <div class="flex items-center justify-between min-h-[4.5rem] py-3">
-      <!-- Tên Quỹ -->
+      <!-- Tên Quỹ dạng chữ, không vẽ logo/khẩu hiệu giả -->
       <a
-        href="#"
-        class="text-lg sm:text-xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus focus-visible:ring-offset-2 rounded py-1"
+        href="/"
+        class="text-xl sm:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors"
       >
         {siteName}
       </a>
@@ -30,18 +31,18 @@ const { siteName = '' } = Astro.props;
         {NAV_ITEMS.map((item) => (
           <a
             href={item.href}
-            class="px-4 py-2 text-base font-medium text-brand-text hover:text-brand-primary hover:bg-brand-surface rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus"
+            class="px-4 py-2 min-h-[44px] inline-flex items-center text-base font-medium text-ink-base hover:text-brand-primary hover:bg-surface-muted rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
           >
             {item.label}
           </a>
         ))}
       </nav>
 
-      <!-- Nút Hamburger trên Mobile (vùng bấm tối thiểu 44x44px, ẩn khi chưa nạp JS để link hiển thị dự phòng) -->
+      <!-- Nút Hamburger trên Mobile (vùng bấm tối thiểu 44x44px, ẩn khi chưa nạp JS) -->
       <button
         type="button"
         id="menu-toggle-btn"
-        class="hidden lg:hidden inline-flex items-center gap-1.5 px-3 py-2 min-w-[44px] min-h-[44px] rounded-md text-brand-text hover:bg-brand-surface font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus"
+        class="hidden lg:hidden inline-flex items-center gap-1.5 px-3 py-2 min-w-[44px] min-h-[44px] rounded-md text-ink-base hover:bg-surface-muted font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
         aria-expanded="false"
         aria-controls="mobile-nav-panel"
         aria-label="Menu"
@@ -78,10 +79,10 @@ const { siteName = '' } = Astro.props;
       </button>
     </div>
 
-    <!-- Panel Menu Mobile: Hiển thị mặc định nếu JS tắt, được JS đóng lại khi khởi chạy -->
+    <!-- Panel Menu Mobile -->
     <nav
       id="mobile-nav-panel"
-      class="lg:hidden border-t border-brand-border py-3"
+      class="lg:hidden border-t border-border-default py-3"
       aria-label="Điều hướng trên di động"
     >
       <ul class="flex flex-col space-y-1">
@@ -89,7 +90,7 @@ const { siteName = '' } = Astro.props;
           <li>
             <a
               href={item.href}
-              class="block px-4 py-3 min-h-[44px] text-base font-medium text-brand-text hover:text-brand-primary hover:bg-brand-surface rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-focus"
+              class="block px-4 py-3 min-h-[44px] text-base font-medium text-ink-base hover:text-brand-primary hover:bg-surface-muted rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
             >
               {item.label}
             </a>
@@ -97,7 +98,7 @@ const { siteName = '' } = Astro.props;
         ))}
       </ul>
     </nav>
-  </div>
+  </Container>
 </header>
 
 <script src="../scripts/menu.ts"></script>

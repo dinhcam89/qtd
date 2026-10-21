@@ -94,9 +94,25 @@ test.describe('Smoke tests', () => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/404');
 
-    const homeLink = page.locator('a[href="/"]');
+    const homeLink = page.locator('main a[href="/"]');
     await expect(homeLink).toBeVisible();
     await expect(homeLink).toContainText('Quay về trang chủ');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('dòng bản quyền trong footer có khoảng trắng hợp lệ giữa năm và tên quỹ', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/');
+
+    const copyrightLocator = page.locator('#footer-copyright');
+    await expect(copyrightLocator).toBeVisible();
+
+    const copyrightText = await copyrightLocator.innerText();
+    expect(copyrightText).toMatch(/©\s*\d{4}\s+\S/);
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);

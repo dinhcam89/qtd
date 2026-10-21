@@ -36,6 +36,9 @@ jobs:
       - name: Astro type & schema check
         run: npm run check
 
+      - name: Check WCAG color contrast
+        run: npm run check:contrast
+
       - name: Build static site
         run: npm run build
 

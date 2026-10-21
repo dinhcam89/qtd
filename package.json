@@ -13,11 +13,14 @@
     "lint": "eslint . && prettier --check .",
     "check": "astro check",
     "test": "playwright test",
+    "check:contrast": "node ./scripts/check-contrast.mjs",
+    "shots": "node ./scripts/shots.mjs",
     "check:placeholders": "node ./scripts/check-placeholders.mjs",
     "check:dist": "node ./scripts/check-dist.mjs",
     "lhci": "echo '[CHỜ CẤU HÌNH LHCI]'"
   },
   "dependencies": {
+    "@fontsource/be-vietnam-pro": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.1",
     "tailwindcss": "^4.3.3"

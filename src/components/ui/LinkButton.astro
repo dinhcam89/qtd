@@ -1,0 +1,19 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary';
+  class?: string;
+  id?: string;
+  target?: string;
+  rel?: string;
+  'aria-label'?: string;
+}
+
+const props = Astro.props;
+---
+
+<Button {...props}>
+  <slot />
+</Button>

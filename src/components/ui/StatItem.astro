@@ -1,0 +1,43 @@
+---
+interface Props {
+  label: string;
+  value?: string | number | null;
+  unit?: string;
+  asOf?: string;
+  class?: string;
+}
+
+const { label, value, unit, asOf, class: className = '' } = Astro.props;
+
+const isNullValue = value === null || value === undefined || value === '';
+---
+
+<div
+  class:list={[
+    'flex flex-col justify-between h-full p-5 sm:p-6 rounded-lg bg-surface-page border border-border-default shadow-xs',
+    className,
+  ]}
+>
+  <div>
+    <div class="text-base font-medium text-ink-muted mb-2">{label}</div>
+
+    {isNullValue ? (
+      <div class="text-lg font-semibold text-ink-muted whitespace-nowrap py-2">
+        Đang cập nhật
+      </div>
+    ) : (
+      <div class="text-stat font-bold text-brand-primary tracking-tight leading-none">
+        {value}
+        {unit && (
+          <span class="text-base font-normal text-ink-muted ml-1">{unit}</span>
+        )}
+      </div>
+    )}
+  </div>
+
+  {asOf && (
+    <div class="text-sm text-ink-muted mt-4 pt-3 border-t border-border-default">
+      Tính đến {asOf}
+    </div>
+  )}
+</div>

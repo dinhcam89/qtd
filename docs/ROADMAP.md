@@ -13,7 +13,7 @@
 | 3     | Collection `news`, Header/Footer, trang chủ, 404                            | Xong       |
 | 4     | Playwright, axe, `_headers`, `check-dist`                                   | Xong       |
 | 5     | CI GitHub Actions                                                           | Xong       |
-| 6     | Design system                                                               | Chưa làm   |
+| 6     | Design system                                                               | Xong       |
 | 7–11  | Các trang nội dung                                                          | Chưa làm   |
 | 12–13 | CMS (có điều kiện)                                                          | Chưa làm   |
 | 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm   |

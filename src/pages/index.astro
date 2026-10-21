@@ -1,5 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import LinkButton from '../components/ui/LinkButton.astro';
+import StatItem from '../components/ui/StatItem.astro';
+import DataTable from '../components/ui/DataTable.astro';
+import Notice from '../components/ui/Notice.astro';
+import Card from '../components/ui/Card.astro';
 import { getSite, getRates } from '../lib/data';
 import { getPublishedNews } from '../lib/news';
 import {
@@ -25,234 +32,215 @@ const siteDescription =
 ---
 
 <BaseLayout title={siteTitle} description={siteDescription}>
-  <div class="space-y-12 sm:space-y-16">
-    <!-- 1. Hero Section -->
-    <section class="py-6 sm:py-10 border-b border-brand-border">
-      <div class="max-w-3xl space-y-4">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-primary tracking-tight">
+  <!-- 1. Hero Section -->
+  <Section
+    variant="default"
+    class="border-b border-border-default pt-8 pb-12 sm:pt-12 sm:pb-16"
+  >
+    <Container>
+      <div class="max-w-3xl space-y-5">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-primary tracking-tight leading-tight">
           {formatText(site.name)}
         </h1>
-        <p class="text-lg sm:text-xl text-brand-muted leading-relaxed">
+        <p class="text-lg sm:text-xl text-ink-muted leading-relaxed">
           {formatText(site.description)}
         </p>
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          <LinkButton href="#lai-suat" variant="primary">
+            Xem biểu lãi suất
+          </LinkButton>
+          <LinkButton href="#lien-he" variant="secondary">
+            Thông tin liên hệ
+          </LinkButton>
+        </div>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- 2. Khối Số liệu quy mô (#quy-mo) -->
-    <section id="quy-mo" class="scroll-mt-20 py-2">
-      <div class="space-y-4">
+  <!-- 2. Khối Số liệu quy mô (#quy-mo) -->
+  <Section id="quy-mo" variant="muted" class="scroll-mt-20">
+    <Container>
+      <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-          <h2 class="text-2xl font-bold text-brand-text">Quy mô hoạt động</h2>
-          <p class="text-sm text-brand-muted">
+          <h2 class="text-2xl font-bold text-ink-base">Quy mô hoạt động</h2>
+          <p class="text-sm text-ink-muted">
             {site.stats.as_of
               ? `Số liệu ${formatAsOf(site.stats.as_of)}`
               : `Số liệu: ${DEFAULT_FALLBACK_TEXT}`}
           </p>
         </div>
 
-        <!-- Lưới 4 cột trên Desktop, 2 cột trên Mobile -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-2">
-          <!-- Thành viên -->
-          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
-            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
-              Thành viên
-            </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
-              {formatNumber(site.stats.members_count)}
-            </div>
-            <span class="text-xs text-brand-muted block">thành viên</span>
-          </div>
+        <!-- Lưới 4 cột trên Desktop, 2 cột trên Mobile (các thẻ cao bằng nhau) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
+          <StatItem
+            label="Tổng thành viên"
+            value={formatNumber(site.stats.members_count)}
+            unit="thành viên"
+            asOf={formatAsOf(site.stats.as_of)}
+          />
 
-          <!-- Vốn điều lệ -->
-          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
-            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
-              Vốn điều lệ
-            </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
-              {formatCurrency(site.stats.charter_capital)}
-            </div>
-          </div>
+          <StatItem
+            label="Vốn điều lệ"
+            value={formatCurrency(site.stats.charter_capital)}
+            asOf={formatAsOf(site.stats.as_of)}
+          />
 
-          <!-- Tổng tài sản -->
-          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
-            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
-              Tổng tài sản
-            </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
-              {formatCurrency(site.stats.total_assets)}
-            </div>
-          </div>
+          <StatItem
+            label="Tổng tài sản"
+            value={formatCurrency(site.stats.total_assets)}
+            asOf={formatAsOf(site.stats.as_of)}
+          />
 
-          <!-- Tổng dư nợ cho vay -->
-          <div class="min-w-0 bg-brand-surface border border-brand-border rounded-lg p-4 sm:p-6 space-y-1">
-            <span class="text-xs sm:text-sm font-medium text-brand-muted uppercase tracking-wider block">
-              Dư nợ cho vay
-            </span>
-            <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-primary break-words">
-              {formatCurrency(site.stats.total_loans)}
-            </div>
-          </div>
+          <StatItem
+            label="Dư nợ cho vay"
+            value={formatCurrency(site.stats.total_loans)}
+            asOf={formatAsOf(site.stats.as_of)}
+          />
         </div>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- 3. Khối Lãi suất tóm tắt (#lai-suat) -->
-    <section
-      id="lai-suat"
-      class="scroll-mt-20 py-2 border-t border-brand-border pt-10"
-    >
-      <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-          <div>
-            <h2 class="text-2xl font-bold text-brand-text">
-              Biểu lãi suất tham khảo
-            </h2>
-            <p class="text-sm text-brand-muted mt-1">
-              {rates.effective_from
-                ? `Áp dụng từ ngày ${formatDate(rates.effective_from)}`
-                : `Thời điểm áp dụng: ${DEFAULT_FALLBACK_TEXT}`}
-            </p>
-          </div>
+  <!-- 3. Khối Lãi suất tóm tắt (#lai-suat) -->
+  <Section id="lai-suat" variant="default" class="scroll-mt-20">
+    <Container>
+      <div class="space-y-8">
+        <div>
+          <h2 class="text-2xl font-bold text-ink-base">
+            Biểu lãi suất tham khảo
+          </h2>
+          <p class="text-sm text-ink-muted mt-1">
+            {rates.effective_from
+              ? `Áp dụng từ ngày ${formatDate(rates.effective_from)}`
+              : `Thời điểm áp dụng: ${DEFAULT_FALLBACK_TEXT}`}
+          </p>
         </div>
 
         <!-- Bảng 1: Lãi suất tiền gửi (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
         <div class="space-y-3">
-          <h3 class="text-lg font-semibold text-brand-primary">
+          <h3 class="text-xl font-semibold text-brand-primary">
             Lãi suất tiền gửi
           </h3>
-          <div class="overflow-x-auto">
-            <table class="responsive-rate-table w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-brand-border bg-brand-surface text-brand-text text-sm font-semibold">
-                  <th scope="col" class="py-3 px-4">
-                    Kỳ hạn
-                  </th>
-                  <th scope="col" class="py-3 px-4">
-                    Lãi suất (%/năm)
-                  </th>
-                  <th scope="col" class="py-3 px-4">
-                    Ghi chú
-                  </th>
+          <DataTable class="shadow-xs">
+            <thead>
+              <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
+                <th scope="col" class="py-3.5 px-4 text-left">
+                  Kỳ hạn
+                </th>
+                <th scope="col" class="py-3.5 px-4 text-right">
+                  Lãi suất (%/năm)
+                </th>
+                <th scope="col" class="py-3.5 px-4 text-left">
+                  Ghi chú
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-default text-base">
+              {rates.deposit_rates.map((item) => (
+                <tr class="hover:bg-surface-muted/50 transition-colors">
+                  <td
+                    data-label="Kỳ hạn"
+                    class="py-3.5 px-4 font-medium text-ink-base text-left"
+                  >
+                    {formatText(item.term)}
+                  </td>
+                  <td
+                    data-label="Lãi suất (%/năm)"
+                    class="py-3.5 px-4 font-bold text-brand-primary text-right"
+                  >
+                    {formatPercent(item.rate)}
+                  </td>
+                  <td
+                    data-label="Ghi chú"
+                    class="py-3.5 px-4 text-ink-muted text-left"
+                  >
+                    {formatText(item.note, '—')}
+                  </td>
                 </tr>
-              </thead>
-              <tbody class="divide-y divide-brand-border text-sm">
-                {rates.deposit_rates.map((item) => (
-                  <tr class="hover:bg-brand-surface/50 transition-colors">
-                    <td
-                      data-label="Kỳ hạn"
-                      class="py-3 px-4 font-medium text-brand-text"
-                    >
-                      {formatText(item.term)}
-                    </td>
-                    <td
-                      data-label="Lãi suất (%/năm)"
-                      class="py-3 px-4 font-bold text-brand-primary"
-                    >
-                      {formatPercent(item.rate)}
-                    </td>
-                    <td data-label="Ghi chú" class="py-3 px-4 text-brand-muted">
-                      {formatText(item.note, '—')}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </DataTable>
         </div>
 
         <!-- Bảng 2: Lãi suất cho vay (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
-        <div class="space-y-3 pt-4">
-          <h3 class="text-lg font-semibold text-brand-primary">
+        <div class="space-y-3 pt-2">
+          <h3 class="text-xl font-semibold text-brand-primary">
             Lãi suất cho vay
           </h3>
-          <div class="overflow-x-auto">
-            <table class="responsive-rate-table w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-brand-border bg-brand-surface text-brand-text text-sm font-semibold">
-                  <th scope="col" class="py-3 px-4">
-                    Mục đích vay
-                  </th>
-                  <th scope="col" class="py-3 px-4">
-                    Kỳ hạn
-                  </th>
-                  <th scope="col" class="py-3 px-4">
-                    Lãi suất (%/năm)
-                  </th>
-                  <th scope="col" class="py-3 px-4">
-                    Ghi chú
-                  </th>
+          <DataTable class="shadow-xs">
+            <thead>
+              <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
+                <th scope="col" class="py-3.5 px-4 text-left">
+                  Mục đích vay
+                </th>
+                <th scope="col" class="py-3.5 px-4 text-left">
+                  Kỳ hạn
+                </th>
+                <th scope="col" class="py-3.5 px-4 text-right">
+                  Lãi suất (%/năm)
+                </th>
+                <th scope="col" class="py-3.5 px-4 text-left">
+                  Ghi chú
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-default text-base">
+              {rates.loan_rates.map((item) => (
+                <tr class="hover:bg-surface-muted/50 transition-colors">
+                  <td
+                    data-label="Mục đích vay"
+                    class="py-3.5 px-4 font-medium text-ink-base text-left"
+                  >
+                    {formatText(item.purpose)}
+                  </td>
+                  <td
+                    data-label="Kỳ hạn"
+                    class="py-3.5 px-4 text-ink-muted text-left"
+                  >
+                    {formatText(item.term, '—')}
+                  </td>
+                  <td
+                    data-label="Lãi suất (%/năm)"
+                    class="py-3.5 px-4 font-bold text-brand-primary text-right"
+                  >
+                    {formatPercent(item.rate)}
+                  </td>
+                  <td
+                    data-label="Ghi chú"
+                    class="py-3.5 px-4 text-ink-muted text-left"
+                  >
+                    {formatText(item.note, '—')}
+                  </td>
                 </tr>
-              </thead>
-              <tbody class="divide-y divide-brand-border text-sm">
-                {rates.loan_rates.map((item) => (
-                  <tr class="hover:bg-brand-surface/50 transition-colors">
-                    <td
-                      data-label="Mục đích vay"
-                      class="py-3 px-4 font-medium text-brand-text"
-                    >
-                      {formatText(item.purpose)}
-                    </td>
-                    <td data-label="Kỳ hạn" class="py-3 px-4 text-brand-muted">
-                      {formatText(item.term, '—')}
-                    </td>
-                    <td
-                      data-label="Lãi suất (%/năm)"
-                      class="py-3 px-4 font-bold text-brand-primary"
-                    >
-                      {formatPercent(item.rate)}
-                    </td>
-                    <td data-label="Ghi chú" class="py-3 px-4 text-brand-muted">
-                      {formatText(item.note, '—')}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </DataTable>
         </div>
 
-        <!-- Dòng lưu ý lãi suất bắt buộc -->
-        <p class="text-sm text-brand-muted italic bg-brand-surface p-3 rounded border border-brand-border">
-          {RATE_DISCLAIMER}
-        </p>
+        <!-- Dòng lưu ý lãi suất bắt buộc (Notice component, >= 16px, không in nghiêng) -->
+        <Notice variant="warning">{RATE_DISCLAIMER}</Notice>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- 4. Khối Tin mới (Ẩn hoàn toàn nếu chưa có bài công khai, đã lọc draft: true) -->
-    {publishedNews.length > 0 && (
-      <section
-        id="tin-tuc"
-        class="scroll-mt-20 py-2 border-t border-brand-border pt-10"
-      >
+  <!-- 4. Khối Tin mới (Ẩn hoàn toàn nếu chưa có bài công khai, đã lọc draft: true) -->
+  {publishedNews.length > 0 && (
+    <Section id="tin-tuc" variant="muted" class="scroll-mt-20">
+      <Container>
         <div class="space-y-6">
-          <h2 class="text-2xl font-bold text-brand-text">
-            Tin tức & Thông báo
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h2 class="text-2xl font-bold text-ink-base">Tin tức & Thông báo</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {publishedNews.slice(0, 3).map((item) => (
-              <article class="border border-brand-border rounded-lg p-5 bg-white space-y-3 flex flex-col justify-between">
-                <div class="space-y-2">
-                  <span class="inline-block text-xs font-semibold px-2 py-1 rounded bg-brand-surface text-brand-primary">
-                    {item.data.category}
-                  </span>
-                  <h3 class="text-lg font-bold text-brand-text line-clamp-2">
-                    {item.data.title}
-                  </h3>
-                  <p class="text-sm text-brand-muted line-clamp-3">
-                    {item.data.description}
-                  </p>
-                </div>
-                <time
-                  class="text-xs text-brand-muted block pt-2 border-t border-brand-border"
-                  datetime={item.data.pubDate.toISOString()}
-                >
-                  {formatDate(item.data.pubDate)}
-                </time>
-              </article>
+              <Card
+                title={item.data.title}
+                description={item.data.description}
+                badge={item.data.category}
+                date={formatDate(item.data.pubDate)}
+              />
             ))}
           </div>
         </div>
-      </section>
-    )}
-  </div>
+      </Container>
+    </Section>
+  )}
 </BaseLayout>
