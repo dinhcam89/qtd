@@ -3,6 +3,7 @@ import type { ContactData } from '../lib/schemas/contact';
 import type { ScheduleData } from '../lib/schemas/schedule';
 import type { SiteData } from '../lib/schemas/site';
 import { formatText } from '../lib/format';
+import { NAV_ITEMS } from '../lib/nav';
 import Container from './ui/Container.astro';
 
 interface Props {
@@ -129,6 +130,27 @@ const currentYear = new Date().getFullYear();
         )}
       </div>
     </div>
+
+    <!-- Liên kết nhanh: đủ mọi mục trong nav.ts, gồm các trang con không có ở menu ngang -->
+    <nav
+      data-footer-nav
+      aria-label="Liên kết nhanh"
+      class="border-t border-border-default mt-10 pt-6"
+    >
+      <h2 class="text-lg font-bold text-brand-primary mb-3">Liên kết nhanh</h2>
+      <ul class="flex flex-wrap gap-x-6 gap-y-1">
+        {NAV_ITEMS.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="inline-flex items-center min-h-[44px] text-base text-ink-base hover:text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
 
     <!-- Dòng bản quyền -->
     <div class="border-t border-border-default mt-10 pt-6 text-center text-sm text-ink-muted">

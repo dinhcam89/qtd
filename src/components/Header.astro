@@ -1,5 +1,5 @@
 ---
-import { NAV_ITEMS } from '../lib/nav';
+import { NAV_ITEMS, PRIMARY_NAV_ITEMS } from '../lib/nav';
 import Container from './ui/Container.astro';
 
 interface Props {
@@ -25,12 +25,13 @@ const { siteName = '' } = Astro.props;
         {siteName}
       </a>
 
-      <!-- Menu ngang trên Desktop (lg+) -->
+      <!-- Menu ngang trên Desktop (lg+): chỉ các mục primary, các trang con nằm ở Giới thiệu/footer -->
       <nav
+        data-desktop-nav
         class="hidden lg:flex items-center space-x-0.5 xl:space-x-1"
         aria-label="Điều hướng chính"
       >
-        {NAV_ITEMS.map((item) => (
+        {PRIMARY_NAV_ITEMS.map((item) => (
           <a
             href={item.href}
             class="px-2.5 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center text-sm xl:text-base font-medium text-ink-base hover:text-brand-primary hover:bg-surface-muted rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
