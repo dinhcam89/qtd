@@ -5,26 +5,26 @@
 
 ## 1. Bảng trạng thái tổng quan
 
-| Task | Nội dung                                               | Trạng thái      | Ngày hoàn thành | Commit    | Ghi chú                                                                            |
-| ---- | ------------------------------------------------------ | --------------- | --------------- | --------- | ---------------------------------------------------------------------------------- |
-| 1    | Scaffold Astro + Tailwind v4                           | Xong            | 2026-10-20      | `f29037f` | Nền tảng dự án, tooling, lint                                                      |
-| 2    | Schema Zod, dữ liệu placeholder, format.ts             | Xong            | 2026-10-20      | `e6eb322` | Zod schema, YAML, format vi-VN                                                     |
-| 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4                |
-| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass                |
-| 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; Cổng G1 đã hoàn thành         |
-| 6    | Design system                                          | Xong            | 2026-10-21      | `6ed277a` | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt |
+| Task | Nội dung                                               | Trạng thái      | Ngày hoàn thành | Commit    | Ghi chú                                                                              |
+| ---- | ------------------------------------------------------ | --------------- | --------------- | --------- | ------------------------------------------------------------------------------------ |
+| 1    | Scaffold Astro + Tailwind v4                           | Xong            | 2026-10-20      | `f29037f` | Nền tảng dự án, tooling, lint                                                        |
+| 2    | Schema Zod, dữ liệu placeholder, format.ts             | Xong            | 2026-10-20      | `e6eb322` | Zod schema, YAML, format vi-VN                                                       |
+| 3    | Collection news, layout, Header/Footer, trang chủ, 404 | Xong            | 2026-10-20      | `63746e9` | Mọi tiêu chí đạt bằng lệnh; đã kiểm thử Playwright tự động ở Task 4                  |
+| 4    | Playwright, axe, _headers, check-dist                  | Xong            | 2026-10-20      | `65baddb` | Smoke test 3 viewports, a11y axe-core, CSP headers, check:dist pass                  |
+| 5    | CI GitHub Actions                                      | Xong            | 2026-10-20      | `1c9cda0` | Task 5 đạt; cấu hình CI chuẩn hóa mọi bước kiểm tra; Cổng G1 đã hoàn thành           |
+| 6    | Design system                                          | Xong            | 2026-10-21      | `6ed277a` | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt   |
 | 7    | Trang Giới thiệu và Ban lãnh đạo                       | Xong            | 2026-10-21      | `6553a03` | Collection pages, /gioi-thieu, /lich-su, /ban-lanh-dao, nav.ts động, 59/59 test pass |
-| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         | Task tiếp theo                                                                     |
-| 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                    |
-| 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                                    |
-| 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                                    |
-| 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                         |
-| 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                         |
-| 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                                    |
-| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                                    |
-| 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                    |
-| 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                    |
-| 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                    |
+| 8    | Trang Sản phẩm và Lãi suất                             | Chưa làm        | —               | —         | Task tiếp theo                                                                       |
+| 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                      |
+| 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                                      |
+| 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                                      |
+| 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
+| 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
+| 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                                      |
+| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                                      |
+| 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                      |
+| 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                      |
+| 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                      |
 
 ---
 
