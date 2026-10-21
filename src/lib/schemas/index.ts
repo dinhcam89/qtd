@@ -5,3 +5,4 @@ export * from './schedule';
 export * from './leadership';
 export * from './news';
 export * from './pages';
+export * from './products';

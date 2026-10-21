@@ -4,6 +4,7 @@ import type { RatesData } from './schemas/rates';
 import type { ContactData } from './schemas/contact';
 import type { ScheduleData } from './schemas/schedule';
 import type { LeadershipData } from './schemas/leadership';
+import type { ProductsData } from './schemas/products';
 
 /**
  * Lấy dữ liệu cấu hình chung của Quỹ từ collection site.
@@ -23,6 +24,19 @@ export async function getRates(): Promise<RatesData> {
   const entry = await getEntry('rates', 'rates');
   if (!entry) {
     throw new Error('Không tìm thấy dữ liệu rates.yaml trong collection rates');
+  }
+  return entry.data;
+}
+
+/**
+ * Lấy danh mục sản phẩm (cho vay, tiền gửi) từ collection products.
+ */
+export async function getProducts(): Promise<ProductsData> {
+  const entry = await getEntry('products', 'products');
+  if (!entry) {
+    throw new Error(
+      'Không tìm thấy dữ liệu products.yaml trong collection products'
+    );
   }
   return entry.data;
 }
