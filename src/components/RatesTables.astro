@@ -22,16 +22,16 @@ const Heading = headingLevel as any;
       Lãi suất tiền gửi
     </Heading>
     {rates.deposit_rates.length > 0 ? (
-      <DataTable class="shadow-xs">
+      <DataTable class="shadow-xs md:table-fixed">
         <thead>
           <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
             <th scope="col" class="py-3.5 px-4 text-left">
               Kỳ hạn
             </th>
-            <th scope="col" class="py-3.5 px-4 text-right">
+            <th scope="col" class="py-3.5 px-4 text-right md:w-48">
               Lãi suất (%/năm)
             </th>
-            <th scope="col" class="py-3.5 px-4 text-left">
+            <th scope="col" class="py-3.5 px-4 text-left md:w-40">
               Ghi chú
             </th>
           </tr>
@@ -72,19 +72,19 @@ const Heading = headingLevel as any;
       Lãi suất cho vay
     </Heading>
     {rates.loan_rates.length > 0 ? (
-      <DataTable class="shadow-xs">
+      <DataTable class="shadow-xs md:table-fixed">
         <thead>
           <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
             <th scope="col" class="py-3.5 px-4 text-left">
               Mục đích vay
             </th>
-            <th scope="col" class="py-3.5 px-4 text-left">
+            <th scope="col" class="py-3.5 px-4 text-left md:w-36">
               Kỳ hạn
             </th>
-            <th scope="col" class="py-3.5 px-4 text-right">
+            <th scope="col" class="py-3.5 px-4 text-right md:w-48">
               Lãi suất (%/năm)
             </th>
-            <th scope="col" class="py-3.5 px-4 text-left">
+            <th scope="col" class="py-3.5 px-4 text-left md:w-40">
               Ghi chú
             </th>
           </tr>
