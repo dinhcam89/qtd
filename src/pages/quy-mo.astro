@@ -21,6 +21,50 @@ const pageTitle = `Quy mô hoạt động — Quỹ tín dụng nhân dân ${for
 const pageDescription = `Số liệu quy mô hoạt động tổng hợp của Quỹ tín dụng nhân dân ${formatText(site.name)}: thành viên, vốn điều lệ, tổng tài sản, huy động vốn và dư nợ cho vay.`;
 
 const asOf = stats.as_of ? formatDate(stats.as_of) : null;
+
+interface StatCardConfig {
+  label: string;
+  value: string | null;
+  unit?: string;
+}
+
+const statCards: StatCardConfig[] = [
+  {
+    label: 'Tổng thành viên',
+    value:
+      stats.members_count != null ? formatNumber(stats.members_count) : null,
+    unit: 'thành viên',
+  },
+  {
+    label: 'Vốn điều lệ',
+    value:
+      stats.charter_capital != null
+        ? formatCurrency(stats.charter_capital)
+        : null,
+  },
+  {
+    label: 'Tổng tài sản',
+    value:
+      stats.total_assets != null ? formatCurrency(stats.total_assets) : null,
+  },
+  {
+    label: 'Tiền gửi huy động',
+    value:
+      stats.total_deposits != null
+        ? formatCurrency(stats.total_deposits)
+        : null,
+  },
+  {
+    label: 'Dư nợ cho vay',
+    value: stats.total_loans != null ? formatCurrency(stats.total_loans) : null,
+  },
+];
+
+// Dùng lg:grid-cols-3 khi có 5 hoặc 6 thẻ để không để thẻ lẻ ở hàng 2, trang chủ giữ 4 cột
+const gridLgCols =
+  statCards.length === 5 || statCards.length === 6
+    ? 'lg:grid-cols-3'
+    : 'lg:grid-cols-4';
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -43,54 +87,21 @@ const asOf = stats.as_of ? formatDate(stats.as_of) : null;
   <Section class="bg-surface-page">
     <Container>
       <div data-page-content>
-        <!-- Lưới thẻ quy mô: 1 cột dưới 480px, 2 cột từ 480px đến dưới lg, 4 cột từ lg -->
-        <div class="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
-          <StatItem
-            label="Tổng thành viên"
-            value={
-              stats.members_count != null
-                ? formatNumber(stats.members_count)
-                : null
-            }
-            unit="thành viên"
-            asOf={asOf}
-          />
-          <StatItem
-            label="Vốn điều lệ"
-            value={
-              stats.charter_capital != null
-                ? formatCurrency(stats.charter_capital)
-                : null
-            }
-            asOf={asOf}
-          />
-          <StatItem
-            label="Tổng tài sản"
-            value={
-              stats.total_assets != null
-                ? formatCurrency(stats.total_assets)
-                : null
-            }
-            asOf={asOf}
-          />
-          <StatItem
-            label="Tiền gửi huy động"
-            value={
-              stats.total_deposits != null
-                ? formatCurrency(stats.total_deposits)
-                : null
-            }
-            asOf={asOf}
-          />
-          <StatItem
-            label="Dư nợ cho vay"
-            value={
-              stats.total_loans != null
-                ? formatCurrency(stats.total_loans)
-                : null
-            }
-            asOf={asOf}
-          />
+        <!-- Lưới thẻ quy mô: 1 cột dưới 480px, 2 cột từ 480px đến dưới lg, 3 cột từ lg khi có 5 thẻ -->
+        <div
+          class:list={[
+            'grid grid-cols-1 min-[480px]:grid-cols-2 gap-4 sm:gap-6 items-stretch',
+            gridLgCols,
+          ]}
+        >
+          {statCards.map((card) => (
+            <StatItem
+              label={card.label}
+              value={card.value}
+              unit={card.unit}
+              asOf={asOf}
+            />
+          ))}
         </div>
       </div>
     </Container>
