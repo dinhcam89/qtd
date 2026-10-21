@@ -25,6 +25,7 @@ const PAGES = [
   { path: '/quy-mo', slug: 'quy-mo' },
   { path: '/san-pham', slug: 'san-pham' },
   { path: '/lai-suat', slug: 'lai-suat' },
+  { path: '/quy-che', slug: 'quy-che' },
   { path: '/404', slug: '404' },
 ];
 

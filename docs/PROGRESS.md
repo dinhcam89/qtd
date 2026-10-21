@@ -15,9 +15,9 @@
 | 6    | Design system                                          | Xong            | 2026-10-21      | `6ed277a` | Tokens, Be Vietnam Pro tự host, 7 UI components, check:contrast pass, G2 chờ duyệt   |
 | 7    | Trang Giới thiệu và Ban lãnh đạo                       | Xong            | 2026-10-21      | `6553a03` | Collection pages, /gioi-thieu, /lich-su, /ban-lanh-dao, nav.ts động, 59/59 test pass |
 | 8    | Trang Quy mô, Sản phẩm và Lãi suất                     | Xong            | 2026-10-21      | `6f988ed` | /quy-mo, /san-pham, /lai-suat, nav `primary`, 137 test pass                          |
-| 9    | Trang Tin tức và Thông báo                             | Chưa làm        | —               | —         |                                                                                      |
-| 10   | Trang Quy chế và Biểu mẫu                              | Chưa làm        | —               | —         |                                                                                      |
-| 11   | Trang Liên hệ                                          | Chưa làm        | —               | —         |                                                                                      |
+| 9    | Quy chế và văn bản                                     | Xong            | 2026-10-21      | `8a48c1c` | Collection documents, /quy-che, nhóm tài liệu, test build fail, 150 test pass        |
+| 10   | Tin tức và Thông báo                                   | Chưa làm        | —               | —         |                                                                                      |
+| 11   | Liên hệ và Kênh chính thức                             | Chưa làm        | —               | —         |                                                                                      |
 | 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                                      |
@@ -150,3 +150,33 @@
   6. `npm test`: 137 passed, 70 skipped (trước đó 82 passed, 41 skipped); `lint`, `check`, `build`, `check:dist`, `check:contrast` pass.
 - **Số placeholder hiện tại:** 42 (thêm 2 trong `products.yaml`).
 - **Việc người dùng cần làm tiếp:** cung cấp nội dung thật cho sản phẩm, lãi suất, số liệu quy mô (G3).
+
+---
+
+## 9. Chi tiết đánh giá Task 9 (Quy chế và văn bản)
+
+- **Ngày đánh giá:** 2026-10-21 (nhánh `task-9-quy-che`, tạo từ `main` sau khi merge Task 8)
+- **Commit:**
+  - `af491c7`: `test(layout): make 1024px header test fail on overloaded menu (brand wrap and min gap)`
+  - `40a15ca`: `style(layout): format layout.spec.ts`
+  - `8a48c1c`: `feat(documents): implement collection documents and page /quy-che with group download list`
+- **Kết quả đối chiếu tiêu chí hoàn thành:**
+  1. **Bước 0:**
+     - Đã giải thích và chứng minh test header 1024px: bổ sung đo số dòng của brand và khoảng cách brand-menu (>= 16px). Đã chứng minh test FAIL khi quá tải (received 0px < 16px) và PASS khi ở trạng thái chuẩn.
+     - Kiểm tra `getNavRoutes()`: Mọi test `layout.spec.ts`, `smoke.spec.ts`, `a11y.spec.ts` đều dùng `getNavRoutes()` (bao gồm `/404`), tự động bao phủ trang mới `/quy-che`.
+  2. **Task 9:**
+     - Collection `documents` với Zod schema (`title`, `date`, `file`, `category`). Validate file tồn tại trong `public/docs/`.
+     - Đã chứng minh bằng chứng build FAIL khi trỏ tới file không tồn tại (`InvalidContentEntryDataError`), sau đó hoàn tác sạch sẽ.
+     - Link tải: Định dạng đầy đủ mô tả `Tải xuống: <tên> (PDF, <dung lượng>)`, cùng origin, có `rel="noopener noreferrer"`.
+     - `check:dist` kiểm tra link nội bộ tới file `.pdf` trong `dist`. Đã chứng minh bằng chứng FAIL khi thêm link PDF hỏng vào HTML trong dist, sau đó hoàn tác.
+     - Dung lượng tính lúc build từ file thực tế qua `formatFileSize` trong `src/lib/format.ts` theo chuẩn vi-VN.
+     - `/quy-che` đã khai báo trong `nav.ts` (`primary: false`), có thẻ liên kết ở `/gioi-thieu`, footer hiển thị đầy đủ.
+     - Cấu trúc trang chuẩn: `Container`, `PageHeader`, `Breadcrumb`, `data-page-content`.
+     - Test trang: có h1, trạng thái rỗng hiển thị "Đang cập nhật", không có liên kết tới file rác/không tồn tại.
+  3. **Không làm yếu test:**
+     - Số lượng assertions toàn bộ bộ test: 156 (trước task) -> 165 (sau task).
+  4. **Kiểm tra chất lượng:**
+     - Toàn bộ `npm run verify` PASS (lint, check, build, test, check:dist, check:contrast, check:placeholders, eol).
+     - Test Playwright: 150 passed, 2 skipped, 0 failed.
+- **Số placeholder hiện tại:** 42.
+- **Việc người dùng cần làm tiếp:** Chuẩn bị các file văn bản PDF thật (điều lệ, quy chế, biểu mẫu...) đưa vào `public/docs/` và khai báo nội dung tương ứng vào `src/content/documents/`.

@@ -8,6 +8,7 @@ import { leadershipSchema } from './lib/schemas/leadership';
 import { newsSchema } from './lib/schemas/news';
 import { pageSchema } from './lib/schemas/pages';
 import { productsSchema } from './lib/schemas/products';
+import { documentsSchema } from './lib/schemas/documents';
 
 export const collections = {
   site: defineCollection({
@@ -41,5 +42,9 @@ export const collections = {
   pages: defineCollection({
     loader: glob({ pattern: '**/*.{md,mdx}', base: 'src/content/pages' }),
     schema: pageSchema,
+  }),
+  documents: defineCollection({
+    loader: glob({ pattern: '**/*.yaml', base: 'src/content/documents' }),
+    schema: documentsSchema,
   }),
 };
