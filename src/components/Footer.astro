@@ -15,12 +15,12 @@ const { site, contact, schedule } = Astro.props;
 
 /**
  * Kiểm tra xem một giá trị liên hệ có hợp lệ để gắn thẻ link tel: hoặc mailto: hay không.
- * Nếu là null hoặc placeholder [CẦN BỔ SUNG...] thì không gắn link.
+ * Nếu là null hoặc chưa có thông tin thực tế (dạng [placeholder]) thì không gắn link.
  */
 function isActionableContact(val: string | null | undefined): boolean {
   if (!val) return false;
   const trimmed = val.trim();
-  if (trimmed.startsWith('[') && trimmed.includes('CẦN BỔ SUNG')) {
+  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
     return false;
   }
   return trimmed.length > 0;
