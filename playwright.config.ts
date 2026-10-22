@@ -64,7 +64,7 @@ export default defineConfig({
   webServer: isFixtures
     ? undefined
     : {
-        command: 'npm run preview',
+        command: 'npm run preview -- --ignore-lock',
         port: 4321,
         reuseExistingServer: !process.env.CI,
       },

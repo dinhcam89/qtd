@@ -3,6 +3,7 @@ import { setupPageGuards } from './helpers';
 import {
   NAV_ITEMS,
   PRIMARY_NAV_ITEMS,
+  FOOTER_NAV_ITEMS,
   MAX_PRIMARY_NAV_ITEMS,
 } from '../src/lib/nav';
 
@@ -53,6 +54,10 @@ test.describe('Menu điều hướng', () => {
       'panel menu mobile phải chứa đủ mọi mục trong nav.ts'
     ).toEqual(expected);
 
+    const footerExpected = FOOTER_NAV_ITEMS.map((item) => ({
+      label: item.label,
+      href: item.href,
+    }));
     const footer = await page
       .locator('[data-footer-nav] a')
       .evaluateAll((els) =>
@@ -61,9 +66,12 @@ test.describe('Menu điều hướng', () => {
           href: a.getAttribute('href'),
         }))
       );
-    expect(footer, 'footer phải chứa đủ mọi mục trong nav.ts').toEqual(
-      expected
+    expect(footer, 'footer phải chứa các mục FOOTER_NAV_ITEMS').toEqual(
+      footerExpected
     );
+    const footerLabels = footer.map((f) => f.label);
+    expect(footerLabels).not.toContain('Quy mô');
+    expect(footerLabels).not.toContain('Ban lãnh đạo');
   });
 
   test('menu mobile mở ra thấy đủ mọi mục trong nav.ts', async ({
@@ -121,7 +129,7 @@ test.describe('Menu điều hướng', () => {
   test('từ /gioi-thieu bấm từng mục ở footer thì URL cuối đúng', async ({
     page,
   }) => {
-    for (const item of NAV_ITEMS) {
+    for (const item of FOOTER_NAV_ITEMS) {
       await page.goto('/gioi-thieu');
       await page
         .locator('[data-footer-nav]')

@@ -3,7 +3,7 @@ import type { ContactData } from '../lib/schemas/contact';
 import type { ScheduleData } from '../lib/schemas/schedule';
 import type { SiteData } from '../lib/schemas/site';
 import { formatText } from '../lib/format';
-import { NAV_ITEMS } from '../lib/nav';
+import { FOOTER_NAV_ITEMS } from '../lib/nav';
 import { toTelHref, toMailtoHref } from '../lib/contact';
 import Container from './ui/Container.astro';
 
@@ -123,7 +123,7 @@ const currentYear = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Liên kết nhanh: đủ mọi mục trong nav.ts, gồm các trang con không có ở menu ngang -->
+    <!-- Liên kết nhanh: danh sách liên kết nhanh ở footer (đã bỏ Quy mô và Ban lãnh đạo) -->
     <nav
       data-footer-nav
       aria-label="Liên kết nhanh"
@@ -131,7 +131,7 @@ const currentYear = new Date().getFullYear();
     >
       <h2 class="text-lg font-bold text-brand-primary mb-3">Liên kết nhanh</h2>
       <ul class="flex flex-wrap gap-x-6 gap-y-1">
-        {NAV_ITEMS.map((item) => (
+        {FOOTER_NAV_ITEMS.map((item) => (
           <li>
             <a
               href={item.href}

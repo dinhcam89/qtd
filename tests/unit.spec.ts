@@ -26,6 +26,7 @@ import {
   buildOfficialDomainUrl,
   formatContactText,
 } from '../src/lib/contact';
+import { FOOTER_NAV_ITEMS, NAV_ITEMS } from '../src/lib/nav';
 import {
   buildRobotsTxt,
   buildCanonicalUrl,
@@ -799,6 +800,15 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
       );
       expect(prodMatch.isValid).toBe(true);
       expect(prodMatch.mode).toBe('production');
+    });
+  });
+
+  test.describe('Điều hướng chân trang (FOOTER_NAV_ITEMS)', () => {
+    test('loại bỏ đúng /quy-mo và /ban-lanh-dao nhưng giữ đủ các mục khác', () => {
+      const footerHrefs = FOOTER_NAV_ITEMS.map((item) => item.href);
+      expect(footerHrefs).not.toContain('/quy-mo');
+      expect(footerHrefs).not.toContain('/ban-lanh-dao');
+      expect(FOOTER_NAV_ITEMS.length).toBe(NAV_ITEMS.length - 2);
     });
   });
 });
