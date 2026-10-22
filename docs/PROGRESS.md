@@ -257,4 +257,3 @@
      - Sau task: 565 assertion (+139 assertion).
 - **Số placeholder hiện tại:** 44 (thêm 2 placeholder trường nội dung cho `site.official_domain` và frontmatter bản nháp).
 - **Việc người dùng cần làm tiếp:** Chuẩn bị tên miền thật và thông tin điểm giao dịch của quỹ, chuẩn bị cho Task 14 (SEO và Sitemap).
-
