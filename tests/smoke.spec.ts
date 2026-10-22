@@ -122,6 +122,36 @@ test.describe('Smoke tests', () => {
     });
   }
 
+  test('trang chủ (/): console không có lỗi 404 và không có yêu cầu nào thất bại', async ({
+    page,
+  }) => {
+    const failedRequests: string[] = [];
+    const responses404: string[] = [];
+    const consoleErrors: string[] = [];
+
+    page.on('requestfailed', (req) => {
+      failedRequests.push(
+        `${req.method()} ${req.url()}: ${req.failure()?.errorText}`
+      );
+    });
+    page.on('response', (res) => {
+      if (res.status() === 404) {
+        responses404.push(`${res.status()} ${res.url()}`);
+      }
+    });
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        consoleErrors.push(msg.text());
+      }
+    });
+
+    await page.goto('/');
+
+    expect(responses404, 'Không có phản hồi 404 nào').toEqual([]);
+    expect(failedRequests, 'Không có yêu cầu mạng nào thất bại').toEqual([]);
+    expect(consoleErrors, 'Console không có lỗi nào').toEqual([]);
+  });
+
   test('tương tác menu trên mobile: hamburger đổi aria-expanded và tự đóng khi bấm link', async ({
     page,
   }, testInfo) => {
