@@ -6,26 +6,26 @@
 
 ## 0. Trạng thái
 
-| Task  | Nội dung                                                                    | Trạng thái |
-| ----- | --------------------------------------------------------------------------- | ---------- |
-| 1     | Scaffold Astro + Tailwind v4                                                | Xong       |
-| 2     | Schema Zod, dữ liệu placeholder, `format.ts`, `check-placeholders --strict` | Xong       |
-| 3     | Collection `news`, Header/Footer, trang chủ, 404                            | Xong       |
-| 4     | Playwright, axe, `_headers`, `check-dist`                                   | Xong       |
-| 5     | CI GitHub Actions                                                           | Xong       |
-| 6     | Design system                                                               | Xong       |
-| 7     | Giới thiệu và Ban lãnh đạo                                                  | Xong       |
-| 8     | Quy mô, Sản phẩm, Lãi suất                                                  | Xong       |
-| 9     | Quy chế và văn bản                                                          | Xong       |
-| 9b    | Test trạng thái có dữ liệu                                                  | Xong       |
-| 10    | Tin tức và Thông báo                                                        | Xong       |
-| 11    | Các trang nội dung (Liên hệ, Kênh chính thức)                               | Xong       |
+| Task  | Nội dung                                                                    | Trạng thái      |
+| ----- | --------------------------------------------------------------------------- | --------------- |
+| 1     | Scaffold Astro + Tailwind v4                                                | Xong            |
+| 2     | Schema Zod, dữ liệu placeholder, `format.ts`, `check-placeholders --strict` | Xong            |
+| 3     | Collection `news`, Header/Footer, trang chủ, 404                            | Xong            |
+| 4     | Playwright, axe, `_headers`, `check-dist`                                   | Xong            |
+| 5     | CI GitHub Actions                                                           | Xong            |
+| 6     | Design system                                                               | Xong            |
+| 7     | Giới thiệu và Ban lãnh đạo                                                  | Xong            |
+| 8     | Quy mô, Sản phẩm, Lãi suất                                                  | Xong            |
+| 9     | Quy chế và văn bản                                                          | Xong            |
+| 9b    | Test trạng thái có dữ liệu                                                  | Xong            |
+| 10    | Tin tức và Thông báo                                                        | Xong            |
+| 11    | Các trang nội dung (Liên hệ, Kênh chính thức)                               | Xong            |
 | 12–13 | CMS (có điều kiện)                                                          | Bỏ qua (CMS: A) |
-| 14    | SEO và Sitemap                                                              | Xong       |
-| 15    | Bảo mật, hiệu năng, bảo trì                                                 | Xong       |
-| 16    | QA tổng, UAT                                                                | Chưa làm   |
-| 17    | Go-live                                                                     | Chưa làm   |
-| 18    | Runbook                                                                     | Chưa làm   |
+| 14    | SEO và Sitemap                                                              | Xong            |
+| 15    | Bảo mật, hiệu năng, bảo trì                                                 | Xong            |
+| 16    | QA tổng, UAT                                                                | Chưa làm        |
+| 17    | Go-live                                                                     | Chưa làm        |
+| 18    | Runbook                                                                     | Chưa làm        |
 
 **Điều kiện trước khi bắt đầu Task 4 (người dùng xác nhận):**
 
@@ -266,12 +266,12 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 **Tiêu chí hoàn thành:** `lhci` đạt ngưỡng, CI xanh, chạy thử lệnh build nhánh production khi còn placeholder phải **fail**.
 
 **Thứ tự việc người dùng cần làm sau khi merge (agent không thể tự làm):**
+
 1. Đặt biến `SITE_URL` trong Cloudflare, mục Build variables, giá trị `https://qtd.dinhcam1512.workers.dev`.
 2. Chạy thử `npm run build:cf` ở máy cục bộ để kiểm tra toàn vẹn.
 3. Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`, cho cả cấu hình production lẫn non-production nếu dashboard tách.
 4. Kiểm tra một build trên nhánh preview trước khi tin tưởng.
 5. Nếu phát sinh lỗi, đổi lại lệnh cũ hoặc rollback.
-
 
 ---
 

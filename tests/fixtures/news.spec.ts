@@ -519,4 +519,3 @@ test.describe('Fixture tests — /tin-tuc và trang chi tiết ở trạng thái
     expect(jsonContent).not.toContain('null');
   });
 });
-

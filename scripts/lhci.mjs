@@ -47,11 +47,15 @@ if (!fs.existsSync(distPath)) {
 }
 
 console.log('\n--- 1. KIỂM TRA LIGHTHOUSE CI TRÊN DIST (PRODUCTION) ---');
-const autorunRes = spawnSync('npx', ['lhci', 'autorun', '--config=lighthouserc.cjs'], {
-  shell: true,
-  stdio: 'inherit',
-  env: process.env,
-});
+const autorunRes = spawnSync(
+  'npx',
+  ['lhci', 'autorun', '--config=lighthouserc.cjs'],
+  {
+    shell: true,
+    stdio: 'inherit',
+    env: process.env,
+  }
+);
 
 const manifestPath = path.resolve('.lighthouseci/manifest.json');
 let distManifest = [];
@@ -171,7 +175,9 @@ if (shouldRunFixtures && fs.existsSync(distFixturesPath)) {
       .slice(0, fixtureUrls.length);
 
     console.log('\n=== BẢNG ĐIỂM LIGHTHOUSE (DIST-FIXTURES) ===');
-    console.log('| URL (Fixtures) | Performance | Accessibility | Best Practices | SEO |');
+    console.log(
+      '| URL (Fixtures) | Performance | Accessibility | Best Practices | SEO |'
+    );
     console.log('|---|---|---|---|---|');
 
     for (const file of files) {
@@ -197,7 +203,9 @@ if (shouldRunFixtures && fs.existsSync(distFixturesPath)) {
             .filter((a) => typeof a.score === 'number' && a.score < 1)
             .sort((a, b) => a.score - b.score)
             .slice(0, 3);
-          console.log(`  (Cảnh báo dưới ngưỡng) Top 3 audit kém nhất của ${p}:`);
+          console.log(
+            `  (Cảnh báo dưới ngưỡng) Top 3 audit kém nhất của ${p}:`
+          );
           for (const a of worstAudits) {
             console.log(
               `  - [${a.id}] ${a.title}: ${Math.round(a.score * 100)}% (${a.displayValue || 'N/A'})`

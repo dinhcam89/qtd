@@ -616,19 +616,33 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
     const validSiteUrl = 'https://qtd.dinhcam1512.workers.dev';
 
     test('từ chối build khi QTD_FIXTURES được bật (khác rỗng và khác 0)', () => {
-      const res1 = decideBuildMode({ QTD_FIXTURES: '1', SITE_URL: validSiteUrl });
+      const res1 = decideBuildMode({
+        QTD_FIXTURES: '1',
+        SITE_URL: validSiteUrl,
+      });
       expect(res1.isValid).toBe(false);
       expect(res1.errors.some((e) => e.includes('QTD_FIXTURES'))).toBe(true);
 
-      const resTrue = decideBuildMode({ QTD_FIXTURES: 'true', SITE_URL: validSiteUrl });
+      const resTrue = decideBuildMode({
+        QTD_FIXTURES: 'true',
+        SITE_URL: validSiteUrl,
+      });
       expect(resTrue.isValid).toBe(false);
 
       // Cho phép khi là "0", rỗng hoặc undefined
-      const res0 = decideBuildMode({ QTD_FIXTURES: '0', SITE_URL: validSiteUrl });
+      const res0 = decideBuildMode({
+        QTD_FIXTURES: '0',
+        SITE_URL: validSiteUrl,
+      });
       expect(res0.errors.some((e) => e.includes('QTD_FIXTURES'))).toBe(false);
 
-      const resEmpty = decideBuildMode({ QTD_FIXTURES: '', SITE_URL: validSiteUrl });
-      expect(resEmpty.errors.some((e) => e.includes('QTD_FIXTURES'))).toBe(false);
+      const resEmpty = decideBuildMode({
+        QTD_FIXTURES: '',
+        SITE_URL: validSiteUrl,
+      });
+      expect(resEmpty.errors.some((e) => e.includes('QTD_FIXTURES'))).toBe(
+        false
+      );
     });
 
     test('bắt buộc SITE_URL đúng định dạng https://<hostname> (không path, port, query, //)', () => {
@@ -637,26 +651,48 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
       expect(decideBuildMode({ SITE_URL: '' }).isValid).toBe(false);
 
       // Giao thức sai
-      expect(decideBuildMode({ SITE_URL: 'http://qtd.dinhcam1512.workers.dev' }).isValid).toBe(false);
+      expect(
+        decideBuildMode({ SITE_URL: 'http://qtd.dinhcam1512.workers.dev' })
+          .isValid
+      ).toBe(false);
 
       // Có path
-      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev/tin-tuc' }).isValid).toBe(false);
+      expect(
+        decideBuildMode({
+          SITE_URL: 'https://qtd.dinhcam1512.workers.dev/tin-tuc',
+        }).isValid
+      ).toBe(false);
 
       // Có cổng
-      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev:4321' }).isValid).toBe(false);
+      expect(
+        decideBuildMode({
+          SITE_URL: 'https://qtd.dinhcam1512.workers.dev:4321',
+        }).isValid
+      ).toBe(false);
 
       // Có query
-      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev?ref=1' }).isValid).toBe(false);
+      expect(
+        decideBuildMode({
+          SITE_URL: 'https://qtd.dinhcam1512.workers.dev?ref=1',
+        }).isValid
+      ).toBe(false);
 
       // Quá một dấu / ở cuối
-      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev//' }).isValid).toBe(false);
+      expect(
+        decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev//' })
+          .isValid
+      ).toBe(false);
 
       // Hợp lệ: không có dấu / hoặc có đúng một dấu /
-      const valid1 = decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev' });
+      const valid1 = decideBuildMode({
+        SITE_URL: 'https://qtd.dinhcam1512.workers.dev',
+      });
       expect(valid1.errors.some((e) => e.includes('SITE_URL'))).toBe(false);
       expect(valid1.host).toBe('qtd.dinhcam1512.workers.dev');
 
-      const valid2 = decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev/' });
+      const valid2 = decideBuildMode({
+        SITE_URL: 'https://qtd.dinhcam1512.workers.dev/',
+      });
       expect(valid2.errors.some((e) => e.includes('SITE_URL'))).toBe(false);
       expect(valid2.host).toBe('qtd.dinhcam1512.workers.dev');
     });
@@ -717,7 +753,9 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
         WORKERS_CI_BRANCH: 'production',
       });
       expect(prodWorkers.isValid).toBe(false);
-      expect(prodWorkers.errors.some((e) => e.includes('workers.dev'))).toBe(true);
+      expect(prodWorkers.errors.some((e) => e.includes('workers.dev'))).toBe(
+        true
+      );
 
       // Nhánh production với pages.dev -> TỪ CHỐI
       const prodPages = decideBuildMode({
@@ -747,7 +785,9 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
         { official_domain: 'qtd-tanbinh.vn' }
       );
       expect(prodMismatch.isValid).toBe(false);
-      expect(prodMismatch.errors.some((e) => e.includes('official_domain'))).toBe(true);
+      expect(
+        prodMismatch.errors.some((e) => e.includes('official_domain'))
+      ).toBe(true);
 
       // Nhánh production khớp official_domain -> HỢP LỆ
       const prodMatch = decideBuildMode(

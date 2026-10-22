@@ -87,7 +87,9 @@ if (astroBuildRes.status !== 0) {
   process.exit(astroBuildRes.status || 1);
 }
 
-console.log('\n[BUILD CLOUDFLARE] Kiểm tra toàn vẹn thư mục dist (check:dist)...');
+console.log(
+  '\n[BUILD CLOUDFLARE] Kiểm tra toàn vẹn thư mục dist (check:dist)...'
+);
 const checkDistRes = spawnSync('node', ['./scripts/check-dist.mjs'], {
   stdio: 'inherit',
   shell: true,
@@ -101,5 +103,7 @@ if (checkDistRes.status !== 0) {
   process.exit(checkDistRes.status || 1);
 }
 
-console.log('\n[THÀNH CÔNG] Build Cloudflare thành công và đạt chuẩn xuất xưởng!');
+console.log(
+  '\n[THÀNH CÔNG] Build Cloudflare thành công và đạt chuẩn xuất xưởng!'
+);
 process.exit(0);

@@ -21,7 +21,7 @@
 | 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 14   | SEO và Sitemap                                         | Xong            | 2026-10-22      | `45f640a` | @astrojs/sitemap, SEO component, robots.txt.ts, JSON-LD, check-dist rules            |
-| 15   | Bảo mật và Lighthouse CI                               | Xong            | 2026-10-22      | `task-15` | @lhci/cli, lighthouserc, dependabot, audit CI, scripts/build-cf, favicon, CLS 0     |
+| 15   | Bảo mật và Lighthouse CI                               | Xong            | 2026-10-22      | `task-15` | @lhci/cli, lighthouserc, dependabot, audit CI, scripts/build-cf, favicon, CLS 0      |
 | 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                      |
 | 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                      |
 | 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                      |
@@ -347,4 +347,3 @@
   3. Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`, cho cả cấu hình production lẫn non-production nếu dashboard tách.
   4. Kiểm tra một build trên nhánh preview trước khi tin tưởng.
   5. Nếu phát sinh lỗi, đổi lại lệnh cũ hoặc rollback.
-
