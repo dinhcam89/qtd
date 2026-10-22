@@ -463,4 +463,60 @@ test.describe('Fixture tests — /tin-tuc và trang chi tiết ở trạng thái
       ).toBe(false);
     }
   });
+
+  test('JSON-LD trong dist-fixtures parse được, không chứa "[" của placeholder và chuỗi "null", và không gây vi phạm CSP', async ({
+    page,
+  }) => {
+    const distFixturesDir = path.resolve('dist-fixtures');
+    if (!fs.existsSync(distFixturesDir)) {
+      return;
+    }
+
+    const htmlFiles: string[] = [];
+    function collectHtml(dir: string) {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          collectHtml(full);
+        } else if (entry.isFile() && entry.name.endsWith('.html')) {
+          htmlFiles.push(full);
+        }
+      }
+    }
+    collectHtml(distFixturesDir);
+
+    expect(htmlFiles.length).toBeGreaterThan(0);
+
+    let foundLdJson = false;
+    for (const file of htmlFiles) {
+      const content = fs.readFileSync(file, 'utf-8');
+      const ldRegex =
+        /<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+      let match;
+      while ((match = ldRegex.exec(content)) !== null) {
+        foundLdJson = true;
+        const body = match[1].trim();
+        expect(() => {
+          JSON.parse(body);
+        }).not.toThrow();
+
+        expect(body).not.toContain('[');
+        expect(body).not.toContain('null');
+      }
+    }
+    expect(foundLdJson).toBe(true);
+
+    const { cspViolations, consoleErrors } = await setupPageGuards(page);
+    await page.goto('/');
+    expect(cspViolations).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+
+    const scriptHandle = await page.$('script[type="application/ld+json"]');
+    expect(scriptHandle).not.toBeNull();
+    const jsonContent = await scriptHandle!.textContent();
+    expect(jsonContent).toBeTruthy();
+    expect(jsonContent).not.toContain('[');
+    expect(jsonContent).not.toContain('null');
+  });
 });
+
