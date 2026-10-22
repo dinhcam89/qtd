@@ -27,7 +27,8 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Lãi suất', href: '/lai-suat', primary: true },
   { label: 'Tin tức', href: '/tin-tuc', primary: true },
   { label: 'Thông báo', href: '/thong-bao', primary: false },
-  { label: 'Liên hệ', href: '/#lien-he', primary: true },
+  { label: 'Liên hệ', href: '/lien-he', primary: true },
+  { label: 'Kênh chính thức', href: '/kenh-chinh-thuc', primary: false },
 ] as const;
 
 /** Các mục hiển thị ở menu ngang desktop. */

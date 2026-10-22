@@ -1,0 +1,14 @@
+name: '[FIXTURE] Quỹ tín dụng nhân dân Mẫu'
+short_name: '[FIXTURE] QTDND Mẫu'
+license_number: '[FIXTURE] 01/GP-NHNN-TEST'
+established_year: 2000
+operating_area: '[FIXTURE] Địa bàn toàn huyện Kiểm Thử'
+description: '[FIXTURE] Tổ chức tín dụng hợp tác xã vì mục tiêu tương trợ thành viên và phát triển kinh tế địa phương.'
+official_domain: 'fixture.example.invalid'
+stats:
+  as_of: '2026-06-30'
+  members_count: 1500
+  charter_capital: 15000000000
+  total_assets: 120000000000
+  total_deposits: 95000000000
+  total_loans: 85000000000

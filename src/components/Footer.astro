@@ -4,6 +4,7 @@ import type { ScheduleData } from '../lib/schemas/schedule';
 import type { SiteData } from '../lib/schemas/site';
 import { formatText } from '../lib/format';
 import { NAV_ITEMS } from '../lib/nav';
+import { toTelHref, toMailtoHref } from '../lib/contact';
 import Container from './ui/Container.astro';
 
 interface Props {
@@ -14,18 +15,9 @@ interface Props {
 
 const { site, contact, schedule } = Astro.props;
 
-/**
- * Kiểm tra xem một giá trị liên hệ có hợp lệ để gắn thẻ link tel: hoặc mailto: hay không.
- * Nếu là null hoặc chưa có thông tin thực tế (dạng [placeholder]) thì không gắn link.
- */
-function isActionableContact(val: string | null | undefined): boolean {
-  if (!val) return false;
-  const trimmed = val.trim();
-  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-    return false;
-  }
-  return trimmed.length > 0;
-}
+const phoneHref = toTelHref(contact.phone);
+const hotlineHref = toTelHref(contact.hotline);
+const emailHref = toMailtoHref(contact.email);
 
 const currentYear = new Date().getFullYear();
 ---
@@ -66,9 +58,9 @@ const currentYear = new Date().getFullYear();
         </p>
         <p class="text-sm text-ink-muted">
           <span class="font-medium text-ink-base">Điện thoại:</span>{' '}
-          {isActionableContact(contact.phone) ? (
+          {phoneHref ? (
             <a
-              href={`tel:${contact.phone}`}
+              href={phoneHref}
               class="text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
             >
               {contact.phone}
@@ -80,9 +72,9 @@ const currentYear = new Date().getFullYear();
         {contact.hotline && (
           <p class="text-sm text-ink-muted">
             <span class="font-medium text-ink-base">Đường dây nóng:</span>{' '}
-            {isActionableContact(contact.hotline) ? (
+            {hotlineHref ? (
               <a
-                href={`tel:${contact.hotline}`}
+                href={hotlineHref}
                 class="text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
               >
                 {contact.hotline}
@@ -94,9 +86,9 @@ const currentYear = new Date().getFullYear();
         )}
         <p class="text-sm text-ink-muted">
           <span class="font-medium text-ink-base">Email:</span>{' '}
-          {isActionableContact(contact.email) ? (
+          {emailHref ? (
             <a
-              href={`mailto:${contact.email}`}
+              href={emailHref}
               class="text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
             >
               {contact.email}

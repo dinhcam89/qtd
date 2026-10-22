@@ -4,6 +4,7 @@ license_number: '[CẦN BỔ SUNG: số giấy phép hoạt động]'
 established_year: null
 operating_area: '[CẦN BỔ SUNG: địa bàn hoạt động]'
 description: '[CẦN BỔ SUNG: giới thiệu chung về quỹ]'
+official_domain: null
 stats:
   as_of: null
   members_count: null

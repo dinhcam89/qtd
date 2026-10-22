@@ -1,0 +1,285 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import { getSite, getContact, getSchedule } from '../lib/data';
+import { formatText } from '../lib/format';
+import {
+  toTelHref,
+  toMailtoHref,
+  buildMapUrl,
+  formatContactText,
+} from '../lib/contact';
+
+const site = await getSite();
+const contact = await getContact();
+const schedule = await getSchedule();
+
+const siteName = formatText(site.name);
+const headTitle = `Liên hệ — Quỹ tín dụng nhân dân ${siteName}`;
+const headDescription = `Thông tin liên hệ, địa chỉ trụ sở, thời gian làm việc và mạng lưới điểm giao dịch của Quỹ tín dụng nhân dân ${siteName}.`;
+
+const breadcrumbItems = [
+  { label: 'Trang chủ', href: '/' },
+  { label: 'Liên hệ', href: '/lien-he' },
+];
+
+const mainPhoneHref = toTelHref(contact.phone);
+const mainHotlineHref = toTelHref(contact.hotline);
+const mainEmailHref = toMailtoHref(contact.email);
+const mainMapUrl = buildMapUrl(contact.address?.full);
+
+const branches = contact.branches || [];
+---
+
+<BaseLayout title={headTitle} description={headDescription}>
+  <PageHeader
+    title="Thông tin liên hệ"
+    description={`Thông tin liên hệ chính thức, địa chỉ trụ sở, các điểm giao dịch và thời gian làm việc của Quỹ tín dụng nhân dân ${siteName}.`}
+    breadcrumb={breadcrumbItems}
+  />
+
+  <!-- Khối thông tin Trụ sở chính & Thời gian làm việc -->
+  <Section variant="default" class="py-10 sm:py-14">
+    <Container>
+      <div
+        data-page-content
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch"
+      >
+        <!-- Thông tin liên hệ trụ sở chính -->
+        <div class="rounded-xl border border-border-default bg-surface-page p-6 sm:p-8 flex flex-col h-full shadow-xs">
+          <h2 class="text-xl sm:text-2xl font-bold text-brand-primary mb-6">
+            Trụ sở chính
+          </h2>
+          <dl class="space-y-4 text-base flex-1">
+            <div data-contact-address>
+              <dt class="font-semibold text-ink-base">Địa chỉ:</dt>
+              <dd class="text-ink-muted mt-1 break-words">
+                {formatContactText(contact.address?.full)}
+              </dd>
+              {mainMapUrl && (
+                <dd class="mt-2">
+                  <a
+                    data-map-link
+                    href={mainMapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                  >
+                    Xem bản đồ trên Google Maps &rarr;
+                  </a>
+                </dd>
+              )}
+            </div>
+
+            <div data-contact-phone>
+              <dt class="font-semibold text-ink-base">Số điện thoại:</dt>
+              <dd class="text-ink-muted mt-1">
+                {mainPhoneHref ? (
+                  <a
+                    href={mainPhoneHref}
+                    class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                  >
+                    {contact.phone}
+                  </a>
+                ) : (
+                  formatContactText(contact.phone)
+                )}
+              </dd>
+            </div>
+
+            {contact.hotline && (
+              <div data-contact-hotline>
+                <dt class="font-semibold text-ink-base">Đường dây nóng:</dt>
+                <dd class="text-ink-muted mt-1">
+                  {mainHotlineHref ? (
+                    <a
+                      href={mainHotlineHref}
+                      class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                    >
+                      {contact.hotline}
+                    </a>
+                  ) : (
+                    formatContactText(contact.hotline)
+                  )}
+                </dd>
+              </div>
+            )}
+
+            <div data-contact-email>
+              <dt class="font-semibold text-ink-base">
+                Hộp thư điện tử (Email):
+              </dt>
+              <dd class="text-ink-muted mt-1">
+                {mainEmailHref ? (
+                  <a
+                    href={mainEmailHref}
+                    class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                  >
+                    {contact.email}
+                  </a>
+                ) : (
+                  formatContactText(contact.email)
+                )}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Thời gian làm việc -->
+        <div class="rounded-xl border border-border-default bg-surface-page p-6 sm:p-8 flex flex-col h-full shadow-xs">
+          <h2 class="text-xl sm:text-2xl font-bold text-brand-primary mb-6">
+            Thời gian giao dịch
+          </h2>
+          <dl class="space-y-4 text-base flex-1">
+            <div>
+              <dt class="font-semibold text-ink-base">
+                Ngày làm việc trong tuần:
+              </dt>
+              <dd class="text-ink-muted mt-1">
+                {formatText(schedule.working_days)}
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-ink-base">Buổi sáng:</dt>
+              <dd class="text-ink-muted mt-1">
+                {formatText(schedule.morning_hours)}
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-ink-base">Buổi chiều:</dt>
+              <dd class="text-ink-muted mt-1">
+                {formatText(schedule.afternoon_hours)}
+              </dd>
+            </div>
+            {schedule.notes && (
+              <div>
+                <dt class="font-semibold text-ink-base">Lưu ý giao dịch:</dt>
+                <dd class="text-sm text-ink-muted mt-1">
+                  {formatText(schedule.notes)}
+                </dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Khối danh sách điểm giao dịch (nếu có) -->
+  {branches.length > 0 && (
+    <Section
+      id="diem-giao-dich"
+      variant="muted"
+      class="border-t border-border-default py-10 sm:py-14"
+    >
+      <Container>
+        <div class="space-y-6">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-brand-primary">
+              Mạng lưới điểm giao dịch
+            </h2>
+            <p class="text-ink-muted mt-2">
+              Các điểm giao dịch trực thuộc Quỹ tín dụng nhân dân {siteName}.
+            </p>
+          </div>
+
+          <div
+            data-branches-grid
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch"
+          >
+            {branches.map((branch) => {
+              const bTelHref = toTelHref(branch.phone);
+              const bMapUrl = buildMapUrl(branch.address);
+
+              return (
+                <div
+                  data-branch-item
+                  class="rounded-xl border border-border-default bg-surface-page p-6 space-y-4 flex flex-col h-full shadow-xs"
+                >
+                  <h3 data-branch-name class="text-lg font-bold text-ink-base">
+                    {formatContactText(branch.name)}
+                  </h3>
+                  <dl class="space-y-3 text-sm flex-1">
+                    <div data-branch-address>
+                      <dt class="font-medium text-ink-base">Địa chỉ:</dt>
+                      <dd class="text-ink-muted mt-0.5 break-words">
+                        {formatContactText(branch.address)}
+                      </dd>
+                      {bMapUrl && (
+                        <dd class="mt-1.5">
+                          <a
+                            data-map-link
+                            href={bMapUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                          >
+                            Xem bản đồ &rarr;
+                          </a>
+                        </dd>
+                      )}
+                    </div>
+
+                    <div data-branch-phone>
+                      <dt class="font-medium text-ink-base">Điện thoại:</dt>
+                      <dd class="text-ink-muted mt-0.5">
+                        {bTelHref ? (
+                          <a
+                            href={bTelHref}
+                            class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                          >
+                            {branch.phone}
+                          </a>
+                        ) : (
+                          formatContactText(branch.phone)
+                        )}
+                      </dd>
+                    </div>
+
+                    <div data-branch-hours>
+                      <dt class="font-medium text-ink-base">Giờ làm việc:</dt>
+                      <dd class="text-ink-muted mt-0.5">
+                        {formatContactText(branch.working_hours)}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  <!-- Khối liên kết chuyển tiếp tới Kênh chính thức -->
+  <Section
+    variant="default"
+    class="border-t border-border-default py-10 sm:py-14"
+  >
+    <Container>
+      <div
+        data-official-channels-banner
+        class="rounded-xl border border-border-default bg-surface-muted p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+      >
+        <div class="space-y-2 max-w-2xl">
+          <h2 class="text-xl font-bold text-brand-primary">
+            Kênh thông tin chính thức & Cảnh báo an toàn
+          </h2>
+          <p class="text-sm sm:text-base text-ink-muted">
+            Tìm hiểu danh sách tên miền chính thức, các kênh liên lạc được xác
+            thực và biện pháp bảo vệ thông tin khi giao dịch tài chính với Quỹ.
+          </p>
+        </div>
+        <a
+          href="/kenh-chinh-thuc"
+          class="inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-lg font-medium text-white bg-brand-primary hover:bg-brand-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus shrink-0 text-center w-full md:w-auto"
+        >
+          Xem kênh chính thức &rarr;
+        </a>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

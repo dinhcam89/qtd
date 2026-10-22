@@ -19,6 +19,13 @@ import { sortHolidays } from '../src/lib/schedule';
 import { groupDocuments, type DocumentItem } from '../src/lib/documents';
 import { paginate } from '../src/lib/pagination';
 import { PAGE_SIZE } from '../src/lib/constants';
+import {
+  toTelHref,
+  toMailtoHref,
+  buildMapUrl,
+  buildOfficialDomainUrl,
+  formatContactText,
+} from '../src/lib/contact';
 
 test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)', () => {
   test('formatFileSize: bao phủ 0, 1023, 1024, 1536, 1048576, 1572864, null, undefined', () => {
@@ -332,5 +339,93 @@ test.describe('Unit tests — Helper tin tức, lịch nghỉ, ngày ISO', () =>
     expect(formatDateIso(new Date('2026-03-05T20:00:00Z'))).toBe('2026-03-06');
     expect(formatDateIso(null)).toBe('');
     expect(formatDateIso('khong-phai-ngay')).toBe('');
+  });
+});
+
+test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/contact.ts)', () => {
+  test('toTelHref: chuẩn hóa các định dạng hợp lệ, bỏ khoảng trắng/chấm/gạch', () => {
+    expect(toTelHref('0123 456 789')).toBe('tel:0123456789');
+    expect(toTelHref('0123.456.789')).toBe('tel:0123456789');
+    expect(toTelHref('0123-456-789')).toBe('tel:0123456789');
+    expect(toTelHref('+84 123 456 789')).toBe('tel:+84123456789');
+    expect(toTelHref('+84.123.456.789')).toBe('tel:+84123456789');
+    expect(toTelHref('024 3123 4567')).toBe('tel:02431234567');
+  });
+
+  test('toTelHref: trả về null cho số quá ngắn, quá dài, có chữ, placeholder, null, undefined', () => {
+    expect(toTelHref('012345')).toBeNull(); // Quá ngắn (< 9 số)
+    expect(toTelHref('01234567890123')).toBeNull(); // Quá dài (> 11 số)
+    expect(toTelHref('+84 12')).toBeNull(); // Quá ngắn
+    expect(toTelHref('+84 123456789012')).toBeNull(); // Quá dài
+    expect(toTelHref('0123abc789')).toBeNull(); // Có chữ cái
+    expect(toTelHref('+84 abc 123')).toBeNull();
+    expect(toTelHref('[CẦN BỔ SUNG: số điện thoại]')).toBeNull();
+    expect(toTelHref('[TÊN QUỸ]')).toBeNull();
+    expect(toTelHref('')).toBeNull();
+    expect(toTelHref('   ')).toBeNull();
+    expect(toTelHref(null)).toBeNull();
+    expect(toTelHref(undefined)).toBeNull();
+  });
+
+  test('toMailtoHref: chuẩn hóa email hợp lệ, trả về null cho email sai hoặc placeholder', () => {
+    expect(toMailtoHref('fixture@example.invalid')).toBe(
+      'mailto:fixture@example.invalid'
+    );
+    expect(toMailtoHref('contact@qtd.vn')).toBe('mailto:contact@qtd.vn');
+    expect(toMailtoHref('  info@domain.com.vn  ')).toBe(
+      'mailto:info@domain.com.vn'
+    );
+
+    // Không hợp lệ
+    expect(toMailtoHref('invalid-email')).toBeNull();
+    expect(toMailtoHref('@example.com')).toBeNull();
+    expect(toMailtoHref('user@')).toBeNull();
+    expect(toMailtoHref('user@domain')).toBeNull();
+    expect(toMailtoHref('user @domain.com')).toBeNull();
+    expect(toMailtoHref('[CẦN BỔ SUNG: email]')).toBeNull();
+    expect(toMailtoHref('')).toBeNull();
+    expect(toMailtoHref('   ')).toBeNull();
+    expect(toMailtoHref(null)).toBeNull();
+    expect(toMailtoHref(undefined)).toBeNull();
+  });
+
+  test('buildMapUrl: tạo link tìm kiếm Google Maps an toàn, null khi địa chỉ thiếu hoặc là placeholder', () => {
+    expect(buildMapUrl('Số 123 Đường Tín Dụng, Hà Nội')).toBe(
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Số 123 Đường Tín Dụng, Hà Nội')}`
+    );
+    expect(buildMapUrl('[CẦN BỔ SUNG: địa chỉ đầy đủ]')).toBeNull();
+    expect(buildMapUrl('[TÊN QUỸ]')).toBeNull();
+    expect(buildMapUrl('')).toBeNull();
+    expect(buildMapUrl('   ')).toBeNull();
+    expect(buildMapUrl(null)).toBeNull();
+    expect(buildMapUrl(undefined)).toBeNull();
+  });
+
+  test('buildOfficialDomainUrl: tạo URL https:// khi hostname hợp lệ, null khi có protocol/path/sai format', () => {
+    expect(buildOfficialDomainUrl('fixture.example.invalid')).toBe(
+      'https://fixture.example.invalid'
+    );
+    expect(buildOfficialDomainUrl('qtd.example.vn')).toBe(
+      'https://qtd.example.vn'
+    );
+    expect(buildOfficialDomainUrl('https://example.com')).toBeNull();
+    expect(buildOfficialDomainUrl('example.com/path')).toBeNull();
+    expect(buildOfficialDomainUrl('not a domain')).toBeNull();
+    expect(buildOfficialDomainUrl(null)).toBeNull();
+    expect(buildOfficialDomainUrl(undefined)).toBeNull();
+  });
+
+  test('formatContactText: trả về Đang cập nhật cho null/undefined/placeholder, giữ nguyên chuỗi hợp lệ', () => {
+    expect(formatContactText('0123 456 789')).toBe('0123 456 789');
+    expect(formatContactText('[CẦN BỔ SUNG: số điện thoại]')).toBe(
+      'Đang cập nhật'
+    );
+    expect(formatContactText('[TÊN QUỸ]')).toBe('Đang cập nhật');
+    expect(formatContactText(null)).toBe('Đang cập nhật');
+    expect(formatContactText(undefined)).toBe('Đang cập nhật');
+    expect(formatContactText('')).toBe('Đang cập nhật');
+    expect(formatContactText('  Số 123 Đường Tín Dụng  ')).toBe(
+      'Số 123 Đường Tín Dụng'
+    );
   });
 });
