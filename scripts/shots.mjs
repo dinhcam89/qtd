@@ -30,7 +30,10 @@ const PAGES = isFixtures
   ? [
       { path: '/tin-tuc/', slug: 'tin-tuc' },
       { path: '/tin-tuc/trang/2/', slug: 'tin-tuc-trang-2' },
-      { path: '/tin-tuc/bai-viet-markdown/', slug: 'tin-tuc-bai-viet-markdown' },
+      {
+        path: '/tin-tuc/bai-viet-markdown/',
+        slug: 'tin-tuc-bai-viet-markdown',
+      },
       { path: '/thong-bao/', slug: 'thong-bao' },
       { path: '/quy-che/', slug: 'quy-che' },
     ]
@@ -87,9 +90,13 @@ async function run() {
   if (isFixtures) {
     const { spawnSync } = await import('node:child_process');
     console.log('[shots] Đang build fixtures...');
-    const buildRes = spawnSync(process.execPath, [resolve('scripts/fixtures.mjs'), 'build'], {
-      stdio: 'inherit',
-    });
+    const buildRes = spawnSync(
+      process.execPath,
+      [resolve('scripts/fixtures.mjs'), 'build'],
+      {
+        stdio: 'inherit',
+      }
+    );
     if (buildRes.status !== 0) {
       throw new Error('Build fixtures thất bại!');
     }
@@ -155,4 +162,3 @@ run().catch((err) => {
   console.error('[LỖI CHỤP ẢNH]', err);
   process.exit(1);
 });
-
