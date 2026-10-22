@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import Card from '../components/ui/Card.astro';
+import { getSite, getContact, getPageEntry } from '../lib/data';
+import { formatText, formatDate } from '../lib/format';
+import {
+  toTelHref,
+  toMailtoHref,
+  buildOfficialDomainUrl,
+  formatContactText,
+} from '../lib/contact';
+import { render } from 'astro:content';
+
+const site = await getSite();
+const contact = await getContact();
+const pageEntry = await getPageEntry('kenh-chinh-thuc');
+const { Content } = await render(pageEntry);
+
+const siteName = formatText(site.name);
+const headTitle = `Kênh chính thức — Quỹ tín dụng nhân dân ${siteName}`;
+const headDescription = pageEntry.data.description;
+
+const breadcrumbItems = [
+  { label: 'Trang chủ', href: '/' },
+  { label: 'Kênh chính thức', href: '/kenh-chinh-thuc' },
+];
+
+const domainUrl = buildOfficialDomainUrl(site.official_domain);
+const phoneHref = toTelHref(contact.phone);
+const hotlineHref = toTelHref(contact.hotline);
+const emailHref = toMailtoHref(contact.email);
+---
+
+<BaseLayout title={headTitle} description={headDescription}>
+  <PageHeader
+    title="Kênh thông tin chính thức"
+    description={pageEntry.data.description}
+    breadcrumb={breadcrumbItems}
+  >
+    <p class="mt-2 text-sm text-ink-subtle">
+      Cập nhật: {formatDate(pageEntry.data.updated)}
+    </p>
+  </PageHeader>
+
+  <!-- Khối thông số nhận diện kênh chính thức -->
+  <Section variant="default" class="py-10 sm:py-14">
+    <Container>
+      <div
+        data-page-content
+        class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
+      >
+        <!-- Cột trái: Nội dung hướng dẫn nhận diện và phòng ngừa -->
+        <div class="lg:col-span-2 space-y-8">
+          <div class="content-body">
+            <Content />
+          </div>
+
+          <div class="pt-8 border-t border-border-default">
+            <h2 class="text-xl font-bold text-brand-primary mb-4">
+              Thông tin liên hệ trực tiếp
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Card
+                title="Thông tin liên hệ"
+                description="Xem địa chỉ trụ sở, số điện thoại và mạng lưới các điểm giao dịch của Quỹ."
+                href="/lien-he"
+              />
+              <Card
+                title="Lịch làm việc & Thông báo"
+                description="Thời gian làm việc thường xuyên và các thông báo mới nhất từ Quỹ."
+                href="/thong-bao"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột phải: Bảng thông tin nhận diện chính thức -->
+        <div class="space-y-6">
+          <div class="rounded-xl border border-brand-primary/20 bg-surface-muted p-6 sm:p-8 space-y-5 shadow-xs">
+            <h2 class="text-lg font-bold text-brand-primary">
+              Kênh liên lạc chính thức
+            </h2>
+            <dl class="space-y-4 text-sm">
+              <div data-official-domain>
+                <dt class="font-semibold text-ink-base">
+                  Tên miền website chính thức:
+                </dt>
+                <dd class="text-ink-muted mt-1 break-all">
+                  {domainUrl ? (
+                    <a
+                      href={domainUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                    >
+                      {domainUrl}
+                    </a>
+                  ) : (
+                    formatContactText(site.official_domain)
+                  )}
+                </dd>
+              </div>
+
+              {contact.hotline && (
+                <div data-official-hotline>
+                  <dt class="font-semibold text-ink-base">
+                    Đường dây nóng (Hotline):
+                  </dt>
+                  <dd class="text-ink-muted mt-1">
+                    {hotlineHref ? (
+                      <a
+                        href={hotlineHref}
+                        class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                      >
+                        {contact.hotline}
+                      </a>
+                    ) : (
+                      formatContactText(contact.hotline)
+                    )}
+                  </dd>
+                </div>
+              )}
+
+              <div data-official-phone>
+                <dt class="font-semibold text-ink-base">
+                  Số điện thoại liên hệ:
+                </dt>
+                <dd class="text-ink-muted mt-1">
+                  {phoneHref ? (
+                    <a
+                      href={phoneHref}
+                      class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                    >
+                      {contact.phone}
+                    </a>
+                  ) : (
+                    formatContactText(contact.phone)
+                  )}
+                </dd>
+              </div>
+
+              <div data-official-email>
+                <dt class="font-semibold text-ink-base">
+                  Hộp thư điện tử (Email):
+                </dt>
+                <dd class="text-ink-muted mt-1 break-all">
+                  {emailHref ? (
+                    <a
+                      href={emailHref}
+                      class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                    >
+                      {contact.email}
+                    </a>
+                  ) : (
+                    formatContactText(contact.email)
+                  )}
+                </dd>
+              </div>
+
+              <div data-official-address>
+                <dt class="font-semibold text-ink-base">Địa chỉ trụ sở:</dt>
+                <dd class="text-ink-muted mt-1 break-words">
+                  {formatContactText(contact.address?.full)}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

@@ -116,6 +116,14 @@ function checkDistHtmlFiles() {
       }
     }
 
+    // 7.5. Kiểm tra <iframe> (không được phép trong dist)
+    const iframeMatches = content.match(/<iframe\b[^>]*>/gi);
+    if (iframeMatches) {
+      errors.push(
+        `${relativePath}: Phát hiện ${iframeMatches.length} thẻ <iframe> không được phép.`
+      );
+    }
+
     // 8. Kiểm tra src/href tới domain bên ngoài
     // Đối với src: không được trỏ domain bên ngoài
     const srcRegex = /\bsrc\s*=\s*["'](https?:\/\/|\/\/)([^"']+)["']/gi;
@@ -145,12 +153,25 @@ function checkDistHtmlFiles() {
               `${relativePath}: Link ra ngoài '${href}' thiếu rel="noopener noreferrer".`
             );
           }
-        } else if (
-          !href.startsWith('#') &&
-          !href.startsWith('mailto:') &&
-          !href.startsWith('tel:') &&
-          !href.startsWith('javascript:')
-        ) {
+        } else if (href.startsWith('tel:')) {
+          const telValue = href.slice(4);
+          if (!/^(\+84|0)[0-9]{8,10}$/.test(telValue)) {
+            errors.push(
+              `${relativePath}: Link tel: '${href}' không đúng định dạng hợp lệ (phải bắt đầu bằng 0 hoặc +84, chỉ chứa chữ số, không khoảng trắng/chấm).`
+            );
+          }
+        } else if (href.startsWith('mailto:')) {
+          const mailtoValue = href.slice(7);
+          if (
+            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+              mailtoValue
+            )
+          ) {
+            errors.push(
+              `${relativePath}: Link mailto: '${href}' không đúng định dạng email hợp lệ.`
+            );
+          }
+        } else if (!href.startsWith('#') && !href.startsWith('javascript:')) {
           // Link nội bộ: kiểm tra xem file đích có tồn tại trong dist không
           let cleanHref = href.split('#')[0].split('?')[0];
           if (cleanHref.startsWith('/')) {

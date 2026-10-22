@@ -18,6 +18,7 @@
     "verify": "node ./scripts/verify.mjs",
     "check:contrast": "node ./scripts/check-contrast.mjs",
     "shots": "node ./scripts/shots.mjs",
+    "shots:fixtures": "node ./scripts/shots.mjs --fixtures",
     "check:placeholders": "node ./scripts/check-placeholders.mjs",
     "check:dist": "node ./scripts/check-dist.mjs",
     "lhci": "echo '[CHỜ CẤU HÌNH LHCI]'"

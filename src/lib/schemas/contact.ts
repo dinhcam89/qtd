@@ -8,6 +8,13 @@ export const addressSchema = z.object({
   full: z.string(),
 });
 
+export const branchSchema = z.object({
+  name: z.string().nullable().optional(),
+  address: z.string().nullable().optional(),
+  phone: z.string().nullable().optional(),
+  working_hours: z.string().nullable().optional(),
+});
+
 export const contactSchema = z.object({
   address: addressSchema,
   phone: z.string(),
@@ -16,7 +23,9 @@ export const contactSchema = z.object({
   facebook: z.string().nullable().optional(),
   zalo: z.string().nullable().optional(),
   map_embed_url: z.string().nullable().optional(),
+  branches: z.array(branchSchema).default([]),
 });
 
 export type Address = z.infer<typeof addressSchema>;
+export type Branch = z.infer<typeof branchSchema>;
 export type ContactData = z.infer<typeof contactSchema>;

@@ -161,6 +161,67 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     expect(cspViolations).toEqual([]);
   });
 
+  test('/lien-he: chế độ rỗng không có thẻ a[href^="tel:"], a[href^="mailto:"], liên kết bản đồ, iframe; hiển thị "Đang cập nhật" gọn gàng', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/lien-he');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Thông tin liên hệ');
+
+    // Không có link tel:, mailto:, map link, iframe
+    await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
+    await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
+    await expect(page.locator('a[data-map-link]')).toHaveCount(0);
+    await expect(page.locator('iframe')).toHaveCount(0);
+
+    // Hiển thị "Đang cập nhật" gọn gàng ở các khối liên hệ chính
+    const addressDd = page.locator('[data-contact-address] dd').first();
+    await expect(addressDd).toHaveText('Đang cập nhật');
+
+    const phoneDd = page.locator('[data-contact-phone] dd');
+    await expect(phoneDd).toHaveText('Đang cập nhật');
+
+    const emailDd = page.locator('[data-contact-email] dd');
+    await expect(emailDd).toHaveText('Đang cập nhật');
+
+    // Có banner dẫn tới /kenh-chinh-thuc
+    const bannerLink = page.locator('[data-official-channels-banner] a');
+    await expect(bannerLink).toBeVisible();
+    await expect(bannerLink).toHaveAttribute('href', '/kenh-chinh-thuc');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/kenh-chinh-thuc: chế độ rỗng không có tel:, mailto:, iframe; domain hiển thị "Đang cập nhật"', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/kenh-chinh-thuc');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Kênh thông tin chính thức');
+
+    // Không có link tel:, mailto:, iframe
+    await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
+    await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
+    await expect(page.locator('iframe')).toHaveCount(0);
+
+    // Domain hiển thị "Đang cập nhật" và không gắn link
+    const domainDd = page.locator('[data-official-domain] dd');
+    await expect(domainDd).toHaveText('Đang cập nhật');
+    await expect(domainDd.locator('a')).toHaveCount(0);
+
+    // Đề mục hướng dẫn an toàn
+    const content = page.locator('.content-body');
+    await expect(content).toBeVisible();
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
   test('bài mẫu draft: true trong src/content/news tuyệt đối không xuất hiện trong dist', () => {
     const distPath = path.resolve('dist');
     if (!fs.existsSync(distPath)) return;

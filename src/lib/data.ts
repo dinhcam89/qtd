@@ -81,9 +81,11 @@ export async function getLeadership(): Promise<LeadershipData> {
 }
 
 /**
- * Lấy nội dung văn bản từ collection pages theo slug (gioi-thieu, lich-su, su-menh).
+ * Lấy nội dung văn bản từ collection pages theo slug (gioi-thieu, lich-su, su-menh, kenh-chinh-thuc).
  */
-export async function getPageEntry(slug: 'gioi-thieu' | 'lich-su' | 'su-menh') {
+export async function getPageEntry(
+  slug: 'gioi-thieu' | 'lich-su' | 'su-menh' | 'kenh-chinh-thuc'
+) {
   const entry = await getEntry('pages', slug);
   if (!entry) {
     throw new Error(`Không tìm thấy trang '${slug}' trong collection pages`);

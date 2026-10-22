@@ -1,0 +1,25 @@
+address:
+  street: '[FIXTURE] Số 123 Đường Tín Dụng'
+  ward: '[FIXTURE] Phường 1'
+  district: '[FIXTURE] Quận Hợp Tác'
+  city: '[FIXTURE] Thành phố Kiểm Thử'
+  full: '[FIXTURE] Số 123 Đường Tín Dụng, Phường 1, Quận Hợp Tác, Thành phố Kiểm Thử'
+phone: '0123 456 789'
+hotline: '0123.456.789'
+email: 'fixture@example.invalid'
+facebook: null
+zalo: null
+map_embed_url: null
+branches:
+  - name: '[FIXTURE] Điểm giao dịch Phía Đông'
+    address: '[FIXTURE] Số 45 Đường Đông Sơn, Phường 2, Quận Hợp Tác, Thành phố Kiểm Thử'
+    phone: '0123 456 780'
+    working_hours: '[FIXTURE] Thứ Hai đến Thứ Sáu: 08:00 - 16:30'
+  - name: '[FIXTURE] Điểm giao dịch Trung tâm Nông nghiệp Công nghệ cao'
+    address: '[FIXTURE] Toà nhà phức hợp thương mại dịch vụ tài chính nông thôn, Tầng 1 Khu A, Số 9999 Đại lộ Phát Triển Bền Vững Xã Hội, Phường An Bình, Huyện Bình An, Tỉnh Kiểm Thử Mở Rộng Địa Giới Hành Chính Việt Nam'
+    phone: '0123-456-781'
+    working_hours: '[FIXTURE] Thứ Hai đến Thứ Bảy: 07:30 - 11:30, 13:00 - 17:00'
+  - name: '[FIXTURE] Điểm giao dịch Dự kiến Mở rộng'
+    address: null
+    phone: null
+    working_hours: null

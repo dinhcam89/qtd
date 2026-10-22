@@ -34,7 +34,10 @@ function getCollectionBase(
 
 export const collections = {
   site: defineCollection({
-    loader: glob({ pattern: 'site.yaml', base: 'src/data' }),
+    loader: glob({
+      pattern: 'site.yaml',
+      base: getCollectionBase('site', 'src/data'),
+    }),
     schema: siteSchema,
   }),
   rates: defineCollection({
@@ -46,7 +49,10 @@ export const collections = {
     schema: productsSchema,
   }),
   contact: defineCollection({
-    loader: glob({ pattern: 'contact.yaml', base: 'src/data' }),
+    loader: glob({
+      pattern: 'contact.yaml',
+      base: getCollectionBase('contact', 'src/data'),
+    }),
     schema: contactSchema,
   }),
   schedule: defineCollection({
