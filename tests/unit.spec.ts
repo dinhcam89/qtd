@@ -26,6 +26,12 @@ import {
   buildOfficialDomainUrl,
   formatContactText,
 } from '../src/lib/contact';
+import {
+  buildRobotsTxt,
+  buildCanonicalUrl,
+  getOgDefaultImagePath,
+  buildFinancialServiceJsonLd,
+} from '../src/lib/seo';
 
 test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)', () => {
   test('formatFileSize: bao phủ 0, 1023, 1024, 1536, 1048576, 1572864, null, undefined', () => {
@@ -388,6 +394,8 @@ test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/
     expect(toMailtoHref('user;semi@domain.com')).toBeNull();
     expect(toMailtoHref('user%20@domain.com')).toBeNull();
     expect(toMailtoHref('<user>@domain.com')).toBeNull();
+    expect(toMailtoHref('user<@domain.com')).toBeNull();
+    expect(toMailtoHref('user>@domain.com')).toBeNull();
     expect(toMailtoHref('[CẦN BỔ SUNG: email]')).toBeNull();
     expect(toMailtoHref('')).toBeNull();
     expect(toMailtoHref('   ')).toBeNull();
@@ -437,5 +445,161 @@ test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/
     expect(formatContactText('  Số 123 Đường Tín Dụng  ')).toBe(
       'Số 123 Đường Tín Dụng'
     );
+  });
+});
+
+test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
+  test('buildRobotsTxt: Allow all; chỉ chèn Sitemap khi không phải workers.dev hoặc pages.dev', () => {
+    // 1. Host pages.dev -> không có Sitemap
+    const robotsPagesDev = buildRobotsTxt('https://qtd.pages.dev');
+    expect(robotsPagesDev).toBe('User-agent: *\nAllow: /\n');
+    expect(robotsPagesDev).not.toContain('Sitemap:');
+
+    // 2. Host workers.dev -> không có Sitemap
+    const robotsWorkersDev = buildRobotsTxt('https://qtd.workers.dev');
+    expect(robotsWorkersDev).toBe('User-agent: *\nAllow: /\n');
+    expect(robotsWorkersDev).not.toContain('Sitemap:');
+
+    // 3. Subdomain bất kỳ của pages.dev
+    const robotsSubPagesDev = buildRobotsTxt('https://branch-1.qtd.pages.dev');
+    expect(robotsSubPagesDev).toBe('User-agent: *\nAllow: /\n');
+    expect(robotsSubPagesDev).not.toContain('Sitemap:');
+
+    // 4. Domain chính thức hoặc custom domain -> có Sitemap tuyệt đối
+    const robotsCustom = buildRobotsTxt('https://qtd.example.vn');
+    expect(robotsCustom).toBe(
+      'User-agent: *\nAllow: /\n\nSitemap: https://qtd.example.vn/sitemap-index.xml\n'
+    );
+    expect(robotsCustom).toContain(
+      'Sitemap: https://qtd.example.vn/sitemap-index.xml'
+    );
+
+    // 5. Chuỗi site rỗng hoặc sai -> fallback không có Sitemap
+    const robotsEmpty = buildRobotsTxt('');
+    expect(robotsEmpty).toBe('User-agent: *\nAllow: /\n');
+  });
+
+  test('buildCanonicalUrl: URL tuyệt đối chuẩn, luôn có dấu / cuối nhất quán', () => {
+    expect(buildCanonicalUrl('https://qtd.pages.dev', '/')).toBe(
+      'https://qtd.pages.dev/'
+    );
+    expect(buildCanonicalUrl('https://qtd.pages.dev', '/gioi-thieu')).toBe(
+      'https://qtd.pages.dev/gioi-thieu/'
+    );
+    expect(buildCanonicalUrl('https://qtd.pages.dev', '/gioi-thieu/')).toBe(
+      'https://qtd.pages.dev/gioi-thieu/'
+    );
+    expect(
+      buildCanonicalUrl('https://qtd.pages.dev/', '/tin-tuc/trang/2')
+    ).toBe('https://qtd.pages.dev/tin-tuc/trang/2/');
+    expect(
+      buildCanonicalUrl('https://qtd.example.vn', '/tin-tuc/bai-viet-1/')
+    ).toBe('https://qtd.example.vn/tin-tuc/bai-viet-1/');
+  });
+
+  test('getOgDefaultImagePath: trả về null khi không có file og-default.*', () => {
+    // Trong repo hiện tại không có ảnh og-default.* trong public/images/
+    const ogImg = getOgDefaultImagePath();
+    expect(ogImg).toBeNull();
+  });
+
+  test('buildFinancialServiceJsonLd: bỏ qua hoặc trả null khi tên quỹ là placeholder hoặc thiếu', () => {
+    // 1. Tên chứa [TÊN QUỸ] hoặc [CẦN
+    expect(
+      buildFinancialServiceJsonLd({
+        site: {
+          name: '[TÊN QUỸ]',
+          official_domain: 'qtd.example.vn',
+        },
+        contact: {
+          phone: '024 1234 5678',
+        },
+      })
+    ).toBeNull();
+
+    expect(
+      buildFinancialServiceJsonLd({
+        site: {
+          name: '[CẦN BỔ SUNG: tên quỹ]',
+          official_domain: 'qtd.example.vn',
+        },
+        contact: {
+          phone: '024 1234 5678',
+        },
+      })
+    ).toBeNull();
+
+    expect(
+      buildFinancialServiceJsonLd({
+        site: {
+          name: '',
+          official_domain: 'qtd.example.vn',
+        },
+      })
+    ).toBeNull();
+  });
+
+  test('buildFinancialServiceJsonLd: tạo schema FinancialService chuẩn khi có dữ liệu thật, không chứa placeholder hay "null"', () => {
+    const jsonLd = buildFinancialServiceJsonLd({
+      site: {
+        name: 'Quỹ tín dụng nhân dân Tân Bình',
+        official_domain: 'qtdtanbinh.vn',
+      },
+      contact: {
+        phone: '028 3811 1234',
+        address: {
+          street: '123 Đường Cộng Hòa, Phường 12',
+          city: 'TP. Hồ Chí Minh',
+          full: '123 Đường Cộng Hòa, Phường 12, TP. Hồ Chí Minh',
+        },
+      },
+    });
+
+    expect(jsonLd).not.toBeNull();
+    expect(jsonLd?.['@context']).toBe('https://schema.org');
+    expect(jsonLd?.['@type']).toBe('FinancialService');
+    expect(jsonLd?.name).toBe('Quỹ tín dụng nhân dân Tân Bình');
+    expect(jsonLd?.url).toBe('https://qtdtanbinh.vn');
+    expect(jsonLd?.telephone).toBe('02838111234');
+    expect(jsonLd?.address).toEqual({
+      '@type': 'PostalAddress',
+      streetAddress: '123 Đường Cộng Hòa, Phường 12',
+      addressLocality: 'TP. Hồ Chí Minh',
+      addressCountry: 'VN',
+    });
+
+    const serialized = JSON.stringify(jsonLd);
+    expect(serialized).not.toContain('[');
+    expect(serialized).not.toContain('null');
+  });
+
+  test('buildFinancialServiceJsonLd: tự động loại bỏ các trường placeholder hoặc null trong địa chỉ và liên hệ', () => {
+    const jsonLd = buildFinancialServiceJsonLd({
+      site: {
+        name: 'Quỹ tín dụng nhân dân Mẫu',
+        official_domain: null,
+      },
+      contact: {
+        phone: '[CẦN BỔ SUNG: số điện thoại]',
+        address: {
+          street: '[CẦN BỔ SUNG: địa chỉ]',
+          city: null,
+          full: '[CẦN BỔ SUNG: địa chỉ đầy đủ]',
+        },
+      },
+    });
+
+    expect(jsonLd).not.toBeNull();
+    expect(jsonLd?.name).toBe('Quỹ tín dụng nhân dân Mẫu');
+    // url bị bỏ qua vì officialDomain null
+    expect(jsonLd?.url).toBeUndefined();
+    // telephone bị bỏ qua vì là placeholder
+    expect(jsonLd?.telephone).toBeUndefined();
+    // address bị bỏ qua hoàn toàn vì không có thông tin địa chỉ cụ thể
+    expect(jsonLd?.address).toBeUndefined();
+
+    const serialized = JSON.stringify(jsonLd);
+    expect(serialized).not.toContain('[');
+    expect(serialized).not.toContain('null');
   });
 });

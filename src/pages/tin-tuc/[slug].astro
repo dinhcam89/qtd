@@ -36,7 +36,12 @@ const linkClass =
   'flex flex-col justify-center min-h-[44px] p-4 rounded-lg border border-border-default hover:border-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus';
 ---
 
-<BaseLayout title={pageTitle} description={entry.data.description}>
+<BaseLayout
+  title={pageTitle}
+  description={entry.data.description}
+  type="article"
+  publishedTime={entry.data.pubDate}
+>
   <PageHeader
     title={entry.data.title}
     breadcrumb={[

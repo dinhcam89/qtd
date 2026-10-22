@@ -16,4 +16,4 @@ updated: 2026-01-01
 
 Khi nhận được cuộc gọi, tin nhắn hoặc thông báo có dấu hiệu nghi ngờ mạo danh cán bộ hoặc thương hiệu của Quỹ tín dụng nhân dân, thành viên và khách hàng cần chủ động thực hiện các biện pháp kiểm chứng.
 
-[CẦN BỔ SUNG: Hướng dẫn các bước xác minh, số điện thoại đường dây nóng và quy trình tiếp nhận thông tin khi có nghi vấn giả mạo]
+[CẦN BỔ SUNG: kênh tiếp nhận phản ánh do quỹ quyết định]
