@@ -1,6 +1,8 @@
 # Build & cache
 dist/
+dist-fixtures/
 .astro/
+src/fixtures/public/docs/fixture-large.pdf
 
 # Dependencies
 node_modules/

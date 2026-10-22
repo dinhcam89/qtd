@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { siteSchema } from './lib/schemas/site';
@@ -9,6 +11,26 @@ import { newsSchema } from './lib/schemas/news';
 import { pageSchema } from './lib/schemas/pages';
 import { productsSchema } from './lib/schemas/products';
 import { documentsSchema } from './lib/schemas/documents';
+
+const isFixtures = process.env.QTD_FIXTURES === '1';
+
+function getCollectionBase(
+  collectionName: string,
+  defaultBase: string
+): string {
+  if (isFixtures) {
+    const fixtureDir = path.resolve(
+      process.cwd(),
+      'src',
+      'fixtures',
+      collectionName
+    );
+    if (fs.existsSync(fixtureDir)) {
+      return `src/fixtures/${collectionName}`;
+    }
+  }
+  return defaultBase;
+}
 
 export const collections = {
   site: defineCollection({
@@ -36,15 +58,24 @@ export const collections = {
     schema: leadershipSchema,
   }),
   news: defineCollection({
-    loader: glob({ pattern: '**/*.{md,mdx}', base: 'src/content/news' }),
+    loader: glob({
+      pattern: '**/*.{md,mdx}',
+      base: getCollectionBase('news', 'src/content/news'),
+    }),
     schema: newsSchema,
   }),
   pages: defineCollection({
-    loader: glob({ pattern: '**/*.{md,mdx}', base: 'src/content/pages' }),
+    loader: glob({
+      pattern: '**/*.{md,mdx}',
+      base: getCollectionBase('pages', 'src/content/pages'),
+    }),
     schema: pageSchema,
   }),
   documents: defineCollection({
-    loader: glob({ pattern: '**/*.yaml', base: 'src/content/documents' }),
+    loader: glob({
+      pattern: '**/*.yaml',
+      base: getCollectionBase('documents', 'src/content/documents'),
+    }),
     schema: documentsSchema,
   }),
 };

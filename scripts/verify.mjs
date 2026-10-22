@@ -93,6 +93,7 @@ const steps = [
   { name: 'check', cmd: 'npm run check' },
   { name: 'build', cmd: 'npm run build' },
   { name: 'test', cmd: 'npm run test', isTest: true },
+  { name: 'fixtures', cmd: 'npm run test:fixtures', isTest: true },
   { name: 'check:dist', cmd: 'npm run check:dist' },
   { name: 'check:contrast', cmd: 'npm run check:contrast' },
   {

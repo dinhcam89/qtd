@@ -73,6 +73,9 @@ export function formatFileSize(
   if (bytes === null || bytes === undefined || !(bytes >= 0)) {
     return fallback;
   }
+  if (bytes === 0) {
+    return '0 KB';
+  }
   const KB = 1024;
   const MB = KB * 1024;
   if (bytes < MB) {

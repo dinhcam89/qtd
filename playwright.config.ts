@@ -1,5 +1,9 @@
 import { defineConfig } from '@playwright/test';
 
+const isFixtures =
+  process.env.QTD_FIXTURES === '1' ||
+  process.argv.some((arg) => arg.includes('fixtures'));
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -14,21 +18,21 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop',
-      testIgnore: ['**/layout.spec.ts'],
+      testIgnore: ['**/layout.spec.ts', '**/unit.spec.ts', '**/fixtures/**'],
       use: {
         viewport: { width: 1280, height: 800 },
       },
     },
     {
       name: 'tablet',
-      testIgnore: ['**/layout.spec.ts'],
+      testIgnore: ['**/layout.spec.ts', '**/unit.spec.ts', '**/fixtures/**'],
       use: {
         viewport: { width: 768, height: 1024 },
       },
     },
     {
       name: 'mobile',
-      testIgnore: ['**/layout.spec.ts'],
+      testIgnore: ['**/layout.spec.ts', '**/unit.spec.ts', '**/fixtures/**'],
       use: {
         viewport: { width: 360, height: 640 },
         isMobile: true,
@@ -41,10 +45,27 @@ export default defineConfig({
         viewport: { width: 1280, height: 800 },
       },
     },
+    {
+      name: 'unit',
+      testMatch: ['**/unit.spec.ts'],
+    },
+    ...(isFixtures
+      ? [
+          {
+            name: 'fixtures',
+            testMatch: ['**/fixtures/**'],
+            use: {
+              baseURL: 'http://localhost:4322',
+            },
+          },
+        ]
+      : []),
   ],
-  webServer: {
-    command: 'npm run preview',
-    port: 4321,
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: isFixtures
+    ? undefined
+    : {
+        command: 'npm run preview',
+        port: 4321,
+        reuseExistingServer: !process.env.CI,
+      },
 });

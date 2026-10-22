@@ -54,6 +54,9 @@ jobs:
       - name: Run automated test suite (Playwright + Axe)
         run: npm test
 
+      - name: Run fixture tests
+        run: npm run test:fixtures
+
       - name: Upload Playwright report on failure
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() && failure() }}

@@ -202,6 +202,75 @@ function checkDistHtmlFiles() {
     }
   }
 
+  // 7. Hàng rào chống lọt fixture vào bản production
+  const fixturesDir = path.resolve('src/fixtures');
+  const fixtureFileNames = new Set();
+  if (fs.existsSync(fixturesDir)) {
+    function collectFixtureFiles(dir) {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          collectFixtureFiles(full);
+        } else if (entry.isFile()) {
+          fixtureFileNames.add(entry.name);
+        }
+      }
+    }
+    collectFixtureFiles(fixturesDir);
+  }
+
+  function checkAllDistFiles(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      const relative = path.relative(distDir, fullPath).replace(/\\/g, '/');
+
+      if (entry.name === 'dist-fixtures') {
+        errors.push(
+          `${relative}: Phát hiện thư mục 'dist-fixtures' nằm trong dist.`
+        );
+      }
+
+      if (entry.name.includes('[FIXTURE]')) {
+        errors.push(`${relative}: Tên file/thư mục chứa chuỗi '[FIXTURE]'.`);
+      }
+
+      if (entry.isDirectory()) {
+        checkAllDistFiles(fullPath);
+      } else if (entry.isFile()) {
+        if (fixtureFileNames.has(entry.name)) {
+          errors.push(
+            `${relative}: Phát hiện file '${entry.name}' bắt nguồn từ src/fixtures lọt vào dist.`
+          );
+        }
+
+        const ext = path.extname(entry.name).toLowerCase();
+        if (
+          [
+            '.html',
+            '.js',
+            '.css',
+            '.json',
+            '.txt',
+            '.xml',
+            '.svg',
+            '.map',
+          ].includes(ext)
+        ) {
+          const fileContent = fs.readFileSync(fullPath, 'utf-8');
+          if (fileContent.includes('[FIXTURE]')) {
+            errors.push(
+              `${relative}: Nội dung file chứa chuỗi '[FIXTURE]' không được phép trong dist.`
+            );
+          }
+        }
+      }
+    }
+  }
+
+  checkAllDistFiles(distDir);
+
   if (errors.length > 0) {
     console.error(`\n[THẤT BẠI] Phát hiện ${errors.length} lỗi trong dist:`);
     errors.forEach((err, idx) => console.error(`  ${idx + 1}. ${err}`));
