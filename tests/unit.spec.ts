@@ -778,7 +778,9 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
         BUILD_MODE: 'preview',
       });
       expect(conflictRes.isValid).toBe(false);
-      expect(conflictRes.errors.some((e) => e.includes('Mâu thuẫn'))).toBe(true);
+      expect(conflictRes.errors.some((e) => e.includes('Mâu thuẫn'))).toBe(
+        true
+      );
     });
 
     test('quy tắc production: cấm workers.dev/pages.dev và khớp official_domain nếu khác null', () => {

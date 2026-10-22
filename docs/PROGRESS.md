@@ -331,14 +331,14 @@
   4. **Lệnh build Cloudflare Workers Builds (scripts/build-cf.mjs):**
      - Hàm thuần `decideBuildMode(env, siteData)` trong `scripts/lib/build-mode.mjs` có các bộ unit test bao phủ toàn diện (kèm ma trận tổ hợp 16 trường hợp).
      - Nguồn tra cứu chính thức của Cloudflare Developers đã mở và xác minh:
-       + Trang Build configuration (mục Default variables): [Cloudflare Workers CI/CD Builds Configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
-       + Trang Changelog: [Access git commit sha and branch name as environment variables in Workers Builds](https://developers.cloudflare.com/workers/changelog/#access-git-commit-sha-and-branch-name-as-environment-variables-in-workers-builds)
-       + Biến quy định chính thức của Workers Builds là `WORKERS_CI_BRANCH`.
-       + Biến `CF_PAGES_BRANCH` được duy trì đọc làm biến dự phòng (chưa xác minh trong tài liệu Workers Builds, chỉ xuất hiện trong Cloudflare Pages).
+       - Trang Build configuration (mục Default variables): [Cloudflare Workers CI/CD Builds Configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
+       - Trang Changelog: [Access git commit sha and branch name as environment variables in Workers Builds](https://developers.cloudflare.com/workers/changelog/#access-git-commit-sha-and-branch-name-as-environment-variables-in-workers-builds)
+       - Biến quy định chính thức của Workers Builds là `WORKERS_CI_BRANCH`.
+       - Biến `CF_PAGES_BRANCH` được duy trì đọc làm biến dự phòng (chưa xác minh trong tài liệu Workers Builds, chỉ xuất hiện trong Cloudflare Pages).
      - Quy tắc fail-safe chế độ Production:
-       + Bản build tự động chuyển sang chế độ Production nghiêm ngặt (`--strict`) nếu: nhánh là "production", hoặc `BUILD_MODE=production`, HOẶC host của `SITE_URL` là tên miền thật (không kết thúc bằng `workers.dev` hay `pages.dev`), bất kể nhánh và kể cả khi không đọc được biến nhánh.
-       + Mâu thuẫn `BUILD_MODE=preview` kết hợp với `SITE_URL` tên miền thật bị từ chối ngay lập tức (exit 1).
-       + Chế độ Preview chỉ áp dụng cho host `workers.dev` hoặc `pages.dev`; nếu không đọc được biến nhánh hệ thống sẽ in cảnh báo an toàn.
+       - Bản build tự động chuyển sang chế độ Production nghiêm ngặt (`--strict`) nếu: nhánh là "production", hoặc `BUILD_MODE=production`, HOẶC host của `SITE_URL` là tên miền thật (không kết thúc bằng `workers.dev` hay `pages.dev`), bất kể nhánh và kể cả khi không đọc được biến nhánh.
+       - Mâu thuẫn `BUILD_MODE=preview` kết hợp với `SITE_URL` tên miền thật bị từ chối ngay lập tức (exit 1).
+       - Chế độ Preview chỉ áp dụng cho host `workers.dev` hoặc `pages.dev`; nếu không đọc được biến nhánh hệ thống sẽ in cảnh báo an toàn.
   5. **Thống kê test và assertion:**
      - Số assertion: Trước task: 643 assertion; Sau task: 698 assertion (+55 assertion).
      - Số test Playwright: 342 tests (desktop: 53, tablet: 53, mobile: 53, layout: 54, unit: 36, fixtures: 93).

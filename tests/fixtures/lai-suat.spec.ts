@@ -77,11 +77,11 @@ test.describe('Fixture tests — Biểu lãi suất mẫu & Quy mô & Chân tran
         );
         expect(overflowChecks.every(Boolean)).toBe(true);
 
-        // 2. Chân trang: kiểm tra liên kết nhanh không chứa "Quy mô" và "Ban lãnh đạo"
+        // 2. Chân trang: kiểm tra liên kết nhanh chứa đầy đủ các mục làm lối đi dự phòng
         const footerLinks = page.locator('[data-footer-nav] a');
         const footerTexts = await footerLinks.allTextContents();
-        expect(footerTexts).not.toContain('Quy mô');
-        expect(footerTexts).not.toContain('Ban lãnh đạo');
+        expect(footerTexts).toContain('Quy mô');
+        expect(footerTexts).toContain('Ban lãnh đạo');
 
         expect(consoleErrors).toHaveLength(0);
         expect(cspViolations).toHaveLength(0);
