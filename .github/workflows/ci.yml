@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Security audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Lint code & formatting
         run: npm run lint
 
@@ -45,11 +48,14 @@ jobs:
       - name: Verify dist integrity
         run: npm run check:dist
 
-      - name: Scan content placeholders (advisory)
-        run: npm run check:placeholders
-
       - name: Install Playwright browsers & system deps
         run: npx playwright install --with-deps chromium
+
+      - name: Run Lighthouse CI
+        run: npm run lhci
+
+      - name: Scan content placeholders (advisory)
+        run: npm run check:placeholders
 
       - name: Run automated test suite (Playwright + Axe)
         run: npm test
