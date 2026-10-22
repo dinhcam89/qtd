@@ -36,6 +36,8 @@ const PAGES = isFixtures
       },
       { path: '/thong-bao/', slug: 'thong-bao' },
       { path: '/quy-che/', slug: 'quy-che' },
+      { path: '/lien-he/', slug: 'lien-he' },
+      { path: '/kenh-chinh-thuc/', slug: 'kenh-chinh-thuc' },
     ]
   : [
       { path: '/', slug: 'index' },
