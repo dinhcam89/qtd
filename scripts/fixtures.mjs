@@ -350,7 +350,23 @@ async function runTests() {
     });
 
     cleanup();
-    process.exit(testRes.status ?? 0);
+
+    if (testRes.status !== 0) {
+      process.exit(testRes.status ?? 1);
+    }
+
+    console.log(
+      '\n[fixtures] Kiểm tra chất lượng thư mục dist-fixtures bằng check-dist...'
+    );
+    const checkDistRes = spawnSync(
+      'node',
+      ['./scripts/check-dist.mjs', 'dist-fixtures'],
+      {
+        shell: true,
+        stdio: 'inherit',
+      }
+    );
+    process.exit(checkDistRes.status ?? 0);
   } catch (err) {
     console.error('[fixtures] Thất bại:', err.message);
     cleanup();

@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const distDir = 'dist';
+const distDir = process.argv[2] || 'dist';
+const isFixturesDist =
+  distDir === 'dist-fixtures' || distDir.includes('fixture');
 let errors = [];
 
 function checkDistHtmlFiles() {
@@ -177,99 +179,101 @@ function checkDistHtmlFiles() {
     }
   }
 
-  // 6. Kiểm tra file _headers trong dist
-  const headersPath = path.join(distDir, '_headers');
-  if (!fs.existsSync(headersPath)) {
-    errors.push(`dist: Thiếu file '_headers' trong thư mục đầu ra.`);
-  } else {
-    const headersContent = fs.readFileSync(headersPath, 'utf-8');
-    const hasPagesDev =
-      headersContent.includes('pages.dev/*') &&
-      headersContent.includes('X-Robots-Tag: noindex');
-    const hasWorkersDev =
-      headersContent.includes('workers.dev/*') &&
-      headersContent.includes('X-Robots-Tag: noindex');
+  // 6. Kiểm tra file _headers trong dist (chỉ áp dụng cho bản production)
+  if (!isFixturesDist) {
+    const headersPath = path.join(distDir, '_headers');
+    if (!fs.existsSync(headersPath)) {
+      errors.push(`${distDir}: Thiếu file '_headers' trong thư mục đầu ra.`);
+    } else {
+      const headersContent = fs.readFileSync(headersPath, 'utf-8');
+      const hasPagesDev =
+        headersContent.includes('pages.dev/*') &&
+        headersContent.includes('X-Robots-Tag: noindex');
+      const hasWorkersDev =
+        headersContent.includes('workers.dev/*') &&
+        headersContent.includes('X-Robots-Tag: noindex');
 
-    if (!hasPagesDev) {
-      errors.push(
-        `_headers: Thiếu rule chặn index (X-Robots-Tag: noindex) cho host pages.dev.`
-      );
-    }
-    if (!hasWorkersDev) {
-      errors.push(
-        `_headers: Thiếu rule chặn index (X-Robots-Tag: noindex) cho host workers.dev.`
-      );
-    }
-  }
-
-  // 7. Hàng rào chống lọt fixture vào bản production
-  const fixturesDir = path.resolve('src/fixtures');
-  const fixtureFileNames = new Set();
-  if (fs.existsSync(fixturesDir)) {
-    function collectFixtureFiles(dir) {
-      const entries = fs.readdirSync(dir, { withFileTypes: true });
-      for (const entry of entries) {
-        const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-          collectFixtureFiles(full);
-        } else if (entry.isFile()) {
-          fixtureFileNames.add(entry.name);
-        }
-      }
-    }
-    collectFixtureFiles(fixturesDir);
-  }
-
-  function checkAllDistFiles(dir) {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
-      const relative = path.relative(distDir, fullPath).replace(/\\/g, '/');
-
-      if (entry.name === 'dist-fixtures') {
+      if (!hasPagesDev) {
         errors.push(
-          `${relative}: Phát hiện thư mục 'dist-fixtures' nằm trong dist.`
+          `_headers: Thiếu rule chặn index (X-Robots-Tag: noindex) cho host pages.dev.`
         );
       }
-
-      if (entry.name.includes('[FIXTURE]')) {
-        errors.push(`${relative}: Tên file/thư mục chứa chuỗi '[FIXTURE]'.`);
+      if (!hasWorkersDev) {
+        errors.push(
+          `_headers: Thiếu rule chặn index (X-Robots-Tag: noindex) cho host workers.dev.`
+        );
       }
+    }
 
-      if (entry.isDirectory()) {
-        checkAllDistFiles(fullPath);
-      } else if (entry.isFile()) {
-        if (fixtureFileNames.has(entry.name)) {
+    // 7. Hàng rào chống lọt fixture vào bản production
+    const fixturesDir = path.resolve('src/fixtures');
+    const fixtureFileNames = new Set();
+    if (fs.existsSync(fixturesDir)) {
+      function collectFixtureFiles(dir) {
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            collectFixtureFiles(full);
+          } else if (entry.isFile()) {
+            fixtureFileNames.add(entry.name);
+          }
+        }
+      }
+      collectFixtureFiles(fixturesDir);
+    }
+
+    function checkAllDistFiles(dir) {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        const relative = path.relative(distDir, fullPath).replace(/\\/g, '/');
+
+        if (entry.name === 'dist-fixtures') {
           errors.push(
-            `${relative}: Phát hiện file '${entry.name}' bắt nguồn từ src/fixtures lọt vào dist.`
+            `${relative}: Phát hiện thư mục 'dist-fixtures' nằm trong dist.`
           );
         }
 
-        const ext = path.extname(entry.name).toLowerCase();
-        if (
-          [
-            '.html',
-            '.js',
-            '.css',
-            '.json',
-            '.txt',
-            '.xml',
-            '.svg',
-            '.map',
-          ].includes(ext)
-        ) {
-          const fileContent = fs.readFileSync(fullPath, 'utf-8');
-          if (fileContent.includes('[FIXTURE]')) {
+        if (entry.name.includes('[FIXTURE]')) {
+          errors.push(`${relative}: Tên file/thư mục chứa chuỗi '[FIXTURE]'.`);
+        }
+
+        if (entry.isDirectory()) {
+          checkAllDistFiles(fullPath);
+        } else if (entry.isFile()) {
+          if (fixtureFileNames.has(entry.name)) {
             errors.push(
-              `${relative}: Nội dung file chứa chuỗi '[FIXTURE]' không được phép trong dist.`
+              `${relative}: Phát hiện file '${entry.name}' bắt nguồn từ src/fixtures lọt vào dist.`
             );
+          }
+
+          const ext = path.extname(entry.name).toLowerCase();
+          if (
+            [
+              '.html',
+              '.js',
+              '.css',
+              '.json',
+              '.txt',
+              '.xml',
+              '.svg',
+              '.map',
+            ].includes(ext)
+          ) {
+            const fileContent = fs.readFileSync(fullPath, 'utf-8');
+            if (fileContent.includes('[FIXTURE]')) {
+              errors.push(
+                `${relative}: Nội dung file chứa chuỗi '[FIXTURE]' không được phép trong dist.`
+              );
+            }
           }
         }
       }
     }
-  }
 
-  checkAllDistFiles(distDir);
+    checkAllDistFiles(distDir);
+  }
 
   if (errors.length > 0) {
     console.error(`\n[THẤT BẠI] Phát hiện ${errors.length} lỗi trong dist:`);

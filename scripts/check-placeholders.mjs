@@ -16,7 +16,11 @@ function scanDir(dir) {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if (entry.name !== 'node_modules' && entry.name !== '.astro') {
+      if (
+        entry.name !== 'node_modules' &&
+        entry.name !== '.astro' &&
+        entry.name !== 'fixtures'
+      ) {
         scanDir(fullPath);
       }
     } else if (
