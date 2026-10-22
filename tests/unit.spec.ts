@@ -382,6 +382,14 @@ test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/
       'mailto:info@domain.com.vn'
     );
 
+    // Các trường hợp injection / ký tự đặc biệt theo yêu cầu kiểm tra
+    expect(toMailtoHref('a%40b@x.vn')).toBeNull();
+    expect(toMailtoHref('a b@x.vn')).toBeNull();
+    expect(toMailtoHref('a@x.vn?subject=1')).toBeNull();
+    expect(toMailtoHref('a@x.vn,b@y.vn')).toBeNull();
+    expect(toMailtoHref('<a@x.vn>')).toBeNull();
+    expect(toMailtoHref('ten.ho+tag@x.vn')).toBe('mailto:ten.ho+tag@x.vn');
+
     // Không hợp lệ & từ chối ký tự đặc biệt / injection
     expect(toMailtoHref('invalid-email')).toBeNull();
     expect(toMailtoHref('@example.com')).toBeNull();
