@@ -376,12 +376,18 @@ test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/
       'mailto:info@domain.com.vn'
     );
 
-    // Không hợp lệ
+    // Không hợp lệ & từ chối ký tự đặc biệt / injection
     expect(toMailtoHref('invalid-email')).toBeNull();
     expect(toMailtoHref('@example.com')).toBeNull();
     expect(toMailtoHref('user@')).toBeNull();
     expect(toMailtoHref('user@domain')).toBeNull();
     expect(toMailtoHref('user @domain.com')).toBeNull();
+    expect(toMailtoHref('user?param=1@domain.com')).toBeNull();
+    expect(toMailtoHref('user&arg=2@domain.com')).toBeNull();
+    expect(toMailtoHref('user,name@domain.com')).toBeNull();
+    expect(toMailtoHref('user;semi@domain.com')).toBeNull();
+    expect(toMailtoHref('user%20@domain.com')).toBeNull();
+    expect(toMailtoHref('<user>@domain.com')).toBeNull();
     expect(toMailtoHref('[CẦN BỔ SUNG: email]')).toBeNull();
     expect(toMailtoHref('')).toBeNull();
     expect(toMailtoHref('   ')).toBeNull();
@@ -401,7 +407,7 @@ test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/
     expect(buildMapUrl(undefined)).toBeNull();
   });
 
-  test('buildOfficialDomainUrl: tạo URL https:// khi hostname hợp lệ, null khi có protocol/path/sai format', () => {
+  test('buildOfficialDomainUrl: tạo URL https:// khi hostname hợp lệ, null khi có protocol/path/sai format/từ chối /, :, @, khoảng trắng, chữ http', () => {
     expect(buildOfficialDomainUrl('fixture.example.invalid')).toBe(
       'https://fixture.example.invalid'
     );
@@ -409,6 +415,10 @@ test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/
       'https://qtd.example.vn'
     );
     expect(buildOfficialDomainUrl('https://example.com')).toBeNull();
+    expect(buildOfficialDomainUrl('http://example.com')).toBeNull();
+    expect(buildOfficialDomainUrl('http.example.vn')).toBeNull();
+    expect(buildOfficialDomainUrl('example.vn:8080')).toBeNull();
+    expect(buildOfficialDomainUrl('user@example.vn')).toBeNull();
     expect(buildOfficialDomainUrl('example.com/path')).toBeNull();
     expect(buildOfficialDomainUrl('not a domain')).toBeNull();
     expect(buildOfficialDomainUrl(null)).toBeNull();
