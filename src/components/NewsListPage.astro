@@ -28,7 +28,10 @@ const siteName = formatText(site.name);
 const pageTitle =
   (page > 1 ? `Tin tức — Trang ${page} — ` : 'Tin tức — ') +
   `Quỹ tín dụng nhân dân ${siteName}`;
-const pageDescription = `Tin tức, thông báo và hoạt động của Quỹ tín dụng nhân dân ${siteName}.`;
+const pageDescription =
+  page > 1
+    ? `Tin tức, thông báo và hoạt động của Quỹ tín dụng nhân dân ${siteName} (Trang ${page}/${totalPages}).`
+    : `Tin tức, thông báo và hoạt động của Quỹ tín dụng nhân dân ${siteName}.`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>

@@ -2,6 +2,7 @@
 import process from 'node:process';
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 const isFixtures = process.env.QTD_FIXTURES === '1';
 
@@ -21,4 +22,9 @@ export default defineConfig({
       assetsInlineLimit: 0,
     },
   },
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/404'),
+    }),
+  ],
 });

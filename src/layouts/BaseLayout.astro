@@ -3,30 +3,30 @@ import '../styles/global.css';
 import SkipLink from '../components/SkipLink.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
 import { getSite, getContact, getSchedule } from '../lib/data';
 
 interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date | string | null;
+  noindex?: boolean;
 }
 
 const site = await getSite();
 const contact = await getContact();
 const schedule = await getSchedule();
 
-const defaultTitle = site.name
-  ? `Quỹ tín dụng nhân dân ${site.name}`
-  : 'Quỹ tín dụng nhân dân';
-
 const {
-  title = defaultTitle,
-  description = `Cổng thông tin Quỹ tín dụng nhân dân ${site.name}`,
+  title,
+  description,
+  canonical,
+  type = 'website',
+  publishedTime = null,
+  noindex = false,
 } = Astro.props;
-
-const canonicalURL = new URL(
-  Astro.url.pathname,
-  Astro.site ?? 'https://qtd.workers.dev'
-);
 ---
 
 <!doctype html>
@@ -34,9 +34,16 @@ const canonicalURL = new URL(
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalURL} />
+    <SEO
+      title={title}
+      description={description}
+      canonical={canonical}
+      type={type}
+      publishedTime={publishedTime}
+      noindex={noindex}
+      site={site}
+      contact={contact}
+    />
   </head>
   <body class="min-h-screen flex flex-col bg-surface-page text-ink-base">
     <SkipLink targetId="main-content" />

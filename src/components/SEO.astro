@@ -1,0 +1,92 @@
+---
+import type { SiteData } from '../lib/schemas/site';
+import type { ContactData } from '../lib/schemas/contact';
+import {
+  buildCanonicalUrl,
+  getOgDefaultImagePath,
+  buildFinancialServiceJsonLd,
+} from '../lib/seo';
+import { formatText } from '../lib/format';
+import { resolve } from 'node:path';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date | string | null;
+  noindex?: boolean;
+  site: SiteData;
+  contact: ContactData;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  type = 'website',
+  publishedTime = null,
+  noindex = false,
+  site,
+  contact,
+} = Astro.props;
+
+const siteName = formatText(site.name);
+const finalTitle = title || `Quỹ tín dụng nhân dân ${siteName}`;
+const finalDescription =
+  description || `Cổng thông tin Quỹ tín dụng nhân dân ${siteName}`;
+
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://qtd.pages.dev';
+const canonicalUrl =
+  canonical || buildCanonicalUrl(siteUrl, Astro.url.pathname);
+
+// Kiểm tra sự tồn tại của file public/images/og-default.* lúc build bằng fs
+const isFixtures = process.env.QTD_FIXTURES === '1';
+const publicDir = resolve(isFixtures ? 'src/fixtures/public' : 'public');
+const ogImagePath = getOgDefaultImagePath(publicDir);
+const ogImageUrl = ogImagePath
+  ? new URL(ogImagePath, siteUrl).toString()
+  : null;
+
+// Sinh JSON-LD FinancialService tuân thủ schema.org
+const jsonLd = buildFinancialServiceJsonLd({ site, contact });
+
+// Định dạng ISO cho publishedTime của bài viết chi tiết
+let publishedTimeIso: string | null = null;
+if (type === 'article' && publishedTime) {
+  try {
+    const d =
+      publishedTime instanceof Date ? publishedTime : new Date(publishedTime);
+    if (!isNaN(d.getTime())) {
+      publishedTimeIso = d.toISOString();
+    }
+  } catch {
+    publishedTimeIso = null;
+  }
+}
+---
+
+<title>{finalTitle}</title>
+<meta name="description" content={finalDescription} />
+{noindex && <meta name="robots" content="noindex" />}
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={finalTitle} />
+<meta property="og:description" content={finalDescription} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:type" content={type} />
+<meta property="og:locale" content="vi_VN" />
+<meta property="og:site_name" content={`Quỹ tín dụng nhân dân ${siteName}`} />
+{type === 'article' && publishedTimeIso && (
+  <meta property="article:published_time" content={publishedTimeIso} />
+)}
+{ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary" />
+
+<!-- Structured Data (JSON-LD) -->
+{jsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+)}

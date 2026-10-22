@@ -39,6 +39,16 @@ function checkDistHtmlFiles() {
     `--- Bắt đầu kiểm tra ${htmlFiles.length} file HTML trong '${distDir}' ---`
   );
 
+  const seenTitles = new Map();
+  const seenDescriptions = new Map();
+  const siteUrl = process.env.SITE_URL || 'https://qtd.pages.dev';
+  let siteHost = 'qtd.pages.dev';
+  try {
+    siteHost = new URL(siteUrl).host;
+  } catch {
+    siteHost = 'qtd.pages.dev';
+  }
+
   for (const filePath of htmlFiles) {
     const relativePath = path.relative(distDir, filePath).replace(/\\/g, '/');
     const content = fs.readFileSync(filePath, 'utf-8');
@@ -69,20 +79,49 @@ function checkDistHtmlFiles() {
       }
     }
 
+    // 2.5. Kiểm tra JSON-LD: cú pháp parse được và cấm placeholder [CẦN, [TÊN QUỸ]
+    const ldJsonRegex =
+      /<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+    let ldMatch;
+    while ((ldMatch = ldJsonRegex.exec(content)) !== null) {
+      const ldBody = (ldMatch[1] || '').trim();
+      try {
+        JSON.parse(ldBody);
+      } catch {
+        errors.push(
+          `${relativePath}: Khối JSON-LD không parse được cú pháp JSON.`
+        );
+      }
+      if (ldBody.includes('[CẦN') || ldBody.includes('[TÊN QUỸ]')) {
+        errors.push(
+          `${relativePath}: Khối JSON-LD chứa placeholder không được phép ([CẦN hoặc [TÊN QUỸ]).`
+        );
+      }
+    }
+
     // 3. Kiểm tra lang trên <html>
     if (!/<html\b[^>]*\blang=["'][^"']+["']/i.test(content)) {
       errors.push(`${relativePath}: Thẻ <html> thiếu thuộc tính lang hợp lệ.`);
     }
 
-    // 4. Kiểm tra <title>
+    // 4. Kiểm tra <title> và không trùng lặp giữa các trang
     const titleMatch = content.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i);
     if (!titleMatch || titleMatch[1].trim().length === 0) {
       errors.push(
         `${relativePath}: Thiếu thẻ <title> hoặc nội dung title rỗng.`
       );
+    } else {
+      const title = titleMatch[1].trim();
+      if (seenTitles.has(title)) {
+        errors.push(
+          `${relativePath}: Tiêu đề (title) '${title}' bị trùng lặp với '${seenTitles.get(title)}'.`
+        );
+      } else {
+        seenTitles.set(title, relativePath);
+      }
     }
 
-    // 5. Kiểm tra meta description
+    // 5. Kiểm tra meta description và không trùng lặp giữa các trang
     const descMatch =
       content.match(
         /<meta\b[^>]*\bname=["']description["'][^>]*\bcontent=["']([^"']*)["']/i
@@ -94,6 +133,41 @@ function checkDistHtmlFiles() {
       errors.push(
         `${relativePath}: Thiếu thẻ meta description hoặc content rỗng.`
       );
+    } else {
+      const desc = descMatch[1].trim();
+      if (seenDescriptions.has(desc)) {
+        errors.push(
+          `${relativePath}: Thẻ meta description bị trùng lặp với '${seenDescriptions.get(desc)}'.`
+        );
+      } else {
+        seenDescriptions.set(desc, relativePath);
+      }
+    }
+
+    // 5.5. Kiểm tra thẻ canonical tuyệt đối và cùng host với site
+    const canonicalMatch =
+      content.match(
+        /<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']([^"']*)["']/i
+      ) ||
+      content.match(
+        /<link\b[^>]*\bhref=["']([^"']*)["'][^>]*\brel=["']canonical["']/i
+      );
+    if (!canonicalMatch || !canonicalMatch[1].trim()) {
+      errors.push(`${relativePath}: Thiếu thẻ <link rel="canonical">.`);
+    } else {
+      const canonicalHref = canonicalMatch[1].trim();
+      try {
+        const canonicalUrl = new URL(canonicalHref);
+        if (canonicalUrl.host !== siteHost) {
+          errors.push(
+            `${relativePath}: Thẻ canonical '${canonicalHref}' khác host với site (kỳ vọng '${siteHost}').`
+          );
+        }
+      } catch {
+        errors.push(
+          `${relativePath}: Thẻ canonical '${canonicalHref}' không phải URL tuyệt đối hợp lệ.`
+        );
+      }
     }
 
     // 6. Kiểm tra số lượng thẻ <h1> (phải có đúng 1)
@@ -198,6 +272,14 @@ function checkDistHtmlFiles() {
         }
       }
     }
+  }
+
+  // 5.6. Kiểm tra file sitemap-index.xml
+  const sitemapIndexPath = path.join(distDir, 'sitemap-index.xml');
+  if (!fs.existsSync(sitemapIndexPath)) {
+    errors.push(
+      `${distDir}: Thiếu file 'sitemap-index.xml' trong thư mục xuất xưởng.`
+    );
   }
 
   // 6. Kiểm tra file _headers trong dist (chỉ áp dụng cho bản production)
