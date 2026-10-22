@@ -1,4 +1,18 @@
 /**
+ * Kiểm tra hostname có phải là tên miền xem trước (workers.dev hoặc pages.dev) hay không.
+ */
+export function isPreviewHost(hostname) {
+  if (!hostname || typeof hostname !== 'string') return false;
+  const h = hostname.trim().toLowerCase();
+  return (
+    h.endsWith('.workers.dev') ||
+    h === 'workers.dev' ||
+    h.endsWith('.pages.dev') ||
+    h === 'pages.dev'
+  );
+}
+
+/**
  * Hàm thuần quyết định chế độ build cho Cloudflare Workers Builds.
  * Không phụ thuộc vào I/O để dễ dàng kiểm thử đơn vị.
  */
@@ -56,49 +70,66 @@ export function decideBuildMode(env, siteData = {}) {
     }
   }
 
-  // iii) Nhánh hiện tại đọc từ biến môi trường của Cloudflare Workers Builds (WORKERS_CI_BRANCH hoặc fallback CF_PAGES_BRANCH).
-  // Cho phép ghi đè bằng BUILD_MODE=production hoặc preview.
-  let mode = 'preview';
-  let branch = null;
-
+  // iii) Xác định biến nhánh và giá trị BUILD_MODE nếu có
+  let explicitMode = null;
   if (env.BUILD_MODE) {
     const bm = env.BUILD_MODE.trim().toLowerCase();
     if (bm === 'production' || bm === 'preview') {
-      mode = bm;
+      explicitMode = bm;
     } else {
       errors.push(
         `Biến BUILD_MODE không hợp lệ: "${env.BUILD_MODE}". Chỉ chấp nhận "production" hoặc "preview".`
       );
     }
-  } else {
-    const rawBranch = env.WORKERS_CI_BRANCH || env.CF_PAGES_BRANCH;
-    if (rawBranch && rawBranch.trim()) {
-      branch = rawBranch.trim();
-      if (branch === 'production') {
-        mode = 'production';
-      } else {
-        mode = 'preview';
-      }
-    } else {
-      // v) Biến nhánh không có: in cảnh báo rõ ràng và coi là preview.
-      warnings.push(
-        'Không tìm thấy biến môi trường nhánh (WORKERS_CI_BRANCH hoặc CF_PAGES_BRANCH). Mặc định coi là chế độ preview.'
-      );
-      mode = 'preview';
-    }
   }
 
-  // iv) Nhánh có tên đúng "production" (hoặc BUILD_MODE=production):
-  // SITE_URL không được có host kết thúc bằng workers.dev hoặc pages.dev,
-  // và nếu site.official_domain khác null thì host của SITE_URL phải bằng official_domain.
+  const rawBranch = env.WORKERS_CI_BRANCH || env.CF_PAGES_BRANCH;
+  let branch = null;
+  if (rawBranch && rawBranch.trim()) {
+    branch = rawBranch.trim();
+  }
+
+  const isRealDomain = host ? !isPreviewHost(host) : false;
+
+  // Cảnh báo nếu không đọc được biến nhánh khi host là preview (workers.dev / pages.dev)
+  if (!rawBranch && !explicitMode && !isRealDomain) {
+    warnings.push(
+      'Không tìm thấy biến môi trường nhánh (WORKERS_CI_BRANCH hoặc biến dự phòng, chưa xác minh CF_PAGES_BRANCH). Mặc định coi là chế độ preview.'
+    );
+  }
+
+  // Mâu thuẫn: BUILD_MODE=preview kết hợp SITE_URL tên miền thật: TỪ CHỐI
+  if (explicitMode === 'preview' && isRealDomain) {
+    errors.push(
+      `Mâu thuẫn cấu hình: BUILD_MODE được đặt là "preview" nhưng SITE_URL sử dụng tên miền thật ("${host}"). Chế độ preview chỉ cho phép tên miền workers.dev hoặc pages.dev.`
+    );
+  }
+
+  // iv) Quyết định chế độ build:
+  // - Nếu có BUILD_MODE:
+  //     + BUILD_MODE=preview: mode = 'preview' (nếu host là tên miền thật thì đã báo lỗi mâu thuẫn ở trên).
+  //     + BUILD_MODE=production: mode = 'production'.
+  // - Nếu không có BUILD_MODE:
+  //     + production nếu nhánh = "production" HOẶC host là tên miền thật (không phải workers.dev / pages.dev),
+  //       bất kể nhánh và kể cả khi không đọc được biến nhánh.
+  //     + preview nếu host là workers.dev hoặc pages.dev.
+  let mode = 'preview';
+  if (explicitMode === 'production') {
+    mode = 'production';
+  } else if (explicitMode === 'preview') {
+    mode = 'preview';
+  } else if (branch === 'production' || isRealDomain) {
+    mode = 'production';
+  } else {
+    mode = 'preview';
+  }
+
+  // v) Kiểm tra an toàn cho chế độ production:
+  // - host không được là workers.dev hoặc pages.dev
+  // - nếu site.official_domain khác null thì host SITE_URL phải bằng official_domain
   if (mode === 'production') {
     if (host) {
-      if (
-        host.endsWith('.workers.dev') ||
-        host === 'workers.dev' ||
-        host.endsWith('.pages.dev') ||
-        host === 'pages.dev'
-      ) {
+      if (isPreviewHost(host)) {
         errors.push(
           `Ở chế độ production, host của SITE_URL không được kết thúc bằng workers.dev hoặc pages.dev (nhận được: "${host}").`
         );
@@ -126,6 +157,7 @@ export function decideBuildMode(env, siteData = {}) {
     branch,
     siteUrl: rawSiteUrl ? rawSiteUrl.trim() : '',
     host,
+    isRealDomain,
     errors,
     warnings,
     isValid: errors.length === 0,

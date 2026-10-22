@@ -747,6 +747,40 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
       expect(invalidBm.errors.some((e) => e.includes('BUILD_MODE'))).toBe(true);
     });
 
+    test('fail-safe: SITE_URL tên miền thật tự động kích hoạt production bất kể nhánh', () => {
+      // Nhánh main + tên miền thật -> production
+      const r1 = decideBuildMode({
+        SITE_URL: 'https://example.vn',
+        WORKERS_CI_BRANCH: 'main',
+      });
+      expect(r1.mode).toBe('production');
+      expect(r1.isValid).toBe(true);
+
+      // Không có biến nhánh + tên miền thật -> production
+      const r2 = decideBuildMode({
+        SITE_URL: 'https://example.vn',
+      });
+      expect(r2.mode).toBe('production');
+      expect(r2.isValid).toBe(true);
+
+      // Nhánh feature bất kỳ + tên miền thật -> production
+      const r3 = decideBuildMode({
+        SITE_URL: 'https://example.vn',
+        WORKERS_CI_BRANCH: 'feat/test',
+      });
+      expect(r3.mode).toBe('production');
+      expect(r3.isValid).toBe(true);
+    });
+
+    test('từ chối mâu thuẫn khi BUILD_MODE=preview kết hợp SITE_URL tên miền thật', () => {
+      const conflictRes = decideBuildMode({
+        SITE_URL: 'https://example.vn',
+        BUILD_MODE: 'preview',
+      });
+      expect(conflictRes.isValid).toBe(false);
+      expect(conflictRes.errors.some((e) => e.includes('Mâu thuẫn'))).toBe(true);
+    });
+
     test('quy tắc production: cấm workers.dev/pages.dev và khớp official_domain nếu khác null', () => {
       // Nhánh production với workers.dev -> TỪ CHỐI
       const prodWorkers = decideBuildMode({
@@ -800,6 +834,223 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
       );
       expect(prodMatch.isValid).toBe(true);
       expect(prodMatch.mode).toBe('production');
+    });
+
+    test.describe('Bảng ma trận tổ hợp (nhánh x loại host x BUILD_MODE x official_domain x QTD_FIXTURES)', () => {
+      const combinationCases = [
+        {
+          id: 'TC01',
+          branch: 'main',
+          hostType: 'workers.dev',
+          siteUrl: 'https://qtd.dinhcam1512.workers.dev',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'preview',
+          expectedValid: true,
+          desc: 'Nhánh main, preview host workers.dev -> Preview hợp lệ',
+        },
+        {
+          id: 'TC02',
+          branch: 'main',
+          hostType: 'pages.dev',
+          siteUrl: 'https://qtd.pages.dev',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'preview',
+          expectedValid: true,
+          desc: 'Nhánh main, preview host pages.dev -> Preview hợp lệ',
+        },
+        {
+          id: 'TC03',
+          branch: undefined,
+          hostType: 'workers.dev',
+          siteUrl: 'https://qtd.dinhcam1512.workers.dev',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'preview',
+          expectedValid: true,
+          desc: 'Không đọc được nhánh, preview host -> Preview hợp lệ kèm cảnh báo',
+        },
+        {
+          id: 'TC04',
+          branch: 'main',
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://example.vn',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: true,
+          desc: 'Fail-safe: nhánh main với tên miền thật -> Tự động Production',
+        },
+        {
+          id: 'TC05',
+          branch: undefined,
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://example.vn',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: true,
+          desc: 'Fail-safe: không đọc được nhánh với tên miền thật -> Tự động Production',
+        },
+        {
+          id: 'TC06',
+          branch: 'main',
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://example.vn',
+          buildMode: 'preview',
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'preview',
+          expectedValid: false,
+          desc: 'Mâu thuẫn: BUILD_MODE=preview kết hợp tên miền thật -> Bị từ chối',
+        },
+        {
+          id: 'TC07',
+          branch: 'production',
+          hostType: 'workers.dev',
+          siteUrl: 'https://qtd.dinhcam1512.workers.dev',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: false,
+          desc: 'Nhánh production với workers.dev -> Bị từ chối',
+        },
+        {
+          id: 'TC08',
+          branch: 'production',
+          hostType: 'pages.dev',
+          siteUrl: 'https://qtd.pages.dev',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: false,
+          desc: 'Nhánh production với pages.dev -> Bị từ chối',
+        },
+        {
+          id: 'TC09',
+          branch: 'production',
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://example.vn',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: true,
+          desc: 'Nhánh production với tên miền thật, official_domain null -> Hợp lệ',
+        },
+        {
+          id: 'TC10',
+          branch: 'production',
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://example.vn',
+          buildMode: undefined,
+          officialDomain: 'qtd-tanbinh.vn',
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: false,
+          desc: 'Nhánh production lệch official_domain -> Bị từ chối',
+        },
+        {
+          id: 'TC11',
+          branch: 'production',
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://qtd-tanbinh.vn',
+          buildMode: undefined,
+          officialDomain: 'qtd-tanbinh.vn',
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: true,
+          desc: 'Nhánh production khớp official_domain -> Hợp lệ',
+        },
+        {
+          id: 'TC12',
+          branch: 'main',
+          hostType: 'workers.dev',
+          siteUrl: 'https://qtd.dinhcam1512.workers.dev',
+          buildMode: 'production',
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: false,
+          desc: 'BUILD_MODE=production với workers.dev -> Bị từ chối',
+        },
+        {
+          id: 'TC13',
+          branch: 'main',
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://qtd-tanbinh.vn',
+          buildMode: 'production',
+          officialDomain: 'qtd-tanbinh.vn',
+          fixtures: undefined,
+          expectedMode: 'production',
+          expectedValid: true,
+          desc: 'BUILD_MODE=production với tên miền thật khớp official_domain -> Hợp lệ',
+        },
+        {
+          id: 'TC14',
+          branch: 'feat/test',
+          hostType: 'workers.dev',
+          siteUrl: 'https://qtd.dinhcam1512.workers.dev',
+          buildMode: 'preview',
+          officialDomain: null,
+          fixtures: undefined,
+          expectedMode: 'preview',
+          expectedValid: true,
+          desc: 'BUILD_MODE=preview trên workers.dev -> Hợp lệ',
+        },
+        {
+          id: 'TC15',
+          branch: 'main',
+          hostType: 'workers.dev',
+          siteUrl: 'https://qtd.dinhcam1512.workers.dev',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: '1',
+          expectedMode: 'preview',
+          expectedValid: false,
+          desc: 'QTD_FIXTURES=1 trên preview host -> Bị từ chối',
+        },
+        {
+          id: 'TC16',
+          branch: 'main',
+          hostType: 'ten-mien-that',
+          siteUrl: 'https://example.vn',
+          buildMode: undefined,
+          officialDomain: null,
+          fixtures: '1',
+          expectedMode: 'production',
+          expectedValid: false,
+          desc: 'QTD_FIXTURES=1 trên tên miền thật -> Bị từ chối',
+        },
+      ];
+
+      for (const tc of combinationCases) {
+        test(`${tc.id}: ${tc.desc}`, () => {
+          const env: Record<string, string | undefined> = {
+            SITE_URL: tc.siteUrl,
+          };
+          if (tc.branch !== undefined) env.WORKERS_CI_BRANCH = tc.branch;
+          if (tc.buildMode !== undefined) env.BUILD_MODE = tc.buildMode;
+          if (tc.fixtures !== undefined) env.QTD_FIXTURES = tc.fixtures;
+
+          const siteData =
+            tc.officialDomain !== null
+              ? { official_domain: tc.officialDomain }
+              : { official_domain: null };
+
+          const res = decideBuildMode(env, siteData);
+          expect(res.mode).toBe(tc.expectedMode);
+          expect(res.isValid).toBe(tc.expectedValid);
+        });
+      }
     });
   });
 

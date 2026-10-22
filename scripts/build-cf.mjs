@@ -40,7 +40,7 @@ if (!decision.isValid) {
 // Thông báo chế độ build
 if (decision.mode === 'production') {
   console.log(
-    `[BUILD CLOUDFLARE] Chế độ: PRODUCTION (Nhánh: ${decision.branch || 'production'}, SITE_URL: ${decision.siteUrl})`
+    `[BUILD CLOUDFLARE] Chế độ: PRODUCTION (Nhánh: ${decision.branch || 'không xác định / tên miền thật'}, SITE_URL: ${decision.siteUrl})`
   );
   console.log(
     '[BUILD CLOUDFLARE] Đang chạy kiểm tra placeholder nghiêm ngặt (--strict)...'
