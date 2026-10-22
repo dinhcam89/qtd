@@ -33,8 +33,10 @@ if (!chromePath) {
 
 process.env.CHROME_PATH = chromePath;
 
+const isQuick = process.argv.includes('--quick');
+
 console.log(
-  `[LHCI] Đang khởi chạy Lighthouse CI với trình duyệt: ${chromePath}`
+  `[LHCI] Đang khởi chạy Lighthouse CI (${isQuick ? 'CHẾ ĐỘ NHANH: 1 lần chạy, 3 URL' : 'CHẾ ĐỘ ĐẦY ĐỦ: 3 lần chạy, toàn bộ trang'}) với trình duyệt: ${chromePath}`
 );
 
 // 1. Chạy lhci autorun trên dist
@@ -46,16 +48,27 @@ if (!fs.existsSync(distPath)) {
   process.exit(1);
 }
 
-console.log('\n--- 1. KIỂM TRA LIGHTHOUSE CI TRÊN DIST (PRODUCTION) ---');
-const autorunRes = spawnSync(
-  'npx',
-  ['lhci', 'autorun', '--config=lighthouserc.cjs'],
-  {
-    shell: true,
-    stdio: 'inherit',
-    env: process.env,
-  }
+console.log(
+  `\n--- 1. KIỂM TRA LIGHTHOUSE CI TRÊN DIST (${isQuick ? 'QUICK: /, /lai-suat/, /tin-tuc/' : 'PRODUCTION FULL'}) ---`
 );
+
+const autorunArgs = isQuick
+  ? [
+      'lhci',
+      'autorun',
+      '--config=lighthouserc.cjs',
+      '--collect.numberOfRuns=1',
+      '--collect.url=http://localhost/',
+      '--collect.url=http://localhost/lai-suat/',
+      '--collect.url=http://localhost/tin-tuc/',
+    ]
+  : ['lhci', 'autorun', '--config=lighthouserc.cjs'];
+
+const autorunRes = spawnSync('npx', autorunArgs, {
+  shell: true,
+  stdio: 'inherit',
+  env: process.env,
+});
 
 const manifestPath = path.resolve('.lighthouseci/manifest.json');
 let distManifest = [];
@@ -117,10 +130,11 @@ if (autorunRes.status !== 0) {
   process.exit(autorunRes.status || 1);
 }
 
-// 2. Chạy bổ sung lhci trên dist-fixtures nếu tồn tại (hoặc khi có cờ --fixtures)
+// 2. Chạy bổ sung lhci trên dist-fixtures nếu tồn tại (hoặc khi có cờ --fixtures), chỉ trong chế độ đầy đủ
 const distFixturesPath = path.resolve('dist-fixtures');
 const shouldRunFixtures =
-  fs.existsSync(distFixturesPath) || process.argv.includes('--fixtures');
+  !isQuick &&
+  (fs.existsSync(distFixturesPath) || process.argv.includes('--fixtures'));
 
 if (shouldRunFixtures && fs.existsSync(distFixturesPath)) {
   console.log('\n--- 2. KIỂM TRA BỔ SUNG LIGHTHOUSE TRÊN DIST-FIXTURES ---');

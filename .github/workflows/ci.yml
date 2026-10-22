@@ -51,9 +51,6 @@ jobs:
       - name: Install Playwright browsers & system deps
         run: npx playwright install --with-deps chromium
 
-      - name: Run Lighthouse CI
-        run: npm run lhci
-
       - name: Scan content placeholders (advisory)
         run: npm run check:placeholders
 
@@ -70,3 +67,28 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
+
+  lhci:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Install Playwright browsers & system deps
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Lighthouse CI (full)
+        run: npm run lhci

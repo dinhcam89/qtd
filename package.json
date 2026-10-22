@@ -22,6 +22,7 @@
     "check:placeholders": "node ./scripts/check-placeholders.mjs",
     "check:dist": "node ./scripts/check-dist.mjs",
     "lhci": "node ./scripts/lhci.mjs",
+    "lhci:quick": "node ./scripts/lhci.mjs --quick",
     "build:cf": "node ./scripts/build-cf.mjs"
   },
   "dependencies": {
