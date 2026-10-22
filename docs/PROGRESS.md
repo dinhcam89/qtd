@@ -20,7 +20,7 @@
 | 11   | Liên hệ và Kênh chính thức                             | Xong            | 2026-10-22      | `4e11c50` | /lien-he, /kenh-chinh-thuc, fixture contact/site/pages, check-dist iframe/tel/mailto |
 | 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
-| 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                                      |
+| 14   | SEO và Sitemap                                         | Xong            | 2026-10-22      | `45f640a` | @astrojs/sitemap, SEO component, robots.txt.ts, JSON-LD, check-dist rules            |
 | 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                                      |
 | 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                      |
 | 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                      |
@@ -257,3 +257,51 @@
      - Sau task: 565 assertion (+139 assertion).
 - **Số placeholder hiện tại:** 44 (thêm 2 placeholder trường nội dung cho `site.official_domain` và frontmatter bản nháp).
 - **Việc người dùng cần làm tiếp:** Chuẩn bị tên miền thật và thông tin điểm giao dịch của quỹ, chuẩn bị cho Task 14 (SEO và Sitemap).
+
+---
+
+## 12. Chi tiết đánh giá Task 14 (SEO và Sitemap)
+
+- **Ngày đánh giá:** 2026-10-22 (nhánh `task-14-seo`, tạo từ `main`)
+- **Các commit:**
+  - `98bf7f3`: `fix(content): cap nhat placeholder kenh tiep nhan phan anh trong kenh-chinh-thuc.md` (BƯỚC 0d)
+  - `94837f6`: `test(unit): bo sung test tu choi ky tu dac biet rieng le trong toMailtoHref` (BƯỚC 0f)
+  - `24e9ef6`: `feat(seo): implement SEO component, robots.txt, and sitemap generation`
+  - `45f640a`: `test(seo): add comprehensive test suites for SEO, JSON-LD, sitemap, and fixtures`
+- **Kết quả đối chiếu tiêu chí hoàn thành:**
+  1. **Tích hợp `@astrojs/sitemap`:**
+     - Đã cài đặt và ghim `@astrojs/sitemap@3.7.4`. Tích hợp trong `astro.config.mjs` với bộ lọc loại trừ `/404`.
+     - Static build tự động tạo `dist/sitemap-index.xml` và `dist/sitemap-0.xml` chứa đầy đủ các trang công khai.
+  2. **Component `SEO.astro` & BaseLayout:**
+     - Tích hợp vào `src/layouts/BaseLayout.astro`.
+     - Phát ra `<title>` duy nhất, meta description, thẻ `canonical` tuyệt đối có dấu `/` cuối nhất quán.
+     - Đầy đủ thẻ Open Graph: `og:title`, `og:description`, `og:url`, `og:type` (`website` hoặc `article`), `og:locale` (`vi_VN`), `og:site_name`, và Twitter card `summary`.
+     - `og:image` chỉ phát ra khi file `public/images/og-default.*` tồn tại trên đĩa (kiểm tra bằng `fs.existsSync` lúc build); không tạo ảnh giả.
+  3. **Trang 404:**
+     - Tự động phát ra `<meta name="robots" content="noindex">`.
+  4. **Dynamic `src/pages/robots.txt.ts`:**
+     - Thay thế `public/robots.txt` tĩnh.
+     - Xuất `User-agent: *` và `Allow: /`. Chỉ phát ra dòng `Sitemap: <site>/sitemap-index.xml` khi hostname không kết thúc bằng `pages.dev` hoặc `workers.dev`.
+     - Hàm thuần `buildRobotsTxt` trong `src/lib/seo.ts` được kiểm thử đơn vị bao phủ toàn diện.
+     - `public/_headers` được giữ nguyên vẹn (bảo vệ preview branches).
+  5. **JSON-LD Schema.org `FinancialService`:**
+     - Hàm thuần `buildFinancialServiceJsonLd` trong `src/lib/seo.ts`.
+     - Lấy `name` từ `site.name`, `url` từ `site.official_domain` (qua `buildOfficialDomainUrl`), `telephone` từ `contact.phone` (chuẩn hóa qua `toTelHref`), `address` từ `contact.address`.
+     - Tự động loại bỏ các trường còn `null` hoặc là placeholder (`[CẦN ...`, `[TÊN QUỸ]`).
+     - Tuyệt đối không phát ra khối JSON-LD nếu `site.name` thiếu hoặc là placeholder (ở production hiện tại không phát JSON-LD, ở fixture phát schema chuẩn không chứa `[` hay `null`).
+     - Tương thích 100% với Content Security Policy (không phát sinh vi phạm CSP).
+  6. **Hàng rào kiểm tra xuất xưởng (`scripts/check-dist.mjs`):**
+     - Bổ sung kiểm tra trùng lặp `title` hoặc `description` giữa hai trang bất kỳ.
+     - Bổ sung kiểm tra tính tuyệt đối và cùng host của thẻ `canonical`.
+     - Bổ sung kiểm tra cấu trúc cú pháp JSON-LD và cấm placeholder trong JSON-LD.
+     - Bổ sung kiểm tra sự tồn tại của `sitemap-index.xml`.
+     - Đã chứng minh bằng 2 lần cố ý làm fail (trùng title, sai host canonical) và hoàn tác sạch sẽ.
+  7. **Kiểm thử tự động:**
+     - `smoke.spec.ts`: Kiểm tra title/description duy nhất trên mọi trang từ `getNavRoutes()`, canonical URL chuẩn, đủ thẻ og:*, sitemap khớp tập trang trừ /404, meta robots noindex trên 404.
+     - `news.spec.ts` (fixtures): 25 bài tin có title khác nhau, canonical đúng trên trang phân trang, sitemap-0.xml trong `dist-fixtures` chứa đầy đủ 25 bài công khai và không chứa bài draft nào.
+     - `unit.spec.ts`: 31 test đơn vị bao phủ toàn diện format, news, documents, pagination, contact, và seo.
+  8. **Số assertion:**
+     - Trước task: 575 assertion.
+     - Sau task: 643 assertion (+68 assertion).
+- **Số placeholder hiện tại:** 46 (exit code 0; `--strict` 54 issues, exit code 1).
+- **Việc người dùng cần làm tiếp:** Tiếp tục Task 15 (Bảo mật và Lighthouse CI) hoặc chuẩn bị dữ liệu thật cho Cổng G3.
