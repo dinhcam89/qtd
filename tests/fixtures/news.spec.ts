@@ -500,7 +500,11 @@ test.describe('Fixture tests — /tin-tuc và trang chi tiết ở trạng thái
           JSON.parse(body);
         }).not.toThrow();
 
-        expect(body).not.toContain('[');
+        // Không chứa "[" của placeholder ([CẦN, [TÊN QUỸ...)
+        expect(body).not.toContain('[CẦN');
+        expect(body).not.toContain('[TÊN QUỸ');
+        expect(body).not.toContain('[CẦN BỔ SUNG');
+        expect(body).not.toContain('[CẦN XÁC NHẬN');
         expect(body).not.toContain('null');
       }
     }
@@ -515,7 +519,8 @@ test.describe('Fixture tests — /tin-tuc và trang chi tiết ở trạng thái
     expect(scriptHandle).not.toBeNull();
     const jsonContent = await scriptHandle!.textContent();
     expect(jsonContent).toBeTruthy();
-    expect(jsonContent).not.toContain('[');
+    expect(jsonContent).not.toContain('[CẦN');
+    expect(jsonContent).not.toContain('[TÊN QUỸ');
     expect(jsonContent).not.toContain('null');
   });
 });
