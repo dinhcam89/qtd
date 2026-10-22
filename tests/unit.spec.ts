@@ -32,6 +32,7 @@ import {
   getOgDefaultImagePath,
   buildFinancialServiceJsonLd,
 } from '../src/lib/seo';
+import { decideBuildMode } from '../scripts/lib/build-mode.mjs';
 
 test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)', () => {
   test('formatFileSize: bao phủ 0, 1023, 1024, 1536, 1048576, 1572864, null, undefined', () => {
@@ -609,5 +610,155 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
     const serialized = JSON.stringify(jsonLd);
     expect(serialized).not.toContain('[');
     expect(serialized).not.toContain('null');
+  });
+
+  test.describe('decideBuildMode: quyết định chế độ build Cloudflare Workers Builds', () => {
+    const validSiteUrl = 'https://qtd.dinhcam1512.workers.dev';
+
+    test('từ chối build khi QTD_FIXTURES được bật (khác rỗng và khác 0)', () => {
+      const res1 = decideBuildMode({ QTD_FIXTURES: '1', SITE_URL: validSiteUrl });
+      expect(res1.isValid).toBe(false);
+      expect(res1.errors.some((e) => e.includes('QTD_FIXTURES'))).toBe(true);
+
+      const resTrue = decideBuildMode({ QTD_FIXTURES: 'true', SITE_URL: validSiteUrl });
+      expect(resTrue.isValid).toBe(false);
+
+      // Cho phép khi là "0", rỗng hoặc undefined
+      const res0 = decideBuildMode({ QTD_FIXTURES: '0', SITE_URL: validSiteUrl });
+      expect(res0.errors.some((e) => e.includes('QTD_FIXTURES'))).toBe(false);
+
+      const resEmpty = decideBuildMode({ QTD_FIXTURES: '', SITE_URL: validSiteUrl });
+      expect(resEmpty.errors.some((e) => e.includes('QTD_FIXTURES'))).toBe(false);
+    });
+
+    test('bắt buộc SITE_URL đúng định dạng https://<hostname> (không path, port, query, //)', () => {
+      // Thiếu SITE_URL
+      expect(decideBuildMode({}).isValid).toBe(false);
+      expect(decideBuildMode({ SITE_URL: '' }).isValid).toBe(false);
+
+      // Giao thức sai
+      expect(decideBuildMode({ SITE_URL: 'http://qtd.dinhcam1512.workers.dev' }).isValid).toBe(false);
+
+      // Có path
+      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev/tin-tuc' }).isValid).toBe(false);
+
+      // Có cổng
+      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev:4321' }).isValid).toBe(false);
+
+      // Có query
+      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev?ref=1' }).isValid).toBe(false);
+
+      // Quá một dấu / ở cuối
+      expect(decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev//' }).isValid).toBe(false);
+
+      // Hợp lệ: không có dấu / hoặc có đúng một dấu /
+      const valid1 = decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev' });
+      expect(valid1.errors.some((e) => e.includes('SITE_URL'))).toBe(false);
+      expect(valid1.host).toBe('qtd.dinhcam1512.workers.dev');
+
+      const valid2 = decideBuildMode({ SITE_URL: 'https://qtd.dinhcam1512.workers.dev/' });
+      expect(valid2.errors.some((e) => e.includes('SITE_URL'))).toBe(false);
+      expect(valid2.host).toBe('qtd.dinhcam1512.workers.dev');
+    });
+
+    test('đọc nhánh từ WORKERS_CI_BRANCH hoặc CF_PAGES_BRANCH; cảnh báo khi không có', () => {
+      // Nhánh main: preview
+      const mainRes = decideBuildMode({
+        SITE_URL: validSiteUrl,
+        WORKERS_CI_BRANCH: 'main',
+      });
+      expect(mainRes.mode).toBe('preview');
+      expect(mainRes.branch).toBe('main');
+      expect(mainRes.warnings).toHaveLength(0);
+
+      // CF_PAGES_BRANCH fallback
+      const pagesBranchRes = decideBuildMode({
+        SITE_URL: validSiteUrl,
+        CF_PAGES_BRANCH: 'feature-xyz',
+      });
+      expect(pagesBranchRes.mode).toBe('preview');
+      expect(pagesBranchRes.branch).toBe('feature-xyz');
+
+      // Thiếu biến nhánh: cảnh báo rõ và coi là preview
+      const noBranchRes = decideBuildMode({ SITE_URL: validSiteUrl });
+      expect(noBranchRes.mode).toBe('preview');
+      expect(noBranchRes.warnings.length).toBeGreaterThan(0);
+      expect(noBranchRes.warnings[0]).toContain('WORKERS_CI_BRANCH');
+    });
+
+    test('ghi đè chế độ bằng BUILD_MODE=production hoặc preview', () => {
+      const overrideProd = decideBuildMode({
+        SITE_URL: 'https://example.vn',
+        WORKERS_CI_BRANCH: 'main',
+        BUILD_MODE: 'production',
+      });
+      expect(overrideProd.mode).toBe('production');
+
+      const overridePreview = decideBuildMode({
+        SITE_URL: validSiteUrl,
+        WORKERS_CI_BRANCH: 'production',
+        BUILD_MODE: 'preview',
+      });
+      expect(overridePreview.mode).toBe('preview');
+
+      // Giá trị không hợp lệ
+      const invalidBm = decideBuildMode({
+        SITE_URL: validSiteUrl,
+        BUILD_MODE: 'staging',
+      });
+      expect(invalidBm.isValid).toBe(false);
+      expect(invalidBm.errors.some((e) => e.includes('BUILD_MODE'))).toBe(true);
+    });
+
+    test('quy tắc production: cấm workers.dev/pages.dev và khớp official_domain nếu khác null', () => {
+      // Nhánh production với workers.dev -> TỪ CHỐI
+      const prodWorkers = decideBuildMode({
+        SITE_URL: 'https://qtd.dinhcam1512.workers.dev',
+        WORKERS_CI_BRANCH: 'production',
+      });
+      expect(prodWorkers.isValid).toBe(false);
+      expect(prodWorkers.errors.some((e) => e.includes('workers.dev'))).toBe(true);
+
+      // Nhánh production với pages.dev -> TỪ CHỐI
+      const prodPages = decideBuildMode({
+        SITE_URL: 'https://qtd.pages.dev',
+        WORKERS_CI_BRANCH: 'production',
+      });
+      expect(prodPages.isValid).toBe(false);
+      expect(prodPages.errors.some((e) => e.includes('pages.dev'))).toBe(true);
+
+      // Nhánh production với domain riêng, official_domain là null -> HỢP LỆ
+      const prodCustomOk = decideBuildMode(
+        {
+          SITE_URL: 'https://example.vn',
+          WORKERS_CI_BRANCH: 'production',
+        },
+        { official_domain: null }
+      );
+      expect(prodCustomOk.isValid).toBe(true);
+      expect(prodCustomOk.mode).toBe('production');
+
+      // Nhánh production với domain riêng, official_domain khác null và KHÔNG khớp -> TỪ CHỐI
+      const prodMismatch = decideBuildMode(
+        {
+          SITE_URL: 'https://example.vn',
+          WORKERS_CI_BRANCH: 'production',
+        },
+        { official_domain: 'qtd-tanbinh.vn' }
+      );
+      expect(prodMismatch.isValid).toBe(false);
+      expect(prodMismatch.errors.some((e) => e.includes('official_domain'))).toBe(true);
+
+      // Nhánh production khớp official_domain -> HỢP LỆ
+      const prodMatch = decideBuildMode(
+        {
+          SITE_URL: 'https://qtd-tanbinh.vn',
+          WORKERS_CI_BRANCH: 'production',
+        },
+        { official_domain: 'qtd-tanbinh.vn' }
+      );
+      expect(prodMatch.isValid).toBe(true);
+      expect(prodMatch.mode).toBe('production');
+    });
   });
 });
