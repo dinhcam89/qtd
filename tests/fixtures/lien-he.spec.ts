@@ -90,22 +90,22 @@ test.describe('Fixture tests — Trang /lien-he ở trạng thái có dữ liệ
       }) => {
         await page.goto('/lien-he');
         const branchCards = page.locator('[data-branch-item]');
-        await expect(branchCards).toHaveCount(3);
+        await expect(branchCards).toHaveCount(4);
 
-        // Branch 3: có trường null
-        const branch3 = branchCards.nth(2);
+        // Branch 4: có trường null
+        const branch4 = branchCards.nth(3);
         await expect(
-          branch3.locator('[data-branch-address] dd').first()
+          branch4.locator('[data-branch-address] dd').first()
         ).toHaveText('Đang cập nhật');
-        await expect(branch3.locator('[data-branch-phone] dd')).toHaveText(
+        await expect(branch4.locator('[data-branch-phone] dd')).toHaveText(
           'Đang cập nhật'
         );
-        await expect(branch3.locator('[data-branch-hours] dd')).toHaveText(
+        await expect(branch4.locator('[data-branch-hours] dd')).toHaveText(
           'Đang cập nhật'
         );
-        // Không có link tel hoặc link bản đồ trong branch 3
-        await expect(branch3.locator('a[data-map-link]')).toHaveCount(0);
-        await expect(branch3.locator('a[href^="tel:"]')).toHaveCount(0);
+        // Không có link tel hoặc link bản đồ trong branch 4
+        await expect(branch4.locator('a[data-map-link]')).toHaveCount(0);
+        await expect(branch4.locator('a[href^="tel:"]')).toHaveCount(0);
       });
 
       test('địa chỉ rất dài không gây tràn ngang, không bị cắt và khớp khung Container', async ({
