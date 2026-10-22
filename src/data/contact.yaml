@@ -10,4 +10,20 @@ email: '[CẦN BỔ SUNG: email]'
 facebook: null
 zalo: null
 map_embed_url: null
-branches: []
+branches:
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 1]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 1]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 1]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 1]'
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 2]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 2]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 2]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 2]'
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 3]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 3]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 3]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 3]'
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 4]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 4]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 4]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 4]'
