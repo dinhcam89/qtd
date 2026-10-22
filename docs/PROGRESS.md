@@ -16,8 +16,8 @@
 | 7    | Trang Giới thiệu và Ban lãnh đạo                       | Xong            | 2026-10-21      | `6553a03` | Collection pages, /gioi-thieu, /lich-su, /ban-lanh-dao, nav.ts động, 59/59 test pass |
 | 8    | Trang Quy mô, Sản phẩm và Lãi suất                     | Xong            | 2026-10-21      | `6f988ed` | /quy-mo, /san-pham, /lai-suat, nav `primary`, 137 test pass                          |
 | 9    | Quy chế và văn bản                                     | Xong            | 2026-10-21      | `8a48c1c` | Collection documents, /quy-che, nhóm tài liệu, test build fail, 150 test pass        |
-| 10   | Tin tức và Thông báo                                   | Chưa làm        | —               | —         |                                                                                      |
-| 11   | Liên hệ và Kênh chính thức                             | Chưa làm        | —               | —         |                                                                                      |
+| 10   | Tin tức và Thông báo                                   | Xong            | 2026-10-22      | `3f7c75f` | /tin-tuc, /thong-bao, fixture news/schedule, pagination, check-dist động             |
+| 11   | Liên hệ và Kênh chính thức                             | Xong            | 2026-10-22      | `4e11c50` | /lien-he, /kenh-chinh-thuc, fixture contact/site/pages, check-dist iframe/tel/mailto |
 | 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 14   | SEO và Sitemap                                         | Chưa làm        | —               | —         |                                                                                      |
@@ -207,3 +207,54 @@
   10. **Không làm yếu test & số assertion:** Toàn bộ bộ test không sửa `tests/helpers.ts`, số assertion tăng từ 257 lên 426 (+169 assertion).
 - **Số placeholder hiện tại:** 42.
 - **Việc người dùng cần làm tiếp:** Tiếp tục chuẩn bị nội dung cho Task 11 (Liên hệ và Kênh chính thức).
+
+---
+
+## 11. Chi tiết đánh giá Task 11 (Liên hệ và Kênh chính thức)
+
+- **Ngày đánh giá:** 2026-10-22 (nhánh `task-11-lien-he-kenh-chinh-thuc`, tạo từ `main`)
+- **Các commit:**
+  - `2fa66a2`: `feat: them lenh shots:fixtures chup anh giao dien co du lieu`
+  - `9414c6b`: `feat(scripts): bo sung kiem tra iframe va href tel mailto trong check-dist`
+  - `4e11c50`: `feat(pages): cai dat trang Lien he va Kenh chinh thuc theo Task 11`
+- **Kết quả đối chiếu tiêu chí hoàn thành:**
+  1. **Schema & Dữ liệu:**
+     - `src/lib/schemas/contact.ts`: Thêm schema `branches` gồm `name`, `address`, `phone`, `working_hours` (mọi trường cho phép nullable/optional). Khai báo trong `contact.yaml` là `branches: []`.
+     - `src/lib/schemas/site.ts`: Thêm trường `official_domain` với regex kiểm tra hostname chuẩn, cấm `https://` và đường dẫn con. Khai báo trong `site.yaml` là `official_domain: null`.
+  2. **Hàm thuần (`src/lib/contact.ts`) & Unit tests:**
+     - `toTelHref(value)`: Chuẩn hóa số điện thoại bỏ khoảng trắng, dấu chấm, dấu gạch ngang; hỗ trợ đầu `0` và `+84`; kiểm tra độ dài chữ số; trả về `null` cho dữ liệu lỗi/placeholder/chữ/quá ngắn.
+     - `toMailtoHref(value)`: Chuẩn hóa email, trả về `null` khi email sai cú pháp hoặc là placeholder.
+     - `buildMapUrl(address)`: Tạo liên kết Google Maps Search an toàn (`https://www.google.com/maps/search/?api=1&query=...`), trả về `null` khi thiếu địa chỉ hoặc là placeholder.
+     - `buildOfficialDomainUrl(domain)`: Tạo URL `https://<domain>` an toàn khi hostname hợp lệ, trả về `null` khi có protocol/path/ký tự lạ/placeholder.
+     - `formatContactText(value)`: Định dạng chuỗi liên hệ, trả về `'Đang cập nhật'` khi giá trị là `null`, `undefined`, rỗng hoặc placeholder.
+     - Đầy đủ 25 unit tests (trong đó có 7 bài test mới cho `contact.ts`) bao phủ mọi trường hợp biên.
+  3. **Trang `/lien-he`:**
+     - Hiển thị thông tin trụ sở chính: Địa chỉ, Số điện thoại, Đường dây nóng, Hộp thư điện tử, Lịch làm việc thường xuyên (từ `schedule.yaml`).
+     - Danh sách các điểm giao dịch (`branches`) khi có dữ liệu; trường null hiển thị "Đang cập nhật".
+     - Liên kết "Xem bản đồ trên Google Maps" mở tab mới (`target="_blank"`, `rel="noopener noreferrer"`).
+     - Tuyệt đối không nhúng `<iframe>`, không tải tài nguyên bên thứ ba, không có form thu thập dữ liệu.
+     - Thẻ `a[href^="tel:"]` và `a[href^="mailto:"]` chỉ sinh ra khi hàm chuẩn hóa trả về URL hợp lệ; ngược lại hiển thị văn bản tĩnh hoặc "Đang cập nhật".
+  4. **Trang `/kenh-chinh-thuc`:**
+     - Đọc nội dung Markdown trung tính từ collection `pages` (`src/content/pages/kenh-chinh-thuc.md`) với các đề mục chuẩn: "Cách nhận biết kênh chính thức của quỹ", "Nếu bạn nghi ngờ bị giả mạo". Sử dụng placeholder `[CẦN BỔ SUNG: ...]` để chặn xuất bản production nhầm khi chưa duyệt.
+     - Khối thông tin nhận diện: Tên miền website chính thức, Hotline, Điện thoại, Email, Địa chỉ trụ sở.
+  5. **Điều hướng (Nav & Footer):**
+     - `/lien-he` có `primary: true` (menu ngang đúng 6 mục: Trang chủ, Giới thiệu, Sản phẩm, Lãi suất, Tin tức, Liên hệ).
+     - `/kenh-chinh-thuc` có `primary: false`, liên kết từ banner tại `/lien-he` và trong Footer.
+     - Mọi liên kết không còn trỏ về neo `#lien-he` của trang chủ (nút Hero trên trang chủ đã trỏ về `/lien-he`).
+     - Test responsive 1024px trong `tests/layout.spec.ts` pass 100% không tràn và không xuống dòng.
+  6. **Fixture & Mở rộng `QTD_FIXTURES`:**
+     - Mở rộng hỗ trợ fixture cho `contact`, `site` và `pages` trong `src/content.config.ts`.
+     - Bộ dữ liệu `src/fixtures/`: 3 điểm giao dịch, 1 địa chỉ rất dài (kiểm tra wrap text và tràn ngang), 1 branch có trường null, 1 số điện thoại viết kiểu `0123.456.789`, tên miền `fixture.example.invalid`. Mọi tên định danh có tiền tố `[FIXTURE]`.
+     - Fixture tests (`tests/fixtures/lien-he.spec.ts`, `tests/fixtures/kenh-chinh-thuc.spec.ts`) kiểm tra chi tiết href `tel:` và `mailto:`, link Google Maps, không có iframe, địa chỉ dài không tràn, hình học khớp khung Container, không rò rỉ `[FIXTURE]` ra ngoài `dist-fixtures`.
+  7. **Hàng rào kiểm soát chất lượng (`scripts/check-dist.mjs`):**
+     - Bổ sung quy tắc cấm hoàn toàn thẻ `<iframe>` trong toàn bộ file HTML xuất xưởng (`dist` và `dist-fixtures`).
+     - Bổ sung quy tắc kiểm tra định dạng hợp lệ của mọi `href="tel:..."` và `href="mailto:..."`.
+     - Đã chứng minh bằng 2 lần cố ý làm fail (chèn iframe giả và chèn href tel sai) và hoàn tác sạch sẽ.
+  8. **Chế độ rỗng production:**
+     - Kiểm thử trong `tests/pages.spec.ts` chứng minh cả hai trang `/lien-he` và `/kenh-chinh-thuc` ở production không có bất kỳ thẻ `a[href^="tel:"]`, `a[href^="mailto:"]`, không có link bản đồ hay iframe, hiển thị "Đang cập nhật" chuẩn chỉnh.
+  9. **Số assertion:**
+     - Trước task: 426 assertion.
+     - Sau task: 565 assertion (+139 assertion).
+- **Số placeholder hiện tại:** 44 (thêm 2 placeholder trường nội dung cho `site.official_domain` và frontmatter bản nháp).
+- **Việc người dùng cần làm tiếp:** Chuẩn bị tên miền thật và thông tin điểm giao dịch của quỹ, chuẩn bị cho Task 14 (SEO và Sitemap).
+
