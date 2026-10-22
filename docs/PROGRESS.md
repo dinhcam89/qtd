@@ -21,7 +21,7 @@
 | 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 14   | SEO và Sitemap                                         | Xong            | 2026-10-22      | `45f640a` | @astrojs/sitemap, SEO component, robots.txt.ts, JSON-LD, check-dist rules            |
-| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                                      |
+| 15   | Bảo mật và Lighthouse CI                               | Xong            | 2026-10-22      | `task-15` | @lhci/cli, lighthouserc, dependabot, audit CI, scripts/build-cf, favicon, CLS 0     |
 | 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                      |
 | 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                      |
 | 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                      |
@@ -305,3 +305,46 @@
      - Sau task: 643 assertion (+68 assertion).
 - **Số placeholder hiện tại:** 46 (exit code 0; `--strict` 54 issues, exit code 1).
 - **Việc người dùng cần làm tiếp:** Tiếp tục Task 15 (Bảo mật và Lighthouse CI) hoặc chuẩn bị dữ liệu thật cho Cổng G3.
+
+---
+
+## 13. Chi tiết đánh giá Task 15 (Bảo mật, hiệu năng, bảo trì)
+
+- **Ngày đánh giá:** 2026-10-22 (nhánh `task-15-bao-mat-hieu-nang`, tạo từ `main`)
+- **Kết quả đối chiếu tiêu chí hoàn thành:**
+  1. **Cấu hình Lighthouse CI (@lhci/cli) & lighthouserc.cjs:**
+     - Đã cài đặt và ghim `@lhci/cli@0.15.1`.
+     - Cấu hình `lighthouserc.cjs`: `staticDistDir: './dist'`, `numberOfRuns: 3` (lấy median), loại trừ `/404.html` qua `autodiscoverUrlBlocklist`.
+     - Ngưỡng bắt buộc: Performance ≥ 0.90, Accessibility ≥ 0.90, Best Practices ≥ 0.95, SEO ≥ 0.95.
+     - Script bọc `scripts/lhci.mjs`: tự động phát hiện Chromium từ `@playwright/test` qua `chromium.executablePath()`, gán `CHROME_PATH`. Nếu không có in hướng dẫn tiếng Việt và thoát mã 1.
+     - Đã tối ưu hóa Header (`#mobile-nav-panel` mặc định `hidden` trong HTML, `#menu-toggle-btn` hiển thị `inline-flex lg:hidden`) để loại bỏ hoàn toàn hiện tượng Layout Shift (CLS giảm từ 0.714 xuống 0.000). Bổ sung `public/favicon.svg` và endpoint tĩnh `src/pages/favicon.ico.ts` để giải quyết triệt để lỗi 404 favicon trong console.
+     - Kết quả thực tế: 100% trang trong `dist` đạt chuẩn (Performance 99%, Accessibility 98-100%, Best Practices 100%, SEO 100%).
+     - Chạy thêm trên `dist-fixtures`: 4 trang đại diện (`/tin-tuc/`, `/tin-tuc/bai-trung-ngay-a/`, `/quy-che/`, `/lien-he/`) đều đạt điểm xuất sắc (Performance 94-100%, Accessibility 98-100%, Best Practices 96%, SEO 100%).
+  2. **Cập nhật tự động Dependabot (.github/dependabot.yml):**
+     - Hỗ trợ cả 2 hệ sinh thái `npm` và `github-actions`.
+     - Lịch quét hàng tuần (`interval: 'weekly'`), giới hạn 5 PR mở cùng lúc.
+     - Tự động gom bản cập nhật `minor` và `patch` vào một PR duy nhất cho mỗi hệ sinh thái.
+  3. **Bảo mật chuỗi cung ứng CI:**
+     - Thêm bước `npm audit --omit=dev --audit-level=high` ngay sau `npm ci` trong `.github/workflows/ci.yml`. Kết quả: `found 0 vulnerabilities` trên các gói production.
+     - Thêm bước `npm run lhci` sau `check:dist` trong CI.
+     - Bổ sung bước `lhci` vào `scripts/verify.mjs`.
+  4. **Lệnh build Cloudflare Workers Builds (scripts/build-cf.mjs):**
+     - Hàm thuần `decideBuildMode(env, siteData)` trong `scripts/lib/build-mode.mjs` có 5 bộ unit test bao phủ toàn diện.
+     - Nguồn tra cứu tên biến nhánh Cloudflare Workers Builds: Tài liệu chính thức Cloudflare Developers — [Cloudflare Workers CI/CD Builds Environment Variables](https://developers.cloudflare.com/workers/ci-cd/builds/environment-variables/). Biến quy định là `WORKERS_CI_BRANCH` (fallback `CF_PAGES_BRANCH`).
+     - Đã chứng minh bằng 5 kịch bản thực tế:
+       1. `QTD_FIXTURES=1`: bị từ chối với thông báo tiếng Việt (exit 1).
+       2. Thiếu `SITE_URL`: bị từ chối với thông báo tiếng Việt (exit 1).
+       3. `SITE_URL=https://qtd.dinhcam1512.workers.dev`, nhánh main: build thành công, check:dist pass (exit 0).
+       4. Cùng `SITE_URL`, nhánh production: bị từ chối vì workers.dev không được phép trên production (exit 1).
+       5. `SITE_URL=https://example.vn`, nhánh production: SITE_URL hợp lệ, thất bại tại bước kiểm tra placeholder (`check-placeholders --strict`) (exit 1).
+  5. **Thống kê test và assertion:**
+     - Số assertion: Trước task: 643 assertion; Sau task: 698 assertion (+55 assertion).
+     - Số test Playwright: 342 tests (desktop: 53, tablet: 53, mobile: 53, layout: 54, unit: 36, fixtures: 93).
+- **Số placeholder hiện tại:** 46 (exit code 0; `--strict` 54 issues, exit code 1).
+- **Thứ tự việc người dùng cần làm sau khi merge (agent không thể tự làm):**
+  1. Đặt biến `SITE_URL` trong Cloudflare, mục Build variables, giá trị `https://qtd.dinhcam1512.workers.dev`.
+  2. Chạy thử `npm run build:cf` ở máy cục bộ để kiểm tra toàn vẹn.
+  3. Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`, cho cả cấu hình production lẫn non-production nếu dashboard tách.
+  4. Kiểm tra một build trên nhánh preview trước khi tin tưởng.
+  5. Nếu phát sinh lỗi, đổi lại lệnh cũ hoặc rollback.
+

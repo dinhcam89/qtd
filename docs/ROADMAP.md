@@ -19,9 +19,10 @@
 | 9     | Quy chế và văn bản                                                          | Xong       |
 | 9b    | Test trạng thái có dữ liệu                                                  | Xong       |
 | 10    | Tin tức và Thông báo                                                        | Xong       |
-| 11    | Các trang nội dung (Liên hệ, Kênh chính thức)                               | Chưa làm   |
-| 12–13 | CMS (có điều kiện)                                                          | Chưa làm   |
-| 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm   |
+| 11    | Các trang nội dung (Liên hệ, Kênh chính thức)                               | Xong       |
+| 12–13 | CMS (có điều kiện)                                                          | Bỏ qua (CMS: A) |
+| 14    | SEO và Sitemap                                                              | Xong       |
+| 15    | Bảo mật, hiệu năng, bảo trì                                                 | Xong       |
 | 16    | QA tổng, UAT                                                                | Chưa làm   |
 | 17    | Go-live                                                                     | Chưa làm   |
 | 18    | Runbook                                                                     | Chưa làm   |
@@ -263,6 +264,14 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 5. Cập nhật `AGENTS.md` mục 4 với các lệnh mới.
 
 **Tiêu chí hoàn thành:** `lhci` đạt ngưỡng, CI xanh, chạy thử lệnh build nhánh production khi còn placeholder phải **fail**.
+
+**Thứ tự việc người dùng cần làm sau khi merge (agent không thể tự làm):**
+1. Đặt biến `SITE_URL` trong Cloudflare, mục Build variables, giá trị `https://qtd.dinhcam1512.workers.dev`.
+2. Chạy thử `npm run build:cf` ở máy cục bộ để kiểm tra toàn vẹn.
+3. Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`, cho cả cấu hình production lẫn non-production nếu dashboard tách.
+4. Kiểm tra một build trên nhánh preview trước khi tin tưởng.
+5. Nếu phát sinh lỗi, đổi lại lệnh cũ hoặc rollback.
+
 
 ---
 
