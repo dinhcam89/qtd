@@ -1,12 +1,21 @@
 import { test, expect } from '@playwright/test';
 import {
   formatDate,
+  formatDateIso,
   formatFileSize,
   formatNumber,
   formatPercent,
   formatCurrency,
 } from '../src/lib/format';
-import { filterPublishedNews } from '../src/lib/news';
+import {
+  filterPublishedNews,
+  compareNewsDesc,
+  getNewsSlug,
+  assertUniqueNewsSlugs,
+  getNewsListHref,
+  getNewsDetailHref,
+} from '../src/lib/news';
+import { sortHolidays } from '../src/lib/schedule';
 import { groupDocuments, type DocumentItem } from '../src/lib/documents';
 import { paginate } from '../src/lib/pagination';
 import { PAGE_SIZE } from '../src/lib/constants';
@@ -267,5 +276,61 @@ test.describe('Unit tests — Phân trang (src/lib/pagination.ts)', () => {
     expect(paginate(make(25), 1).items).toHaveLength(PAGE_SIZE);
     expect(() => paginate(make(5), 1, 0)).toThrow(RangeError);
     expect(() => paginate(make(5), 1, 2.5)).toThrow(RangeError);
+  });
+});
+
+test.describe('Unit tests — Helper tin tức, lịch nghỉ, ngày ISO', () => {
+  test('compareNewsDesc: ngày mới trước, trùng ngày thì theo id (ổn định)', () => {
+    const d = (s: string) => new Date(s);
+    const list = [
+      { id: 'b', data: { pubDate: d('2026-05-01') } },
+      { id: 'z', data: { pubDate: d('2026-06-01') } },
+      { id: 'a', data: { pubDate: d('2026-05-01') } },
+    ];
+    const once = [...list].sort(compareNewsDesc).map((i) => i.id);
+    const reversed = [...list]
+      .reverse()
+      .sort(compareNewsDesc)
+      .map((i) => i.id);
+    expect(once).toEqual(['z', 'a', 'b']);
+    expect(reversed).toEqual(once);
+  });
+
+  test('getNewsSlug và href: slug lấy từ tên file, trang 1 là /tin-tuc/', () => {
+    expect(getNewsSlug('2026-01-01-bai-viet')).toBe('2026-01-01-bai-viet');
+    expect(getNewsSlug('thu-muc/bai-viet')).toBe('bai-viet');
+    expect(getNewsListHref(1)).toBe('/tin-tuc/');
+    expect(getNewsListHref(2)).toBe('/tin-tuc/trang/2/');
+    expect(getNewsDetailHref('a/bai-viet')).toBe('/tin-tuc/bai-viet/');
+  });
+
+  test('assertUniqueNewsSlugs: ném lỗi khi trùng slug hoặc dùng slug "trang"', () => {
+    expect(() => assertUniqueNewsSlugs(['a', 'b', 'c'])).not.toThrow();
+    expect(() => assertUniqueNewsSlugs(['a', 'x/a'])).toThrow(/trùng slug "a"/);
+    expect(() => assertUniqueNewsSlugs(['trang'])).toThrow(/bị cấm/);
+  });
+
+  test('sortHolidays: theo ngày bắt đầu, null cuối, trùng giữ thứ tự dữ liệu', () => {
+    const items = [
+      { title: 'C', start_date: '2026-09-02' },
+      { title: 'N', start_date: null },
+      { title: 'A', start_date: '2026-01-01' },
+      { title: 'B1', start_date: '2026-04-25' },
+      { title: 'B2', start_date: '2026-04-25' },
+    ];
+    expect(sortHolidays(items).map((i) => i.title)).toEqual([
+      'A',
+      'B1',
+      'B2',
+      'C',
+      'N',
+    ]);
+  });
+
+  test('formatDateIso: yyyy-mm-dd theo múi giờ Việt Nam, rỗng khi không hợp lệ', () => {
+    expect(formatDateIso('2026-03-05')).toBe('2026-03-05');
+    expect(formatDateIso(new Date('2026-03-05T20:00:00Z'))).toBe('2026-03-06');
+    expect(formatDateIso(null)).toBe('');
+    expect(formatDateIso('khong-phai-ngay')).toBe('');
   });
 });

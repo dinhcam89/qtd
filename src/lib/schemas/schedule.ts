@@ -4,6 +4,7 @@ export const holidayNoticeSchema = z.object({
   title: z.string(),
   start_date: z.string().nullable().optional(),
   end_date: z.string().nullable().optional(),
+  return_date: z.string().nullable().optional(),
   note: z.string().nullable().optional(),
 });
 

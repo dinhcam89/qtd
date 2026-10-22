@@ -50,7 +50,10 @@ export const collections = {
     schema: contactSchema,
   }),
   schedule: defineCollection({
-    loader: glob({ pattern: 'schedule.yaml', base: 'src/data' }),
+    loader: glob({
+      pattern: 'schedule.yaml',
+      base: getCollectionBase('schedule', 'src/data'),
+    }),
     schema: scheduleSchema,
   }),
   leadership: defineCollection({

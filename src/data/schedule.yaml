@@ -6,4 +6,5 @@ holidays:
   - title: '[CẦN BỔ SUNG: tên dịp nghỉ lễ]'
     start_date: null
     end_date: null
+    return_date: null
     note: null

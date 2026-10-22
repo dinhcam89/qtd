@@ -28,6 +28,28 @@ export function formatDate(
 }
 
 /**
+ * Định dạng ngày ISO yyyy-mm-dd (theo múi giờ Asia/Ho_Chi_Minh) cho thuộc tính datetime của <time>.
+ * Trả về chuỗi rỗng khi giá trị không hợp lệ.
+ */
+export function formatDateIso(
+  value: Date | string | number | null | undefined
+): string {
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+  return new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'Asia/Ho_Chi_Minh',
+  }).format(date);
+}
+
+/**
  * Định dạng số liệu quy mô kèm nhãn "tính đến dd/mm/yyyy" theo Mục 5.2 AGENTS.md.
  * Trả về "Đang cập nhật" khi ngày null, undefined hoặc không hợp lệ.
  */
