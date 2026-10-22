@@ -271,3 +271,17 @@
   background-color: var(--color-surface-muted);
   font-weight: 600;
 }
+
+/* Không để từ dài, bảng hay ảnh làm tràn ngang trang */
+.content-body {
+  overflow-wrap: anywhere;
+}
+
+.content-body table {
+  table-layout: fixed;
+}
+
+.content-body img {
+  max-width: 100%;
+  height: auto;
+}

@@ -1,13 +1,24 @@
 import { test, expect } from '@playwright/test';
 import {
   formatDate,
+  formatDateIso,
   formatFileSize,
   formatNumber,
   formatPercent,
   formatCurrency,
 } from '../src/lib/format';
-import { filterPublishedNews } from '../src/lib/news';
+import {
+  filterPublishedNews,
+  compareNewsDesc,
+  getNewsSlug,
+  assertUniqueNewsSlugs,
+  getNewsListHref,
+  getNewsDetailHref,
+} from '../src/lib/news';
+import { sortHolidays } from '../src/lib/schedule';
 import { groupDocuments, type DocumentItem } from '../src/lib/documents';
+import { paginate } from '../src/lib/pagination';
+import { PAGE_SIZE } from '../src/lib/constants';
 
 test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)', () => {
   test('formatFileSize: bao phủ 0, 1023, 1024, 1536, 1048576, 1572864, null, undefined', () => {
@@ -186,5 +197,140 @@ test.describe('Unit tests — Hàm nghiệp vụ tin tức và văn bản', () =
       'doc-quyche-khong-ngay-a',
       'doc-quyche-khong-ngay-b',
     ]);
+  });
+});
+
+test.describe('Unit tests — Phân trang (src/lib/pagination.ts)', () => {
+  const make = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
+
+  test('PAGE_SIZE mặc định là 10', () => {
+    expect(PAGE_SIZE).toBe(10);
+  });
+
+  test('0 bài: 1 trang, rỗng, không có Trước/Sau', () => {
+    const r = paginate(make(0), 1, 10);
+    expect(r).toEqual({
+      items: [],
+      page: 1,
+      totalPages: 1,
+      hasPrev: false,
+      hasNext: false,
+    });
+  });
+
+  test('1 bài và đúng 10 bài: 1 trang', () => {
+    const one = paginate(make(1), 1, 10);
+    expect(one.totalPages).toBe(1);
+    expect(one.items).toEqual([1]);
+    expect(one.hasNext).toBe(false);
+
+    const ten = paginate(make(10), 1, 10);
+    expect(ten.totalPages).toBe(1);
+    expect(ten.items).toHaveLength(10);
+    expect(ten.hasPrev).toBe(false);
+    expect(ten.hasNext).toBe(false);
+  });
+
+  test('11 bài: 2 trang, trang 2 có đúng 1 bài', () => {
+    const p1 = paginate(make(11), 1, 10);
+    expect(p1.totalPages).toBe(2);
+    expect(p1.items).toHaveLength(10);
+    expect(p1.hasPrev).toBe(false);
+    expect(p1.hasNext).toBe(true);
+
+    const p2 = paginate(make(11), 2, 10);
+    expect(p2.items).toEqual([11]);
+    expect(p2.hasPrev).toBe(true);
+    expect(p2.hasNext).toBe(false);
+  });
+
+  test('20 bài: 2 trang đầy; 21 bài: 3 trang, trang giữa có cả Trước và Sau', () => {
+    const p20 = paginate(make(20), 2, 10);
+    expect(p20.totalPages).toBe(2);
+    expect(p20.items).toEqual(make(20).slice(10));
+    expect(p20.hasNext).toBe(false);
+
+    const mid = paginate(make(21), 2, 10);
+    expect(mid.totalPages).toBe(3);
+    expect(mid.items).toEqual(make(21).slice(10, 20));
+    expect(mid.hasPrev).toBe(true);
+    expect(mid.hasNext).toBe(true);
+
+    const last = paginate(make(21), 3, 10);
+    expect(last.items).toEqual([21]);
+    expect(last.hasNext).toBe(false);
+  });
+
+  test('page < 1 hoặc không hợp lệ dùng trang 1; page > totalPages dùng trang cuối', () => {
+    expect(paginate(make(21), 0, 10).page).toBe(1);
+    expect(paginate(make(21), -5, 10).page).toBe(1);
+    expect(paginate(make(21), Number.NaN, 10).page).toBe(1);
+    expect(paginate(make(21), 1.5, 10).page).toBe(1);
+    const over = paginate(make(21), 99, 10);
+    expect(over.page).toBe(3);
+    expect(over.items).toEqual([21]);
+    expect(paginate(make(0), 7, 10).page).toBe(1);
+  });
+
+  test('mặc định dùng PAGE_SIZE; pageSize không hợp lệ ném RangeError', () => {
+    expect(paginate(make(25), 1).items).toHaveLength(PAGE_SIZE);
+    expect(() => paginate(make(5), 1, 0)).toThrow(RangeError);
+    expect(() => paginate(make(5), 1, 2.5)).toThrow(RangeError);
+  });
+});
+
+test.describe('Unit tests — Helper tin tức, lịch nghỉ, ngày ISO', () => {
+  test('compareNewsDesc: ngày mới trước, trùng ngày thì theo id (ổn định)', () => {
+    const d = (s: string) => new Date(s);
+    const list = [
+      { id: 'b', data: { pubDate: d('2026-05-01') } },
+      { id: 'z', data: { pubDate: d('2026-06-01') } },
+      { id: 'a', data: { pubDate: d('2026-05-01') } },
+    ];
+    const once = [...list].sort(compareNewsDesc).map((i) => i.id);
+    const reversed = [...list]
+      .reverse()
+      .sort(compareNewsDesc)
+      .map((i) => i.id);
+    expect(once).toEqual(['z', 'a', 'b']);
+    expect(reversed).toEqual(once);
+  });
+
+  test('getNewsSlug và href: slug lấy từ tên file, trang 1 là /tin-tuc/', () => {
+    expect(getNewsSlug('2026-01-01-bai-viet')).toBe('2026-01-01-bai-viet');
+    expect(getNewsSlug('thu-muc/bai-viet')).toBe('bai-viet');
+    expect(getNewsListHref(1)).toBe('/tin-tuc/');
+    expect(getNewsListHref(2)).toBe('/tin-tuc/trang/2/');
+    expect(getNewsDetailHref('a/bai-viet')).toBe('/tin-tuc/bai-viet/');
+  });
+
+  test('assertUniqueNewsSlugs: ném lỗi khi trùng slug hoặc dùng slug "trang"', () => {
+    expect(() => assertUniqueNewsSlugs(['a', 'b', 'c'])).not.toThrow();
+    expect(() => assertUniqueNewsSlugs(['a', 'x/a'])).toThrow(/trùng slug "a"/);
+    expect(() => assertUniqueNewsSlugs(['trang'])).toThrow(/bị cấm/);
+  });
+
+  test('sortHolidays: theo ngày bắt đầu, null cuối, trùng giữ thứ tự dữ liệu', () => {
+    const items = [
+      { title: 'C', start_date: '2026-09-02' },
+      { title: 'N', start_date: null },
+      { title: 'A', start_date: '2026-01-01' },
+      { title: 'B1', start_date: '2026-04-25' },
+      { title: 'B2', start_date: '2026-04-25' },
+    ];
+    expect(sortHolidays(items).map((i) => i.title)).toEqual([
+      'A',
+      'B1',
+      'B2',
+      'C',
+      'N',
+    ]);
+  });
+
+  test('formatDateIso: yyyy-mm-dd theo múi giờ Việt Nam, rỗng khi không hợp lệ', () => {
+    expect(formatDateIso('2026-03-05')).toBe('2026-03-05');
+    expect(formatDateIso(new Date('2026-03-05T20:00:00Z'))).toBe('2026-03-06');
+    expect(formatDateIso(null)).toBe('');
+    expect(formatDateIso('khong-phai-ngay')).toBe('');
   });
 });

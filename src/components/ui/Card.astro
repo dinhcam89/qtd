@@ -4,7 +4,11 @@ interface Props {
   description?: string;
   href?: string;
   date?: string;
+  /** Giá trị ISO (yyyy-mm-dd) cho thuộc tính datetime của thẻ time. */
+  dateTime?: string;
   badge?: string;
+  /** Ảnh minh họa (alt bắt buộc). */
+  image?: { src: string; alt: string };
   class?: string;
 }
 
@@ -13,7 +17,9 @@ const {
   description,
   href,
   date,
+  dateTime,
   badge,
+  image,
   class: className = '',
 } = Astro.props;
 ---
@@ -25,13 +31,25 @@ const {
   ]}
 >
   <div>
+    {image && (
+      <img
+        src={image.src}
+        alt={image.alt}
+        width="640"
+        height="360"
+        loading="lazy"
+        decoding="async"
+        class="w-full h-auto aspect-video object-cover rounded-md mb-4"
+      />
+    )}
+
     {badge && (
       <span class="inline-block text-xs font-semibold text-brand-primary bg-surface-brand-subtle px-2.5 py-1 rounded-sm mb-3">
         {badge}
       </span>
     )}
 
-    <h3 class="text-xl font-semibold text-ink-base group-hover:text-brand-primary transition-colors mb-2">
+    <h3 class="text-xl font-semibold text-ink-base group-hover:text-brand-primary transition-colors mb-2 break-words">
       {href ? (
         <a
           href={href}
@@ -51,7 +69,7 @@ const {
 
   {date && (
     <div class="text-sm text-ink-muted mt-auto pt-3 border-t border-border-default flex items-center justify-between">
-      <time datetime={date}>{date}</time>
+      <time datetime={dateTime ?? date}>{date}</time>
       {href && (
         <span
           class="text-brand-primary font-medium text-sm flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"

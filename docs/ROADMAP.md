@@ -18,7 +18,8 @@
 | 8     | Quy mô, Sản phẩm, Lãi suất                                                  | Xong       |
 | 9     | Quy chế và văn bản                                                          | Xong       |
 | 9b    | Test trạng thái có dữ liệu                                                  | Xong       |
-| 10–11 | Các trang nội dung (Tin tức, Liên hệ)                                       | Chưa làm   |
+| 10    | Tin tức và Thông báo                                                        | Xong       |
+| 11    | Các trang nội dung (Liên hệ, Kênh chính thức)                               | Chưa làm   |
 | 12–13 | CMS (có điều kiện)                                                          | Chưa làm   |
 | 14–15 | SEO, bảo mật, hiệu năng                                                     | Chưa làm   |
 | 16    | QA tổng, UAT                                                                | Chưa làm   |

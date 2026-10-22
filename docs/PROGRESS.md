@@ -180,3 +180,30 @@
      - Test Playwright: 150 passed, 2 skipped, 0 failed.
 - **Số placeholder hiện tại:** 42.
 - **Việc người dùng cần làm tiếp:** Chuẩn bị các file văn bản PDF thật (điều lệ, quy chế, biểu mẫu...) đưa vào `public/docs/` và khai báo nội dung tương ứng vào `src/content/documents/`.
+
+---
+
+## 10. Chi tiết đánh giá Task 10 (Tin tức và Thông báo)
+
+- **Ngày đánh giá:** 2026-10-22 (nhánh `task-10-tin-tuc-thong-bao`, tạo từ `main`)
+- **Các commit:**
+  - `83ee4cf`: `feat(lib): add pure paginate function and PAGE_SIZE with unit tests`
+  - `fb19b73`: `feat(fixtures): extend fixture mode to news and schedule with test data and helpers`
+  - `f5b0293`: `feat(news): add /tin-tuc list with pagination, detail pages and fixture tests`
+  - `95d75a4`: `feat(notices): add /thong-bao page with schedule, holidays and latest notices plus fixture tests`
+  - `fabfe73`: `feat(nav): add /tin-tuc (primary) and /thong-bao to nav and footer, update home and intro links`
+  - `39fbb65`: `feat(scripts): extend check-dist for dynamic routes and test:fixtures, skip fixtures in check-placeholders`
+  - `0d5e17a`: `test(pages): add empty state tests for /tin-tuc and /thong-bao plus draft leak prevention test`
+- **Kết quả đối chiếu tiêu chí hoàn thành:**
+  1. **Phân trang (`src/lib/pagination.ts`):** Hàm thuần trả về `items`, `page`, `totalPages`, `hasPrev`, `hasNext`. `PAGE_SIZE = 10` đặt tại `src/lib/constants.ts`. Unit test bao phủ toàn bộ các biên: 0 bài, 1 bài, đúng 10, 11, 20, 21 bài, `page < 1` hoặc `page > totalPages`, `pageSize` không hợp lệ (RangeError). URL: trang 1 là `/tin-tuc/`, các trang sau là `/tin-tuc/trang/[page]/`, chi tiết là `/tin-tuc/[slug]/` không xung đột với `trang`.
+  2. **Trang `/tin-tuc`:** Lọc bỏ hoàn toàn draft qua `filterPublishedNews`, sắp xếp `pubDate` mới trước (trùng ngày thì theo `id` ổn định). Mỗi mục dùng `Card`: tiêu đề (link), ngày `dd/mm/yyyy`, nhãn category tiếng Việt ("Tin tức", "Thông báo", "Hoạt động"), description, ảnh nếu có kèm `alt`. Điều khiển phân trang bằng `<nav aria-label="Phân trang tin tức">`, `aria-current="page"`, liên kết Trước/Sau chỉ hiện khi có. Trạng thái rỗng hiển thị `[data-news-empty]` "Đang cập nhật".
+  3. **Trang chi tiết (`/tin-tuc/[slug]`):** Dùng `PageHeader`, `Breadcrumb` (Trang chủ > Tin tức > tiêu đề), nội dung markdown trong `.content-body`, ảnh minh họa kèm `alt`, liên kết "Quay lại danh sách" và "Bài trước/Bài sau" theo thứ tự thời gian. Lỗi build rõ ràng nếu trùng slug hoặc dùng slug dành riêng `trang`.
+  4. **Trang `/thong-bao`:** (i) Lịch làm việc thường xuyên từ `schedule.yaml`, (ii) danh sách ngày nghỉ sắp xếp theo ngày bắt đầu tăng dần, trường null hiển thị "Đang cập nhật", (iii) 5 bài mới nhất thuộc category `thong-bao` kèm liên kết "Xem tất cả" về `/tin-tuc/`. Không dùng ngày build để ẩn/hiện hoặc gắn nhãn sắp tới/đã qua.
+  5. **Điều hướng (Nav & Footer):** `/tin-tuc` `primary: true` (menu ngang đúng 6 mục: Trang chủ, Giới thiệu, Sản phẩm, Lãi suất, Tin tức, Liên hệ). `/thong-bao` `primary: false`, xuất hiện trong menu mobile, footer và có thẻ liên kết ở `/tin-tuc` và `/gioi-thieu`. Test 1024px trong `layout.spec.ts` pass 100% với 6 mục. `getNavRoutes()` tự động bao phủ `/tin-tuc` và `/thong-bao` trong smoke, a11y, layout.
+  6. **Fixture và kiểm thử fixture:** Tạo >= 23 bài công khai (3 trang), bài tiêu đề >= 120 ký tự, bài có ảnh với `alt`, bài markdown phong phú (h2, h3, danh sách, bảng, trích dẫn, link), >= 5 bài `thong-bao`, >= 2 bài `draft: true` (không lọt vào bất kỳ trang nào), 2 bài trùng ngày đăng. Schedule fixture gồm lịch thường xuyên và 4 kỳ nghỉ (1 kỳ có trường null). Chế độ `QTD_FIXTURES` mở rộng cho cả collection `news` và `schedule`.
+  7. **Check-dist cho trang động:** `scripts/check-dist.mjs` nhận tham số thư mục kiểm tra (mặc định `dist`), bỏ qua quy tắc cấm `[FIXTURE]` khi chạy với `dist-fixtures`. Tích hợp vào `npm run test:fixtures`. Đã chứng minh bắt lỗi link nội bộ hỏng (24 lỗi khi cố ý đổi link "Bài sau" sang bài không tồn tại) và hoàn tác sạch sẽ.
+  8. **Kiểm tra placeholder:** `scripts/check-placeholders.mjs` bỏ qua thư mục `fixtures`, giữ nguyên 42 placeholder sản phẩm/lãi suất/lãnh đạo/lịch/site của repo.
+  9. **Chế độ rỗng production:** Đã kiểm thử `/tin-tuc` và `/thong-bao` hiển thị "Đang cập nhật" gọn gàng; bài mẫu `draft: true` trong `src/content/news` không xuất hiện trong bất kỳ file nào của `dist`.
+  10. **Không làm yếu test & số assertion:** Toàn bộ bộ test không sửa `tests/helpers.ts`, số assertion tăng từ 257 lên 426 (+169 assertion).
+- **Số placeholder hiện tại:** 42.
+- **Việc người dùng cần làm tiếp:** Tiếp tục chuẩn bị nội dung cho Task 11 (Liên hệ và Kênh chính thức).

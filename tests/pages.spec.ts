@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { test, expect } from '@playwright/test';
 import { setupPageGuards } from './helpers';
 
@@ -107,5 +109,79 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
+  });
+
+  test('/tin-tuc: trạng thái rỗng hiển thị "Đang cập nhật", không xuất hiện bài draft mẫu', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/tin-tuc/');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Tin tức');
+
+    const emptyBox = page.locator('[data-news-empty]');
+    await expect(emptyBox).toBeVisible();
+    await expect(emptyBox).toHaveText('Đang cập nhật');
+
+    await expect(page.locator('[data-news-item]')).toHaveCount(0);
+    await expect(
+      page.locator('nav[aria-label="Phân trang tin tức"]')
+    ).toHaveCount(0);
+
+    const content = await page.content();
+    expect(content).not.toContain('thong-bao-mau');
+    expect(content).not.toContain('Tiêu đề thông báo mẫu');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/thong-bao: hiển thị lịch làm việc, khối thông báo rỗng hiển thị "Đang cập nhật", không có draft', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/thong-bao');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Thông báo và lịch làm việc');
+
+    await expect(page.locator('[data-regular-schedule]')).toBeVisible();
+
+    const emptyNotices = page.locator('[data-notices-empty]');
+    await expect(emptyNotices).toBeVisible();
+    await expect(emptyNotices).toHaveText('Đang cập nhật');
+    await expect(page.locator('[data-notice-item]')).toHaveCount(0);
+
+    const content = await page.content();
+    expect(content).not.toContain('thong-bao-mau');
+    expect(content).not.toContain('Tiêu đề thông báo mẫu');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('bài mẫu draft: true trong src/content/news tuyệt đối không xuất hiện trong dist', () => {
+    const distPath = path.resolve('dist');
+    if (!fs.existsSync(distPath)) return;
+
+    function checkDir(dir: string) {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const fullPath = path.join(dir, entry.name);
+        expect(entry.name).not.toContain('thong-bao-mau');
+        if (entry.isDirectory()) {
+          checkDir(fullPath);
+        } else if (
+          ['.html', '.js', '.css', '.json', '.txt', '.xml'].includes(
+            path.extname(entry.name).toLowerCase()
+          )
+        ) {
+          const content = fs.readFileSync(fullPath, 'utf-8');
+          expect(content).not.toContain('Tiêu đề thông báo mẫu');
+          expect(content).not.toContain('Nội dung chi tiết thông báo mẫu');
+        }
+      }
+    }
+    checkDir(distPath);
   });
 });

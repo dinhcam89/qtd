@@ -1,0 +1,25 @@
+working_days: '[FIXTURE] Thứ Hai đến Thứ Sáu'
+morning_hours: '[FIXTURE] 07:30 - 11:30'
+afternoon_hours: '[FIXTURE] 13:00 - 17:00'
+notes: '[FIXTURE] Dữ liệu kiểm thử, không phải lịch thật.'
+holidays:
+  - title: '[FIXTURE] Kỳ nghỉ thứ ba (sắp xếp giữa danh sách)'
+    start_date: '2026-09-02'
+    end_date: '2026-09-03'
+    return_date: '2026-09-04'
+    note: null
+  - title: '[FIXTURE] Kỳ nghỉ thứ nhất'
+    start_date: '2026-01-01'
+    end_date: '2026-01-01'
+    return_date: '2026-01-02'
+    note: null
+  - title: '[FIXTURE] Kỳ nghỉ chưa đủ thông tin (có trường null)'
+    start_date: '2026-12-30'
+    end_date: null
+    return_date: null
+    note: null
+  - title: '[FIXTURE] Kỳ nghỉ thứ hai'
+    start_date: '2026-04-25'
+    end_date: '2026-04-27'
+    return_date: '2026-04-28'
+    note: null
