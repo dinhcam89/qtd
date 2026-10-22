@@ -329,21 +329,30 @@
      - Thêm bước `npm run lhci` sau `check:dist` trong CI.
      - Bổ sung bước `lhci` vào `scripts/verify.mjs`.
   4. **Lệnh build Cloudflare Workers Builds (scripts/build-cf.mjs):**
-     - Hàm thuần `decideBuildMode(env, siteData)` trong `scripts/lib/build-mode.mjs` có 5 bộ unit test bao phủ toàn diện.
-     - Nguồn tra cứu tên biến nhánh Cloudflare Workers Builds: Tài liệu chính thức Cloudflare Developers — [Cloudflare Workers CI/CD Builds Environment Variables](https://developers.cloudflare.com/workers/ci-cd/builds/environment-variables/). Biến quy định là `WORKERS_CI_BRANCH` (fallback `CF_PAGES_BRANCH`).
-     - Đã chứng minh bằng 5 kịch bản thực tế:
-       1. `QTD_FIXTURES=1`: bị từ chối với thông báo tiếng Việt (exit 1).
-       2. Thiếu `SITE_URL`: bị từ chối với thông báo tiếng Việt (exit 1).
-       3. `SITE_URL=https://qtd.dinhcam1512.workers.dev`, nhánh main: build thành công, check:dist pass (exit 0).
-       4. Cùng `SITE_URL`, nhánh production: bị từ chối vì workers.dev không được phép trên production (exit 1).
-       5. `SITE_URL=https://example.vn`, nhánh production: SITE_URL hợp lệ, thất bại tại bước kiểm tra placeholder (`check-placeholders --strict`) (exit 1).
+     - Hàm thuần `decideBuildMode(env, siteData)` trong `scripts/lib/build-mode.mjs` có các bộ unit test bao phủ toàn diện (kèm ma trận tổ hợp 16 trường hợp).
+     - Nguồn tra cứu chính thức của Cloudflare Developers đã mở và xác minh:
+       + Trang Build configuration (mục Default variables): [Cloudflare Workers CI/CD Builds Configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
+       + Trang Changelog: [Access git commit sha and branch name as environment variables in Workers Builds](https://developers.cloudflare.com/workers/changelog/#access-git-commit-sha-and-branch-name-as-environment-variables-in-workers-builds)
+       + Biến quy định chính thức của Workers Builds là `WORKERS_CI_BRANCH`.
+       + Biến `CF_PAGES_BRANCH` được duy trì đọc làm biến dự phòng (chưa xác minh trong tài liệu Workers Builds, chỉ xuất hiện trong Cloudflare Pages).
+     - Quy tắc fail-safe chế độ Production:
+       + Bản build tự động chuyển sang chế độ Production nghiêm ngặt (`--strict`) nếu: nhánh là "production", hoặc `BUILD_MODE=production`, HOẶC host của `SITE_URL` là tên miền thật (không kết thúc bằng `workers.dev` hay `pages.dev`), bất kể nhánh và kể cả khi không đọc được biến nhánh.
+       + Mâu thuẫn `BUILD_MODE=preview` kết hợp với `SITE_URL` tên miền thật bị từ chối ngay lập tức (exit 1).
+       + Chế độ Preview chỉ áp dụng cho host `workers.dev` hoặc `pages.dev`; nếu không đọc được biến nhánh hệ thống sẽ in cảnh báo an toàn.
   5. **Thống kê test và assertion:**
      - Số assertion: Trước task: 643 assertion; Sau task: 698 assertion (+55 assertion).
      - Số test Playwright: 342 tests (desktop: 53, tablet: 53, mobile: 53, layout: 54, unit: 36, fixtures: 93).
 - **Số placeholder hiện tại:** 46 (exit code 0; `--strict` 54 issues, exit code 1).
 - **Thứ tự việc người dùng cần làm sau khi merge (agent không thể tự làm):**
-  1. Đặt biến `SITE_URL` trong Cloudflare, mục Build variables, giá trị `https://qtd.dinhcam1512.workers.dev`.
-  2. Chạy thử `npm run build:cf` ở máy cục bộ để kiểm tra toàn vẹn.
-  3. Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`, cho cả cấu hình production lẫn non-production nếu dashboard tách.
-  4. Kiểm tra một build trên nhánh preview trước khi tin tưởng.
-  5. Nếu phát sinh lỗi, đổi lại lệnh cũ hoặc rollback.
+  1. **Môi trường Preview (nhánh phát triển / test trên Cloudflare):**
+     - Đặt biến `SITE_URL` trong Cloudflare Workers, mục Build variables (hoặc Environment variables), giá trị `https://qtd.dinhcam1512.workers.dev` (hoặc tên miền `pages.dev`).
+     - Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`.
+     - Hệ thống tự nhận diện chế độ preview dựa trên host `workers.dev`, in cảnh báo an toàn nếu không tìm thấy biến nhánh và cho phép placeholder với exit 0.
+  2. **Kiểm tra thử nghiệm:**
+     - Chạy thử `npm run build:cf` ở máy cục bộ với các cấu hình mong muốn để kiểm tra toàn vẹn.
+     - Kiểm tra một build tự động trên nhánh preview trước khi tin tưởng.
+  3. **Môi trường Production (khi go-live với tên miền thật):**
+     - Đặt biến `SITE_URL` là tên miền chính thức (ví dụ `https://qtd-tanbinh.vn`).
+     - Nhờ cơ chế fail-safe mới, mọi bản build gắn tên miền thật sẽ tự động kích hoạt chế độ Production nghiêm ngặt (`--strict`), đòi hỏi toàn bộ dữ liệu thật phải hoàn tất (không còn bất kỳ placeholder hay trường null bắt buộc nào), bất kể nhánh build là gì.
+     - Tuyệt đối không đặt `BUILD_MODE=preview` khi dùng tên miền thật để tránh bị từ chối do mâu thuẫn.
+  4. Nếu phát sinh lỗi, đổi lại build command cũ `npm run build` hoặc rollback.

@@ -267,11 +267,10 @@ Phương án B có nhiều việc nhạy cảm về bảo mật: bundle CMS từ
 
 **Thứ tự việc người dùng cần làm sau khi merge (agent không thể tự làm):**
 
-1. Đặt biến `SITE_URL` trong Cloudflare, mục Build variables, giá trị `https://qtd.dinhcam1512.workers.dev`.
-2. Chạy thử `npm run build:cf` ở máy cục bộ để kiểm tra toàn vẹn.
-3. Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`, cho cả cấu hình production lẫn non-production nếu dashboard tách.
-4. Kiểm tra một build trên nhánh preview trước khi tin tưởng.
-5. Nếu phát sinh lỗi, đổi lại lệnh cũ hoặc rollback.
+1. **Cấu hình bản build Preview:** Đặt biến `SITE_URL` trong Cloudflare Workers Builds, giá trị `https://qtd.dinhcam1512.workers.dev` (hoặc `pages.dev`). Đổi Build command thành `npm run build:cf`. Preview host cho phép placeholder với exit 0 (kèm cảnh báo nếu thiếu biến nhánh).
+2. **Kiểm tra thử nghiệm:** Chạy thử `npm run build:cf` ở máy cục bộ và kiểm tra một build preview tự động trước khi tin tưởng.
+3. **Cấu hình bản build Production:** Khi go-live gắn tên miền thật (ví dụ `https://qtd-tanbinh.vn`), cơ chế fail-safe sẽ tự động ép chế độ Production nghiêm ngặt (`--strict`), đòi hỏi toàn bộ dữ liệu phải hoàn tất (không còn placeholder), bất kể nhánh build. Tuyệt đối không dùng `BUILD_MODE=preview` với tên miền thật.
+4. Nếu phát sinh lỗi, đổi lại lệnh cũ `npm run build` hoặc rollback.
 
 ---
 
