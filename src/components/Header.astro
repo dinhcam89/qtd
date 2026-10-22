@@ -41,11 +41,11 @@ const { siteName = '' } = Astro.props;
         ))}
       </nav>
 
-      <!-- Nút Hamburger trên Mobile (vùng bấm tối thiểu 44x44px, ẩn khi chưa nạp JS) -->
+      <!-- Nút Hamburger trên Mobile (vùng bấm tối thiểu 44x44px) -->
       <button
         type="button"
         id="menu-toggle-btn"
-        class="hidden lg:hidden inline-flex items-center gap-1.5 px-3 py-2 min-w-[44px] min-h-[44px] rounded-md text-ink-base hover:bg-surface-muted font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+        class="inline-flex lg:hidden items-center gap-1.5 px-3 py-2 min-w-[44px] min-h-[44px] rounded-md text-ink-base hover:bg-surface-muted font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
         aria-expanded="false"
         aria-controls="mobile-nav-panel"
         aria-label="Menu"
@@ -85,7 +85,7 @@ const { siteName = '' } = Astro.props;
     <!-- Panel Menu Mobile -->
     <nav
       id="mobile-nav-panel"
-      class="lg:hidden border-t border-border-default py-3"
+      class="hidden lg:hidden border-t border-border-default py-3"
       aria-label="Điều hướng trên di động"
     >
       <ul class="flex flex-col space-y-1">
