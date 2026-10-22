@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { test, expect } from '@playwright/test';
 import { setupPageGuards } from './helpers';
-import { getNavRoutes } from '../src/lib/nav';
+import { getNavRoutes, NAV_ITEMS } from '../src/lib/nav';
 
 const testPages = getNavRoutes();
 const SITE_URL = 'https://qtd.pages.dev';
@@ -157,6 +157,50 @@ test.describe('Smoke tests', () => {
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
+  });
+
+  test('chế độ không có JavaScript ở 360px: trang vẫn hiển thị, brand link về "/", footer chứa liên kết tới MỌI mục trong nav.ts, không cuộn ngang', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 360, height: 640 },
+    });
+    const page = await context.newPage();
+    await page.goto('/');
+
+    // 1. Trang vẫn hiển thị (h1 tồn tại và hiển thị rõ ràng)
+    const h1 = page.locator('h1').first();
+    await expect(h1).toBeVisible();
+
+    // 2. Brand link ở header trỏ về "/"
+    const brandLink = page.locator('header a[href="/"]').first();
+    await expect(brandLink).toBeVisible();
+    await expect(brandLink).toHaveAttribute('href', '/');
+
+    // 3. Footer chứa liên kết tới MỌI mục trong nav.ts (qua NAV_ITEMS)
+    const footerHrefs = await page
+      .locator('[data-footer-nav] a')
+      .evaluateAll((els) => els.map((a) => a.getAttribute('href')));
+    const expectedHrefs = NAV_ITEMS.map((item) => item.href);
+    for (const href of expectedHrefs) {
+      expect(
+        footerHrefs,
+        `Footer phải chứa liên kết tới "${href}" làm lối đi dự phòng`
+      ).toContain(href);
+    }
+    expect(footerHrefs.length).toBe(expectedHrefs.length);
+
+    // 4. Không cuộn ngang ở cấp trang
+    const hasHorizontalOverflow = await page.evaluate(() => {
+      return (
+        document.documentElement.scrollWidth >
+        document.documentElement.clientWidth
+      );
+    });
+    expect(hasHorizontalOverflow, 'Trang không được có cuộn ngang').toBe(false);
+
+    await context.close();
   });
 
   test('trang 404 có meta robots noindex và trả nội dung thân thiện có link về trang chủ', async ({

@@ -38,11 +38,9 @@ export const PRIMARY_NAV_ITEMS: readonly NavItem[] = NAV_ITEMS.filter(
 
 /**
  * Danh sách liên kết nhanh ở chân trang (Footer).
- * Loại bỏ "Quy mô" và "Ban lãnh đạo" theo phản hồi của người dùng.
+ * Chứa đầy đủ mọi mục từ NAV_ITEMS làm lối đi dự phòng khi tắt JavaScript.
  */
-export const FOOTER_NAV_ITEMS: readonly NavItem[] = NAV_ITEMS.filter(
-  (item) => item.href !== '/quy-mo' && item.href !== '/ban-lanh-dao'
-);
+export const FOOTER_NAV_ITEMS: readonly NavItem[] = NAV_ITEMS;
 
 /**
  * Lấy danh sách toàn bộ các trang nội bộ độc lập (route pathname) để kiểm thử tự động.

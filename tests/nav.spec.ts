@@ -70,8 +70,8 @@ test.describe('Menu điều hướng', () => {
       footerExpected
     );
     const footerLabels = footer.map((f) => f.label);
-    expect(footerLabels).not.toContain('Quy mô');
-    expect(footerLabels).not.toContain('Ban lãnh đạo');
+    expect(footerLabels).toContain('Quy mô');
+    expect(footerLabels).toContain('Ban lãnh đạo');
   });
 
   test('menu mobile mở ra thấy đủ mọi mục trong nav.ts', async ({
