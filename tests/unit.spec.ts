@@ -388,6 +388,8 @@ test.describe('Unit tests — Hàm xử lý liên hệ và bản đồ (src/lib/
     expect(toMailtoHref('user;semi@domain.com')).toBeNull();
     expect(toMailtoHref('user%20@domain.com')).toBeNull();
     expect(toMailtoHref('<user>@domain.com')).toBeNull();
+    expect(toMailtoHref('user<@domain.com')).toBeNull();
+    expect(toMailtoHref('user>@domain.com')).toBeNull();
     expect(toMailtoHref('[CẦN BỔ SUNG: email]')).toBeNull();
     expect(toMailtoHref('')).toBeNull();
     expect(toMailtoHref('   ')).toBeNull();
