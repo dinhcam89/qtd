@@ -68,7 +68,9 @@ export function buildCanonicalUrl(siteUrl: string, pathname: string): string {
  * Kiểm tra sự tồn tại của ảnh chia sẻ mặc định og-default.* trong thư mục public.
  * Trả về đường dẫn ảnh tương đối (ví dụ /images/og-default.png) hoặc null nếu không có.
  */
-export function getOgDefaultImagePath(publicDir: string): string | null {
+export function getOgDefaultImagePath(
+  publicDir: string = path.resolve('public')
+): string | null {
   const imagesDir = path.join(publicDir, 'images');
   if (!fs.existsSync(imagesDir)) {
     return null;
@@ -148,11 +150,16 @@ export function buildFinancialServiceJsonLd(params: {
     }
 
     if (addr.city && !isPlaceholder(addr.city)) {
-      postalAddress.addressCountry = 'VN';
+      if (!postalAddress.addressLocality) {
+        postalAddress.addressLocality = addr.city.trim();
+      } else {
+        postalAddress.addressRegion = addr.city.trim();
+      }
     }
 
     // Chỉ đính kèm địa chỉ nếu có ít nhất 1 trường cụ thể
     if (Object.keys(postalAddress).length > 1) {
+      postalAddress.addressCountry = 'VN';
       jsonLd.address = postalAddress;
     }
   }

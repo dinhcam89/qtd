@@ -410,4 +410,57 @@ test.describe('Fixture tests — /tin-tuc và trang chi tiết ở trạng thái
     }
     checkDir(distPath);
   });
+
+  test('25 bài tin fixture có title hoàn toàn khác nhau', () => {
+    expect(PUBLISHED).toHaveLength(25);
+    const titles = new Set<string>();
+    for (const item of PUBLISHED) {
+      expect(item.title.trim().length).toBeGreaterThan(0);
+      expect(
+        titles.has(item.title),
+        `Tiêu đề bài tin bị trùng: "${item.title}" (file ${item.id})`
+      ).toBe(false);
+      titles.add(item.title);
+    }
+    expect(titles.size).toBe(25);
+  });
+
+  test('canonical URL trên các trang phân trang trỏ chính xác về chính nó', async ({
+    page,
+  }) => {
+    for (let p = 1; p <= TOTAL_PAGES; p++) {
+      const url = listUrl(p);
+      await page.goto(url);
+      const canonical = await page
+        .locator('link[rel="canonical"]')
+        .getAttribute('href');
+      expect(canonical).toBe(`https://qtd.pages.dev${url}`);
+    }
+  });
+
+  test('sitemap trong dist-fixtures có mọi bài tin công khai và KHÔNG có bài draft', () => {
+    const sitemap0Path = path.resolve('dist-fixtures/sitemap-0.xml');
+    if (!fs.existsSync(sitemap0Path)) {
+      return;
+    }
+    const sitemapContent = fs.readFileSync(sitemap0Path, 'utf-8');
+
+    // 1. Mọi bài viết công khai phải xuất hiện trong sitemap
+    for (const pub of PUBLISHED) {
+      const expectedUrl = `https://qtd.pages.dev/tin-tuc/${pub.id}/`;
+      expect(
+        sitemapContent.includes(`<loc>${expectedUrl}</loc>`),
+        `Bài tin công khai ${pub.id} thiếu trong sitemap`
+      ).toBe(true);
+    }
+
+    // 2. Tuyệt đối không có bài draft nào trong sitemap
+    for (const draft of DRAFTS) {
+      const draftUrl = `https://qtd.pages.dev/tin-tuc/${draft.id}/`;
+      expect(
+        sitemapContent.includes(draftUrl),
+        `Bài tin draft ${draft.id} xuất hiện trong sitemap!`
+      ).toBe(false);
+    }
+  });
 });

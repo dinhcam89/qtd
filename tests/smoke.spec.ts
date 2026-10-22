@@ -1,8 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { test, expect } from '@playwright/test';
 import { setupPageGuards } from './helpers';
 import { getNavRoutes } from '../src/lib/nav';
 
 const testPages = getNavRoutes();
+const SITE_URL = 'https://qtd.pages.dev';
 
 test.describe('Smoke tests', () => {
   for (const pageInfo of testPages) {
@@ -34,7 +37,77 @@ test.describe('Smoke tests', () => {
       expect(metaDescription).toBeTruthy();
       expect(metaDescription?.trim().length).toBeGreaterThan(0);
 
-      // 5. Không cuộn ngang cấp trang
+      // 5. Thẻ canonical tuyệt đối, trỏ đúng site + pathname, kết thúc bằng "/"
+      const canonical = await page
+        .locator('link[rel="canonical"]')
+        .getAttribute('href');
+      expect(canonical).toBeTruthy();
+      const expectedPath = pageInfo.path.endsWith('/')
+        ? pageInfo.path
+        : `${pageInfo.path}/`;
+      expect(canonical).toBe(`${SITE_URL}${expectedPath}`);
+      expect(canonical?.endsWith('/')).toBe(true);
+
+      // 6. Đủ thẻ Open Graph và Twitter Card
+      const ogTitle = await page
+        .locator('meta[property="og:title"]')
+        .getAttribute('content');
+      expect(ogTitle).toBe(title);
+
+      const ogDesc = await page
+        .locator('meta[property="og:description"]')
+        .getAttribute('content');
+      expect(ogDesc).toBe(metaDescription);
+
+      const ogUrl = await page
+        .locator('meta[property="og:url"]')
+        .getAttribute('content');
+      expect(ogUrl).toBe(canonical);
+
+      const ogType = await page
+        .locator('meta[property="og:type"]')
+        .getAttribute('content');
+      expect(ogType).toBe('website');
+
+      const ogLocale = await page
+        .locator('meta[property="og:locale"]')
+        .getAttribute('content');
+      expect(ogLocale).toBe('vi_VN');
+
+      const ogSiteName = await page
+        .locator('meta[property="og:site_name"]')
+        .getAttribute('content');
+      expect(ogSiteName?.trim().length).toBeGreaterThan(0);
+
+      const twitterCard = await page
+        .locator('meta[name="twitter:card"]')
+        .getAttribute('content');
+      expect(twitterCard).toBe('summary');
+
+      // 7. Không có og:image trỏ tới file không tồn tại
+      const ogImgLocator = page.locator('meta[property="og:image"]');
+      if ((await ogImgLocator.count()) > 0) {
+        const ogImg = await ogImgLocator.first().getAttribute('content');
+        if (ogImg) {
+          const localImgPath = path.resolve(
+            'public',
+            ogImg.replace(/^https?:\/\/[^/]+\//, '')
+          );
+          expect(fs.existsSync(localImgPath)).toBe(true);
+        }
+      }
+
+      // 8. JSON-LD: nếu phát ra thì parse được, không chứa placeholder "[" và không chứa chuỗi "null"
+      const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+      const jsonLdCount = await jsonLdScripts.count();
+      for (let i = 0; i < jsonLdCount; i++) {
+        const raw = await jsonLdScripts.nth(i).innerText();
+        expect(() => JSON.parse(raw)).not.toThrow();
+        expect(raw).not.toContain('[');
+        expect(raw).not.toContain('null');
+      }
+
+      // 9. Không cuộn ngang cấp trang
       const isNotHorizontallyScrolled = await page.evaluate(() => {
         return (
           document.documentElement.scrollWidth <=
@@ -43,7 +116,7 @@ test.describe('Smoke tests', () => {
       });
       expect(isNotHorizontallyScrolled).toBe(true);
 
-      // 6. Không có console.error hoặc vi phạm Content Security Policy
+      // 10. Không có console.error hoặc vi phạm Content Security Policy
       expect(consoleErrors).toEqual([]);
       expect(cspViolations).toEqual([]);
     });
@@ -86,11 +159,16 @@ test.describe('Smoke tests', () => {
     expect(cspViolations).toEqual([]);
   });
 
-  test('trang 404 trả nội dung thân thiện có link về trang chủ', async ({
+  test('trang 404 có meta robots noindex và trả nội dung thân thiện có link về trang chủ', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/404');
+
+    const robotsMeta = await page
+      .locator('meta[name="robots"]')
+      .getAttribute('content');
+    expect(robotsMeta).toBe('noindex');
 
     const homeLink = page.locator('main a[href="/"]');
     await expect(homeLink).toBeVisible();
@@ -98,6 +176,81 @@ test.describe('Smoke tests', () => {
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
+  });
+
+  test('toàn bộ các trang trong getNavRoutes() có title và description khác nhau', async ({
+    page,
+  }) => {
+    const titles = new Map<string, string>();
+    const descriptions = new Map<string, string>();
+
+    for (const p of testPages) {
+      await page.goto(p.path);
+      const title = (await page.title()).trim();
+      const desc = (
+        (await page
+          .locator('meta[name="description"]')
+          .getAttribute('content')) || ''
+      ).trim();
+
+      expect(title.length).toBeGreaterThan(0);
+      expect(desc.length).toBeGreaterThan(0);
+
+      expect(
+        titles.has(title),
+        `Tiêu đề "${title}" của trang ${p.path} bị trùng với ${titles.get(title)}`
+      ).toBe(false);
+      titles.set(title, p.path);
+
+      expect(
+        descriptions.has(desc),
+        `Mô tả "${desc}" của trang ${p.path} bị trùng với ${descriptions.get(desc)}`
+      ).toBe(false);
+      descriptions.set(desc, p.path);
+    }
+  });
+
+  test('sitemap-index.xml và sitemap-0.xml chứa đúng tập trang trong getNavRoutes() trừ /404', () => {
+    const distPath = path.resolve('dist');
+    const sitemapIndexPath = path.join(distPath, 'sitemap-index.xml');
+    const sitemap0Path = path.join(distPath, 'sitemap-0.xml');
+
+    expect(fs.existsSync(sitemapIndexPath)).toBe(true);
+    expect(fs.existsSync(sitemap0Path)).toBe(true);
+
+    const sitemap0Content = fs.readFileSync(sitemap0Path, 'utf-8');
+    const urlsInSitemap = new Set<string>();
+    const locMatches = sitemap0Content.matchAll(/<loc>([^<]+)<\/loc>/g);
+    for (const m of locMatches) {
+      const u = new URL(m[1]);
+      urlsInSitemap.add(u.pathname);
+    }
+
+    // Tập trang kỳ vọng từ getNavRoutes() trừ /404
+    const expectedPaths = new Set(
+      testPages
+        .filter((p) => p.path !== '/404' && p.path !== '/404/')
+        .map((p) => (p.path.endsWith('/') ? p.path : `${p.path}/`))
+    );
+
+    // So sánh hai tập hợp
+    const missingInSitemap = [...expectedPaths].filter(
+      (p) => !urlsInSitemap.has(p)
+    );
+    const extraInSitemap = [...urlsInSitemap].filter(
+      (p) => !expectedPaths.has(p)
+    );
+
+    expect(
+      missingInSitemap,
+      `Thiếu trang trong sitemap-0.xml: ${missingInSitemap.join(', ')}`
+    ).toEqual([]);
+    expect(
+      extraInSitemap,
+      `Trang thừa trong sitemap-0.xml: ${extraInSitemap.join(', ')}`
+    ).toEqual([]);
+    expect(urlsInSitemap.has('/404')).toBe(false);
+    expect(urlsInSitemap.has('/404/')).toBe(false);
   });
 
   test('ở trang 404 bấm logo ở header thì điều hướng về trang chủ "/"', async ({
