@@ -7,10 +7,15 @@ import StatItem from '../components/ui/StatItem.astro';
 import Card from '../components/ui/Card.astro';
 import RatesTables from '../components/RatesTables.astro';
 import { getSite, getRates } from '../lib/data';
-import { getPublishedNews } from '../lib/news';
+import {
+  getPublishedNews,
+  getNewsDetailHref,
+  getNewsCategoryLabel,
+} from '../lib/news';
 import {
   formatAsOf,
   formatDate,
+  formatDateIso,
   formatNumber,
   formatCurrency,
   formatText,
@@ -167,11 +172,22 @@ const siteDescription =
               <Card
                 title={item.data.title}
                 description={item.data.description}
-                badge={item.data.category}
+                href={getNewsDetailHref(item.id)}
+                badge={getNewsCategoryLabel(item.data.category)}
                 date={formatDate(item.data.pubDate)}
+                dateTime={formatDateIso(item.data.pubDate)}
               />
             ))}
           </div>
+          <p>
+            <a
+              data-home-news-link
+              href="/tin-tuc/"
+              class="inline-flex items-center min-h-[44px] font-medium text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded"
+            >
+              Xem tất cả tin tức &rarr;
+            </a>
+          </p>
         </div>
       </Container>
     </Section>

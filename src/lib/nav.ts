@@ -25,6 +25,8 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Quy chế và văn bản', href: '/quy-che', primary: false },
   { label: 'Sản phẩm', href: '/san-pham', primary: true },
   { label: 'Lãi suất', href: '/lai-suat', primary: true },
+  { label: 'Tin tức', href: '/tin-tuc', primary: true },
+  { label: 'Thông báo', href: '/thong-bao', primary: false },
   { label: 'Liên hệ', href: '/#lien-he', primary: true },
 ] as const;
 
