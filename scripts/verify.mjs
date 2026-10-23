@@ -95,6 +95,7 @@ const steps = [
   { name: 'test', cmd: 'npm run test', isTest: true },
   { name: 'fixtures', cmd: 'npm run test:fixtures', isTest: true },
   { name: 'check:dist', cmd: 'npm run check:dist' },
+  { name: 'lhci:quick', cmd: 'npm run lhci:quick' },
   { name: 'check:contrast', cmd: 'npm run check:contrast' },
   {
     name: 'check:placeholders',

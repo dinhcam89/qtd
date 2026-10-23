@@ -12,7 +12,14 @@ Quỹ tín dụng nhân dân là tổ chức tín dụng hợp tác xã hoạt �
 
 ## 2. Địa bàn và Phạm vi hoạt động
 
-[CẦN BỔ SUNG: Phạm vi địa bàn hoạt động theo giấy phép được Ngân hàng Nhà nước cấp]
+[CẦN BỔ SUNG: Phạm vi địa bàn hoạt động theo giấy phép được Ngân hàng Nhà nước cấp (gồm Trụ sở chính và 04 phòng giao dịch)]
+
+Mạng lưới phục vụ gồm Trụ sở chính và 04 Phòng giao dịch:
+
+- Phòng giao dịch 1: [CẦN BỔ SUNG: địa chỉ phòng giao dịch 1]
+- Phòng giao dịch 2: [CẦN BỔ SUNG: địa chỉ phòng giao dịch 2]
+- Phòng giao dịch 3: [CẦN BỔ SUNG: địa chỉ phòng giao dịch 3]
+- Phòng giao dịch 4: [CẦN BỔ SUNG: địa chỉ phòng giao dịch 4]
 
 ## 3. Cơ cấu tổ chức
 

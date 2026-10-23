@@ -77,9 +77,10 @@ npm test         # Playwright + axe
 npm run test:unit # chạy unit tests thuần (format, news, documents)
 npm run test:fixtures # build fixture và chạy tests với dữ liệu fixture
 npm run verify   # chạy toàn bộ kiểm tra chất lượng trước khi chốt task
-npm run check:dist # kiểm tra toàn vẹn thư mục dist (không script/style inline, không vỡ link)
-npm run lhci     # Lighthouse CI (khi đã cấu hình)
-
+npm run lhci:quick # Lighthouse CI nhanh (1 lần, 3 URL: /, /lai-suat/, /tin-tuc/) dùng trong verify
+npm run lhci     # Lighthouse CI đầy đủ (3 lần, mọi trang) dùng trong CI
+npm run build:cf # build cho Cloudflare Workers Builds (kiểm tra nhánh, SITE_URL, placeholder)
+npm audit --omit=dev --audit-level=high # kiểm tra bảo mật các gói phụ thuộc production
 ```
 ### 4.1 Môi trường và công cụ
 - Mã nguồn nằm tại D:\TaiLieu\projects\qtd, terminal là PowerShell. Chạy lệnh trực tiếp (npm, git, node), không dùng wsl. Nối lệnh bằng `;` thay vì `&&`.

@@ -1,0 +1,49 @@
+effective_from: '2026-07-01'
+deposit_rates:
+  - term: 'Không kỳ hạn'
+    rate: 0.2
+    note: 'Lãi trả hàng tháng hoặc cuối kỳ'
+  - term: '01 tháng'
+    rate: 3.0
+    note: 'Lãi trả cuối kỳ'
+  - term: '02 tháng'
+    rate: 3.0
+    note: 'Lãi trả cuối kỳ'
+  - term: '03 tháng'
+    rate: 3.3
+    note: 'Lãi trả cuối kỳ'
+  - term: '06 tháng'
+    rate: 4.8
+    note: 'Lãi trả cuối kỳ hoặc hàng tháng'
+  - term: '09 tháng'
+    rate: 5.0
+    note: 'Lãi trả cuối kỳ'
+  - term: '12 tháng'
+    rate: 5.5
+    note: 'Lãi trả cuối kỳ hoặc định kỳ'
+  - term: '18 tháng'
+    rate: 5.7
+    note: 'Lãi trả cuối kỳ'
+  - term: '24 tháng'
+    rate: 5.8
+    note: 'Lãi trả cuối kỳ'
+  - term: '36 tháng'
+    rate: 5.8
+    note: 'Lãi trả cuối kỳ'
+loan_rates:
+  - purpose: 'Vay phục vụ phát triển nông nghiệp, nông thôn'
+    rate: 7.5
+    term: 'Ngắn hạn'
+    note: 'Lãi suất ưu đãi theo quy định'
+  - purpose: 'Vay phát triển kinh doanh dịch vụ, thương mại'
+    rate: 8.5
+    term: 'Ngắn - Trung hạn'
+    note: 'Phương thức trả nợ linh hoạt'
+  - purpose: 'Vay tiêu dùng phục vụ đời sống thành viên'
+    rate: 9.5
+    term: 'Ngắn - Trung hạn'
+    note: 'Thủ tục nhanh chóng, giải ngân kịp thời'
+  - purpose: 'Vay xây dựng, sửa chữa nhà ở'
+    rate: 9.0
+    term: 'Trung - Dài hạn'
+    note: 'Thế chấp tài sản bảo đảm'

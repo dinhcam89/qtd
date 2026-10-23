@@ -36,16 +36,30 @@ if (asOf && asOf !== DEFAULT_FALLBACK_TEXT && asOf !== 'Đang cập nhật') {
     formattedAsOfDate = asOf.trim();
   }
 }
+
+const valueStr = value != null ? String(value).trim() : '';
+const valueLength = valueStr.length;
+
+// Tự động điều chỉnh cỡ chữ theo độ dài để các con số tiền tệ lớn (15 tỷ, 120 tỷ...) không bị tràn box
+let valueSizeClass = 'text-stat leading-none';
+if (valueLength > 18) {
+  valueSizeClass = 'text-lg sm:text-xl min-[1280px]:text-2xl leading-tight';
+} else if (valueLength > 11) {
+  valueSizeClass =
+    'text-xl sm:text-2xl min-[1280px]:text-[1.75rem] leading-tight';
+} else if (valueLength > 6) {
+  valueSizeClass = 'text-2xl sm:text-3xl leading-snug';
+}
 ---
 
 <div
   data-stat-card
   class:list={[
-    'flex flex-col justify-between h-full p-5 sm:p-6 rounded-lg bg-surface-page border border-border-default shadow-xs',
+    'flex flex-col justify-between h-full p-5 sm:p-6 rounded-lg bg-surface-page border border-border-default shadow-xs min-w-0 overflow-hidden',
     className,
   ]}
 >
-  <div>
+  <div class="min-w-0">
     <div
       data-stat-label
       class="text-base font-medium text-ink-muted mb-2 text-balance [text-wrap:pretty]"
@@ -63,7 +77,10 @@ if (asOf && asOf !== DEFAULT_FALLBACK_TEXT && asOf !== 'Đang cập nhật') {
     ) : (
       <div
         data-stat-value
-        class="text-stat font-bold text-brand-primary tracking-tight leading-none"
+        class:list={[
+          valueSizeClass,
+          'font-bold text-brand-primary tracking-tight break-words [overflow-wrap:anywhere]',
+        ]}
       >
         {value}
         {unit && (

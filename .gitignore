@@ -23,6 +23,7 @@ test-results/
 playwright-report/
 screenshots/
 reports/
+.lighthouseci/
 
 # OS
 .DS_Store

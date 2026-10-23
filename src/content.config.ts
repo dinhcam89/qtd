@@ -41,7 +41,10 @@ export const collections = {
     schema: siteSchema,
   }),
   rates: defineCollection({
-    loader: glob({ pattern: 'rates.yaml', base: 'src/data' }),
+    loader: glob({
+      pattern: 'rates.yaml',
+      base: getCollectionBase('rates', 'src/data'),
+    }),
     schema: ratesSchema,
   }),
   products: defineCollection({

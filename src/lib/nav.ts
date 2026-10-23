@@ -37,6 +37,12 @@ export const PRIMARY_NAV_ITEMS: readonly NavItem[] = NAV_ITEMS.filter(
 );
 
 /**
+ * Danh sách liên kết nhanh ở chân trang (Footer).
+ * Chứa đầy đủ mọi mục từ NAV_ITEMS làm lối đi dự phòng khi tắt JavaScript.
+ */
+export const FOOTER_NAV_ITEMS: readonly NavItem[] = NAV_ITEMS;
+
+/**
  * Lấy danh sách toàn bộ các trang nội bộ độc lập (route pathname) để kiểm thử tự động.
  * Tự động trích xuất từ NAV_ITEMS (loại bỏ hash anchor và trùng lặp) và bổ sung các trang hệ thống như /404.
  */

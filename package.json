@@ -21,7 +21,9 @@
     "shots:fixtures": "node ./scripts/shots.mjs --fixtures",
     "check:placeholders": "node ./scripts/check-placeholders.mjs",
     "check:dist": "node ./scripts/check-dist.mjs",
-    "lhci": "echo '[CHỜ CẤU HÌNH LHCI]'"
+    "lhci": "node ./scripts/lhci.mjs",
+    "lhci:quick": "node ./scripts/lhci.mjs --quick",
+    "build:cf": "node ./scripts/build-cf.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -33,6 +35,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.11",
     "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "0.15.1",
     "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",
     "@typescript-eslint/parser": "^8.72.0",

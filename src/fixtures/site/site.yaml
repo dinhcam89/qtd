@@ -2,7 +2,7 @@ name: '[FIXTURE] Quỹ tín dụng nhân dân Mẫu'
 short_name: '[FIXTURE] QTDND Mẫu'
 license_number: '[FIXTURE] 01/GP-NHNN-TEST'
 established_year: 2000
-operating_area: '[FIXTURE] Địa bàn toàn huyện Kiểm Thử'
+operating_area: '[FIXTURE] Địa bàn toàn huyện Kiểm Thử (Trụ sở chính và 04 phòng giao dịch)'
 description: '[FIXTURE] Tổ chức tín dụng hợp tác xã vì mục tiêu tương trợ thành viên và phát triển kinh tế địa phương.'
 official_domain: 'fixture.example.invalid'
 stats:

@@ -21,7 +21,7 @@
 | 12   | Decap CMS cấu hình                                     | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 14   | SEO và Sitemap                                         | Xong            | 2026-10-22      | `45f640a` | @astrojs/sitemap, SEO component, robots.txt.ts, JSON-LD, check-dist rules            |
-| 15   | Bảo mật và Lighthouse CI                               | Chưa làm        | —               | —         |                                                                                      |
+| 15   | Bảo mật và Lighthouse CI                               | Xong            | 2026-10-22      | `task-15` | @lhci/cli, lighthouserc, dependabot, audit CI, scripts/build-cf, favicon, CLS 0      |
 | 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                      |
 | 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                      |
 | 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                      |
@@ -305,3 +305,54 @@
      - Sau task: 643 assertion (+68 assertion).
 - **Số placeholder hiện tại:** 46 (exit code 0; `--strict` 54 issues, exit code 1).
 - **Việc người dùng cần làm tiếp:** Tiếp tục Task 15 (Bảo mật và Lighthouse CI) hoặc chuẩn bị dữ liệu thật cho Cổng G3.
+
+---
+
+## 13. Chi tiết đánh giá Task 15 (Bảo mật, hiệu năng, bảo trì)
+
+- **Ngày đánh giá:** 2026-10-22 (nhánh `task-15-bao-mat-hieu-nang`, tạo từ `main`)
+- **Kết quả đối chiếu tiêu chí hoàn thành:**
+  1. **Cấu hình Lighthouse CI (@lhci/cli) & lighthouserc.cjs:**
+     - Đã cài đặt và ghim `@lhci/cli@0.15.1`.
+     - Cấu hình `lighthouserc.cjs`: `staticDistDir: './dist'`, `numberOfRuns: 3` (lấy median), loại trừ `/404.html` qua `autodiscoverUrlBlocklist`.
+     - Ngưỡng bắt buộc: Performance ≥ 0.90, Accessibility ≥ 0.90, Best Practices ≥ 0.95, SEO ≥ 0.95.
+     - Script bọc `scripts/lhci.mjs`: tự động phát hiện Chromium từ `@playwright/test` qua `chromium.executablePath()`, gán `CHROME_PATH`. Nếu không có in hướng dẫn tiếng Việt và thoát mã 1.
+     - Đã tối ưu hóa Header (`#mobile-nav-panel` mặc định `hidden` trong HTML, `#menu-toggle-btn` hiển thị `inline-flex lg:hidden`) để loại bỏ hoàn toàn hiện tượng Layout Shift (CLS giảm từ 0.714 xuống 0.000). Bổ sung `public/favicon.svg` và endpoint tĩnh `src/pages/favicon.ico.ts` để giải quyết triệt để lỗi 404 favicon trong console.
+     - Kết quả thực tế: 100% trang trong `dist` đạt chuẩn (Performance 99%, Accessibility 98-100%, Best Practices 100%, SEO 100%).
+     - Chạy thêm trên `dist-fixtures`: 4 trang đại diện (`/tin-tuc/`, `/tin-tuc/bai-trung-ngay-a/`, `/quy-che/`, `/lien-he/`) đều đạt điểm xuất sắc (Performance 94-100%, Accessibility 98-100%, Best Practices 96%, SEO 100%).
+  2. **Cập nhật tự động Dependabot (.github/dependabot.yml):**
+     - Hỗ trợ cả 2 hệ sinh thái `npm` và `github-actions`.
+     - Lịch quét hàng tuần (`interval: 'weekly'`), giới hạn 5 PR mở cùng lúc.
+     - Tự động gom bản cập nhật `minor` và `patch` vào một PR duy nhất cho mỗi hệ sinh thái.
+  3. **Bảo mật chuỗi cung ứng CI:**
+     - Thêm bước `npm audit --omit=dev --audit-level=high` ngay sau `npm ci` trong `.github/workflows/ci.yml`. Kết quả: `found 0 vulnerabilities` trên các gói production.
+     - Thêm bước `npm run lhci` sau `check:dist` trong CI.
+     - Bổ sung bước `lhci` vào `scripts/verify.mjs`.
+  4. **Lệnh build Cloudflare Workers Builds (scripts/build-cf.mjs):**
+     - Hàm thuần `decideBuildMode(env, siteData)` trong `scripts/lib/build-mode.mjs` có các bộ unit test bao phủ toàn diện (kèm ma trận tổ hợp 16 trường hợp).
+     - Nguồn tra cứu chính thức của Cloudflare Developers đã mở và xác minh:
+       - Trang Build configuration (mục Default variables): [Cloudflare Workers CI/CD Builds Configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
+       - Trang Changelog: [Access git commit sha and branch name as environment variables in Workers Builds](https://developers.cloudflare.com/workers/changelog/#access-git-commit-sha-and-branch-name-as-environment-variables-in-workers-builds)
+       - Biến quy định chính thức của Workers Builds là `WORKERS_CI_BRANCH`.
+       - Biến `CF_PAGES_BRANCH` được duy trì đọc làm biến dự phòng (chưa xác minh trong tài liệu Workers Builds, chỉ xuất hiện trong Cloudflare Pages).
+     - Quy tắc fail-safe chế độ Production:
+       - Bản build tự động chuyển sang chế độ Production nghiêm ngặt (`--strict`) nếu: nhánh là "production", hoặc `BUILD_MODE=production`, HOẶC host của `SITE_URL` là tên miền thật (không kết thúc bằng `workers.dev` hay `pages.dev`), bất kể nhánh và kể cả khi không đọc được biến nhánh.
+       - Mâu thuẫn `BUILD_MODE=preview` kết hợp với `SITE_URL` tên miền thật bị từ chối ngay lập tức (exit 1).
+       - Chế độ Preview chỉ áp dụng cho host `workers.dev` hoặc `pages.dev`; nếu không đọc được biến nhánh hệ thống sẽ in cảnh báo an toàn.
+  5. **Thống kê test và assertion:**
+     - Số assertion: Trước task: 643 assertion; Sau task: 698 assertion (+55 assertion).
+     - Số test Playwright: 342 tests (desktop: 53, tablet: 53, mobile: 53, layout: 54, unit: 36, fixtures: 93).
+- **Số placeholder hiện tại:** 46 (exit code 0; `--strict` 54 issues, exit code 1).
+- **Thứ tự việc người dùng cần làm sau khi merge (agent không thể tự làm):**
+  1. **Môi trường Preview (nhánh phát triển / test trên Cloudflare):**
+     - Đặt biến `SITE_URL` trong Cloudflare Workers, mục Build variables (hoặc Environment variables), giá trị `https://qtd.dinhcam1512.workers.dev` (hoặc tên miền `pages.dev`).
+     - Đổi Build command trong Cloudflare từ `npm run build` thành `npm run build:cf`.
+     - Hệ thống tự nhận diện chế độ preview dựa trên host `workers.dev`, in cảnh báo an toàn nếu không tìm thấy biến nhánh và cho phép placeholder với exit 0.
+  2. **Kiểm tra thử nghiệm:**
+     - Chạy thử `npm run build:cf` ở máy cục bộ với các cấu hình mong muốn để kiểm tra toàn vẹn.
+     - Kiểm tra một build tự động trên nhánh preview trước khi tin tưởng.
+  3. **Môi trường Production (khi go-live với tên miền thật):**
+     - Đặt biến `SITE_URL` là tên miền chính thức (ví dụ `https://qtd-tanbinh.vn`).
+     - Nhờ cơ chế fail-safe mới, mọi bản build gắn tên miền thật sẽ tự động kích hoạt chế độ Production nghiêm ngặt (`--strict`), đòi hỏi toàn bộ dữ liệu thật phải hoàn tất (không còn bất kỳ placeholder hay trường null bắt buộc nào), bất kể nhánh build là gì.
+     - Tuyệt đối không đặt `BUILD_MODE=preview` khi dùng tên miền thật để tránh bị từ chối do mâu thuẫn.
+  4. Nếu phát sinh lỗi, đổi lại build command cũ `npm run build` hoặc rollback.
