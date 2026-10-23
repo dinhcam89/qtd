@@ -33,14 +33,14 @@ const logoSrc = hasLogoSvg
   class="border-b border-border-default bg-surface-page sticky top-0 z-40"
   id="site-header"
 >
-  <Container>
+  <Container class="px-3 sm:px-4 lg:px-6">
     <div class="flex items-center justify-between min-h-[5rem] py-2 sm:py-2.5">
       <!-- Logo và Tên Quỹ -->
       <a
         href="/"
         data-header-brand
         data-site-brand
-        class="inline-flex items-center gap-3 text-xl sm:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors"
+        class="inline-flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors mr-auto shrink-0"
       >
         {logoSrc && (
           <img
@@ -57,7 +57,7 @@ const logoSrc = hasLogoSvg
       <!-- Menu ngang trên Desktop (lg+): chỉ các mục primary, các trang con nằm ở Giới thiệu/footer -->
       <nav
         data-desktop-nav
-        class="hidden lg:flex items-center space-x-0.5 xl:space-x-1"
+        class="hidden lg:flex items-center space-x-1 xl:space-x-1.5 ml-4 xl:ml-8 shrink-0"
         aria-label="Điều hướng chính"
       >
         {PRIMARY_NAV_ITEMS.map((item) => (

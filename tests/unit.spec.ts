@@ -1082,7 +1082,9 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
     test('chứa đầy đủ mọi mục từ NAV_ITEMS làm lối đi dự phòng khi tắt JavaScript', () => {
       const footerHrefs = FOOTER_NAV_ITEMS.map((item) => item.href);
       expect(footerHrefs).toContain('/quy-mo');
-      expect(footerHrefs).toContain('/ban-lanh-dao');
+      // Ban lãnh đạo và Lịch sử hình thành tạm thời ẩn theo yêu cầu người dùng
+      expect(footerHrefs).not.toContain('/ban-lanh-dao');
+      expect(footerHrefs).not.toContain('/lich-su');
       expect(FOOTER_NAV_ITEMS.length).toBe(NAV_ITEMS.length);
     });
   });

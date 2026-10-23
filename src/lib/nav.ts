@@ -6,21 +6,33 @@ export interface NavItem {
    * false: chỉ xuất hiện trong panel menu mobile, footer và các thẻ liên kết trong trang.
    */
   primary: boolean;
+  /**
+   * true: tạm thời ẩn khỏi thanh điều hướng/menu/footer nhưng vẫn giữ trang độc lập.
+   */
+  hidden?: boolean;
 }
 
 /** Số mục tối đa ở menu ngang desktop để không bị chật. */
 export const MAX_PRIMARY_NAV_ITEMS = 6;
 
 /**
- * Danh sách menu điều hướng của website.
- * Mọi trang mới được thêm vào đây sẽ tự động được kiểm thử bởi Playwright và Axe.
- * Các mục `primary: false` là trang con, truy cập từ trang Giới thiệu, footer và menu mobile.
+ * Danh sách toàn bộ các mục điều hướng của website (kể cả các trang tạm thời ẩn).
  */
-export const NAV_ITEMS: readonly NavItem[] = [
+export const ALL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Trang chủ', href: '/', primary: true },
   { label: 'Giới thiệu', href: '/gioi-thieu', primary: true },
-  { label: 'Lịch sử hình thành', href: '/lich-su', primary: false },
-  { label: 'Ban lãnh đạo', href: '/ban-lanh-dao', primary: false },
+  {
+    label: 'Lịch sử hình thành',
+    href: '/lich-su',
+    primary: false,
+    hidden: true,
+  },
+  {
+    label: 'Ban lãnh đạo',
+    href: '/ban-lanh-dao',
+    primary: false,
+    hidden: true,
+  },
   { label: 'Quy mô', href: '/quy-mo', primary: false },
   { label: 'Quy chế và văn bản', href: '/quy-che', primary: false },
   { label: 'Sản phẩm', href: '/san-pham', primary: true },
@@ -30,6 +42,14 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Liên hệ', href: '/lien-he', primary: true },
   { label: 'Kênh chính thức', href: '/kenh-chinh-thuc', primary: false },
 ] as const;
+
+/**
+ * Danh sách menu điều hướng công khai của website (đã lọc các mục tạm ẩn).
+ * Các mục `primary: false` là trang con, truy cập từ trang Giới thiệu, footer và menu mobile.
+ */
+export const NAV_ITEMS: readonly NavItem[] = ALL_NAV_ITEMS.filter(
+  (item) => !item.hidden
+);
 
 /** Các mục hiển thị ở menu ngang desktop. */
 export const PRIMARY_NAV_ITEMS: readonly NavItem[] = NAV_ITEMS.filter(
@@ -44,13 +64,13 @@ export const FOOTER_NAV_ITEMS: readonly NavItem[] = NAV_ITEMS;
 
 /**
  * Lấy danh sách toàn bộ các trang nội bộ độc lập (route pathname) để kiểm thử tự động.
- * Tự động trích xuất từ NAV_ITEMS (loại bỏ hash anchor và trùng lặp) và bổ sung các trang hệ thống như /404.
+ * Tự động trích xuất từ ALL_NAV_ITEMS (bao gồm các trang tạm ẩn) và bổ sung các trang hệ thống như /404.
  */
 export function getNavRoutes(): Array<{ path: string; name: string }> {
   const seen = new Set<string>();
   const routes: Array<{ path: string; name: string }> = [];
 
-  for (const item of NAV_ITEMS) {
+  for (const item of ALL_NAV_ITEMS) {
     const [pathOnly] = item.href.split('#');
     const cleanPath = pathOnly || '/';
 

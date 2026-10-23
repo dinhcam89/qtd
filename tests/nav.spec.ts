@@ -71,7 +71,9 @@ test.describe('Menu điều hướng', () => {
     );
     const footerLabels = footer.map((f) => f.label);
     expect(footerLabels).toContain('Quy mô');
-    expect(footerLabels).toContain('Ban lãnh đạo');
+    // Các mục tạm thời ẩn theo yêu cầu người dùng
+    expect(footerLabels).not.toContain('Ban lãnh đạo');
+    expect(footerLabels).not.toContain('Lịch sử hình thành');
   });
 
   test('menu mobile mở ra thấy đủ mọi mục trong nav.ts', async ({

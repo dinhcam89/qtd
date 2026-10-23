@@ -125,10 +125,14 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     page,
   }) => {
     await page.goto('/gioi-thieu');
-    for (const href of ['/lich-su', '/ban-lanh-dao', '/quy-mo', '/quy-che']) {
+    for (const href of ['/quy-mo', '/quy-che']) {
       await expect(
         page.locator(`main a[href="${href}"]`).first()
       ).toBeVisible();
+    }
+    // /lich-su và /ban-lanh-dao tạm thời ẩn theo yêu cầu người dùng
+    for (const href of ['/lich-su', '/ban-lanh-dao']) {
+      await expect(page.locator(`main a[href="${href}"]`)).toHaveCount(0);
     }
   });
 

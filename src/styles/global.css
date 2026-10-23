@@ -142,7 +142,8 @@
     padding: 0.625rem 0;
     border-bottom: 1px solid var(--color-border-default);
     text-align: left;
-    font-size: 1.125rem; /* 18px >= 16px */
+    font-size: 1.125rem;
+    /* 18px >= 16px */
     line-height: 1.5;
     overflow-wrap: anywhere;
     min-width: 0;
@@ -160,7 +161,8 @@
   .responsive-rate-table td::before {
     content: attr(data-label);
     display: block;
-    font-size: 16px; /* Nhãn nhỏ ở trên, >= 16px */
+    font-size: 16px;
+    /* Nhãn nhỏ ở trên, >= 16px */
     line-height: 1.4;
     font-weight: 600;
     color: var(--color-ink-muted);
@@ -177,7 +179,8 @@
 }
 
 .content-body h2 {
-  font-size: 1.5rem; /* 24px, lớn hơn 16px của p là 50% (> 20%) */
+  font-size: 1.5rem;
+  /* 24px, lớn hơn 16px của p là 50% (> 20%) */
   font-weight: 700;
   line-height: 1.35;
   color: var(--color-brand-primary);
@@ -191,7 +194,8 @@
 }
 
 .content-body h3 {
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.25rem;
+  /* 20px */
   font-weight: 600;
   line-height: 1.4;
   color: var(--color-ink-base);
@@ -201,7 +205,8 @@
 }
 
 .content-body p {
-  font-size: 1rem; /* 16px */
+  font-size: 1rem;
+  /* 16px */
   line-height: 1.7;
   color: var(--color-ink-base);
   margin-top: 0;

@@ -362,6 +362,8 @@
 
 ## 14. Chi tiết đánh giá Task 15c (Tách test trạng thái rỗng và harden test production)
 
+> **Cập nhật ngày 2026-10-23:** Đã tạm thời ẩn liên kết Lịch sử hình thành và Ban lãnh đạo khỏi thanh điều hướng (nav.ts, Footer, trang Giới thiệu) theo yêu cầu người dùng trong khi chờ dữ liệu chính thức từ Quỹ (vẫn giữ nguyên 2 page và kiểm thử đầy đủ). Tinh chỉnh Header căn trái, chân trang ngắt dòng "QUỸ TÍN DỤNG NHÂN DÂN" và gắn liên kết DIV chính thức.
+
 - **Ngày đánh giá:** 2026-10-23 (nhánh `task-15c-content-ready`, tạo từ `main`)
 - **Bối cảnh & Mục tiêu:**
   - Nhập liệu nội dung thật vào `src/data/`, `src/content/`, `public/docs/` khiến các test production trước đây bị đỏ do chúng khẳng định cứng trạng thái rỗng/placeholder (ví dụ `/lien-he` không có `tel:`, hiển thị "Đang cập nhật", danh sách rỗng ở `/quy-che`, `/tin-tuc`...).
