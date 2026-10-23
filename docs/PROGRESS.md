@@ -22,6 +22,7 @@
 | 13   | Cloudflare Access cho /admin                           | Bỏ qua (CMS: A) | —               | —         | Giữ theo quyết định CMS: A                                                           |
 | 14   | SEO và Sitemap                                         | Xong            | 2026-10-22      | `45f640a` | @astrojs/sitemap, SEO component, robots.txt.ts, JSON-LD, check-dist rules            |
 | 15   | Bảo mật và Lighthouse CI                               | Xong            | 2026-10-22      | `task-15` | @lhci/cli, lighthouserc, dependabot, audit CI, scripts/build-cf, favicon, CLS 0      |
+| 15c  | Tách test rỗng sang tests/empty/ & harden test prod    | Xong            | 2026-10-23      | `363b159` | QTD_FIXTURES=empty, dist-empty, 868 assertions, verify + test:empty                  |
 | 16   | QA tổng và UAT                                         | Chưa làm        | —               | —         |                                                                                      |
 | 17   | Go-live                                                | Chưa làm        | —               | —         |                                                                                      |
 | 18   | Runbook                                                | Chưa làm        | —               | —         |                                                                                      |
@@ -356,3 +357,54 @@
      - Nhờ cơ chế fail-safe mới, mọi bản build gắn tên miền thật sẽ tự động kích hoạt chế độ Production nghiêm ngặt (`--strict`), đòi hỏi toàn bộ dữ liệu thật phải hoàn tất (không còn bất kỳ placeholder hay trường null bắt buộc nào), bất kể nhánh build là gì.
      - Tuyệt đối không đặt `BUILD_MODE=preview` khi dùng tên miền thật để tránh bị từ chối do mâu thuẫn.
   4. Nếu phát sinh lỗi, đổi lại build command cũ `npm run build` hoặc rollback.
+
+---
+
+## 14. Chi tiết đánh giá Task 15c (Tách test trạng thái rỗng và harden test production)
+
+- **Ngày đánh giá:** 2026-10-23 (nhánh `task-15c-content-ready`, tạo từ `main`)
+- **Bối cảnh & Mục tiêu:**
+  - Nhập liệu nội dung thật vào `src/data/`, `src/content/`, `public/docs/` khiến các test production trước đây bị đỏ do chúng khẳng định cứng trạng thái rỗng/placeholder (ví dụ `/lien-he` không có `tel:`, hiển thị "Đang cập nhật", danh sách rỗng ở `/quy-che`, `/tin-tuc`...).
+  - Mục tiêu: (1) Tách test trạng thái rỗng (Loại B) sang bộ dữ liệu rỗng riêng (`QTD_FIXTURES=empty`, chạy trên `dist-empty` cổng 4323); (2) Nâng cấp toàn bộ test production (Loại A) để kiểm tra theo cấu trúc DOM động, chấp nhận mọi dữ liệu hợp lệ mà không phụ thuộc vào trạng thái rỗng hay placeholder.
+- **Kết quả đối chiếu tiêu chí hoàn thành:**
+  1. **Bộ dữ liệu rỗng (`src/fixtures/empty/`) & Tooling:**
+     - Tạo thư mục `src/fixtures/empty/` (site, contact, rates, schedule, leadership, products, pages, documents, news) tương đương trạng thái rỗng/khởi tạo của dự án.
+     - Cấu hình `astro.config.mjs`: `outDir: './dist-empty'`, server port 4323 khi `QTD_FIXTURES=empty`.
+     - Cấu hình `src/content.config.ts`: nạp collection từ `src/fixtures/empty/` khi `QTD_FIXTURES=empty`.
+     - Script `scripts/empty.mjs`: build `dist-empty`, khởi chạy preview server cổng 4323 (`--ignore-lock`), chạy Playwright `--project=empty --project=unit`, kiểm tra `check-dist dist-empty`.
+     - `scripts/check-dist.mjs`: nhận diện `dist-empty` là fixtures distribution và cấm rò rỉ file từ `src/fixtures/empty` vào `dist` production.
+     - `scripts/lib/build-mode.mjs`: từ chối `QTD_FIXTURES=empty` trên mọi môi trường Workers Builds (kèm unit test).
+  2. **Di chuyển test Loại B sang `tests/empty/`:**
+     - Tạo `tests/empty/pages.spec.ts` và `tests/empty/smoke.spec.ts`.
+     - Chạy trên project `empty` (baseURL `http://localhost:4323`).
+     - Giữ nguyên toàn bộ assertion đặc thù của trạng thái rỗng ("Đang cập nhật", thẻ `tel:`/`mailto:` không có, không có iframe, draft không xuất hiện).
+  3. **Harden test production (Loại A):**
+     - Đọc giá trị trực tiếp từ DOM, không gõ cứng:
+       - Mọi liên kết `a[href^="tel:"]` khớp hàm `toTelHref` của chính chữ hiển thị.
+       - Mọi liên kết `a[href^="mailto:"]` khớp hàm `toMailtoHref` của chữ hiển thị.
+       - Liên kết bản đồ nếu có phải trỏ tới Google Maps, có `target="_blank"` và `rel="noopener noreferrer"`.
+       - Không có bất kỳ thẻ `iframe` nào.
+       - JSON-LD nếu có thì parse được, không chứa placeholder `[` hay `null`.
+       - Lãi suất hiển thị khớp `/^\d+(,\d{1,2})?%(\/năm)?$/` hoặc "Đang cập nhật".
+       - Ngày hiển thị khớp `dd/mm/yyyy` hoặc "Đang cập nhật".
+       - Toàn bộ liên kết `/docs/*.pdf` đều có file tồn tại trong thư mục `dist`.
+  4. **Chứng minh 3 nhóm kiểm thử:**
+     - (a) **Dữ liệu thật trong worktree tạm (`.qtd-exp`):** Điền contact, site, rates, products, leadership bằng dữ liệu thật (0912 345 678, info@example.vn, "Quỹ Thử Nghiệm", thêm 1 PDF và 1 bài tin) -> `npm test` xanh 100% (272 passed, 2 skipped).
+     - (b) **Dữ liệu sai trong worktree tạm (`.qtd-exp`):** Đổi số điện thoại thành "0912 abc" và email thành "email-khong-hop-le" -> Test loại A lập tức báo ĐỎ trên cả 3 viewport (desktop, tablet, mobile).
+     - (c) **Kiểm thử rỗng trên thư mục chính:** `npm run test:empty` xanh 100% (67 passed). Đổi "Đang cập nhật" thành "N/A" trong `StatItem.astro` -> Test empty báo ĐỎ (2 failed). Hoàn tác -> `npm run test:empty` xanh lại.
+  5. **Tích hợp CI và verify:**
+     - Bổ sung bước `empty` (`npm run test:empty`) vào `scripts/verify.mjs`.
+     - Thêm bước `Run empty fixture tests` vào `.github/workflows/ci.yml`.
+     - Cập nhật quy tắc vào `AGENTS.md` (mục 4) và `docs/ROADMAP.md` (mục 1).
+  6. **Thống kê test và assertion:**
+     - Số assertion: Trước task: 749 assertion; Sau task: 868 assertion (+119 assertion).
+     - Số test Playwright theo project:
+       - `desktop`: 55 tests
+       - `tablet`: 55 tests
+       - `mobile`: 55 tests
+       - `layout`: 54 tests
+       - `unit`: 55 tests
+       - `empty`: 12 tests
+       - `fixtures`: 99 tests
+       - **Tổng cộng:** 385 tests (trong đó 274 tests cho `npm test` production, 67 tests cho `npm run test:empty`, 154 tests cho `npm run test:fixtures`).
+     - Thời gian chạy `verify`: bước `empty` chỉ tốn ~13.96 giây, không làm tăng thời gian verify quá 60 giây.
