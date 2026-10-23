@@ -2,7 +2,7 @@
 import DataTable from './ui/DataTable.astro';
 import Notice from './ui/Notice.astro';
 import type { RatesData } from '../lib/schemas/rates';
-import { formatPercent, formatText } from '../lib/format';
+import { formatRate, formatText } from '../lib/format';
 import { RATE_DISCLAIMER, DEFAULT_FALLBACK_TEXT } from '../lib/constants';
 
 interface Props {
@@ -22,38 +22,49 @@ const Heading = headingLevel as any;
       Lãi suất tiền gửi
     </Heading>
     {rates.deposit_rates.length > 0 ? (
-      <DataTable class="shadow-xs md:table-fixed">
+      <DataTable caption="Lãi suất tiền gửi" class="shadow-xs md:table-fixed">
+        <colgroup class="hidden md:table-column-group">
+          <col class="w-[34%]" />
+          <col class="w-[16%]" />
+          <col class="w-[50%]" />
+        </colgroup>
         <thead>
           <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
-            <th scope="col" class="py-3.5 px-4 text-left md:w-4/12 lg:w-5/12">
+            <th scope="col" class="py-[0.875rem] px-4 text-left md:w-[34%]">
               Kỳ hạn
             </th>
-            <th scope="col" class="py-3.5 px-4 text-right md:w-3/12">
-              Lãi suất (%/năm)
+            <th
+              scope="col"
+              class="py-[0.875rem] px-4 text-left md:text-right md:pl-4 md:pr-8 md:w-[16%]"
+            >
+              Lãi suất/năm
             </th>
-            <th scope="col" class="py-3.5 px-4 text-left md:w-5/12 lg:w-4/12">
+            <th
+              scope="col"
+              class="py-[0.875rem] px-4 text-left md:pl-8 md:pr-4 md:w-[50%]"
+            >
               Ghi chú
             </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-border-default text-base">
           {rates.deposit_rates.map((item) => (
-            <tr class="hover:bg-surface-muted/50 transition-colors">
+            <tr class="even:bg-surface-muted hover:bg-surface-muted/60 transition-colors">
               <td
                 data-label="Kỳ hạn"
-                class="py-3.5 px-4 font-medium text-ink-base text-left"
+                class="py-[0.875rem] px-4 font-medium text-ink-base text-left break-words [overflow-wrap:anywhere]"
               >
                 {formatText(item.term)}
               </td>
               <td
-                data-label="Lãi suất (%/năm)"
-                class="py-3.5 px-4 font-bold text-brand-primary text-right"
+                data-label="Lãi suất/năm"
+                class="py-[0.875rem] px-4 font-bold text-brand-primary text-left md:text-right md:pl-4 md:pr-8 tabular-nums break-words [overflow-wrap:anywhere]"
               >
-                {formatPercent(item.rate)}
+                {formatRate(item.rate)}
               </td>
               <td
                 data-label="Ghi chú"
-                class="py-3.5 px-4 text-ink-muted text-left"
+                class="py-[0.875rem] px-4 text-ink-muted text-left md:pl-8 md:pr-4 break-words [overflow-wrap:anywhere]"
               >
                 {formatText(item.note, '—')}
               </td>
@@ -72,47 +83,59 @@ const Heading = headingLevel as any;
       Lãi suất cho vay
     </Heading>
     {rates.loan_rates.length > 0 ? (
-      <DataTable class="shadow-xs md:table-fixed">
+      <DataTable caption="Lãi suất cho vay" class="shadow-xs md:table-fixed">
+        <colgroup class="hidden md:table-column-group">
+          <col class="w-[34%]" />
+          <col class="w-[16%]" />
+          <col class="w-[18%]" />
+          <col class="w-[32%]" />
+        </colgroup>
         <thead>
           <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">
-            <th scope="col" class="py-3.5 px-4 text-left md:w-4/12 lg:w-5/12">
+            <th scope="col" class="py-[0.875rem] px-4 text-left md:w-[34%]">
               Mục đích vay
             </th>
-            <th scope="col" class="py-3.5 px-4 text-left md:w-2/12">
+            <th
+              scope="col"
+              class="py-[0.875rem] px-4 text-left md:text-right md:pl-4 md:pr-8 md:w-[16%]"
+            >
+              Lãi suất/năm
+            </th>
+            <th scope="col" class="py-[0.875rem] px-4 text-left md:w-[18%]">
               Kỳ hạn
             </th>
-            <th scope="col" class="py-3.5 px-4 text-right md:w-2/12">
-              Lãi suất (%/năm)
-            </th>
-            <th scope="col" class="py-3.5 px-4 text-left md:w-4/12 lg:w-3/12">
+            <th
+              scope="col"
+              class="py-[0.875rem] px-4 text-left md:pl-8 md:pr-4 md:w-[32%]"
+            >
               Ghi chú
             </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-border-default text-base">
           {rates.loan_rates.map((item) => (
-            <tr class="hover:bg-surface-muted/50 transition-colors">
+            <tr class="even:bg-surface-muted hover:bg-surface-muted/60 transition-colors">
               <td
                 data-label="Mục đích vay"
-                class="py-3.5 px-4 font-medium text-ink-base text-left"
+                class="py-[0.875rem] px-4 font-medium text-ink-base text-left break-words [overflow-wrap:anywhere]"
               >
                 {formatText(item.purpose)}
               </td>
               <td
+                data-label="Lãi suất/năm"
+                class="py-[0.875rem] px-4 font-bold text-brand-primary text-left md:text-right md:pl-4 md:pr-8 tabular-nums break-words [overflow-wrap:anywhere]"
+              >
+                {formatRate(item.rate)}
+              </td>
+              <td
                 data-label="Kỳ hạn"
-                class="py-3.5 px-4 text-ink-muted text-left"
+                class="py-[0.875rem] px-4 text-ink-muted text-left break-words [overflow-wrap:anywhere]"
               >
                 {formatText(item.term, '—')}
               </td>
               <td
-                data-label="Lãi suất (%/năm)"
-                class="py-3.5 px-4 font-bold text-brand-primary text-right"
-              >
-                {formatPercent(item.rate)}
-              </td>
-              <td
                 data-label="Ghi chú"
-                class="py-3.5 px-4 text-ink-muted text-left"
+                class="py-[0.875rem] px-4 text-ink-muted text-left md:pl-8 md:pr-4 break-words [overflow-wrap:anywhere]"
               >
                 {formatText(item.note, '—')}
               </td>

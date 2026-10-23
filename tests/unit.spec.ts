@@ -5,6 +5,7 @@ import {
   formatFileSize,
   formatNumber,
   formatPercent,
+  formatRate,
   formatCurrency,
 } from '../src/lib/format';
 import {
@@ -90,6 +91,16 @@ test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)',
     expect(formatPercent(6)).toBe('6%/năm');
     expect(formatPercent(5.2, { perYear: false })).toBe('5,2%');
     expect(formatPercent(0)).toBe('0%/năm');
+  });
+
+  test('formatRate: chuẩn vi-VN (tối thiểu 1, tối đa 2 chữ số thập phân), null/undefined trả về "Đang cập nhật"', () => {
+    expect(formatRate(null)).toBe('Đang cập nhật');
+    expect(formatRate(undefined)).toBe('Đang cập nhật');
+    expect(formatRate(0.2)).toBe('0,2%');
+    expect(formatRate(3)).toBe('3,0%');
+    expect(formatRate(3.25)).toBe('3,25%');
+    expect(formatRate(7.5)).toBe('7,5%');
+    expect(formatRate(8)).toBe('8,0%');
   });
 
   test('formatCurrency: chuẩn Việt Nam (1.000.000 đồng), null/undefined trả về "Đang cập nhật"', () => {

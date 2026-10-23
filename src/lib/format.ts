@@ -176,6 +176,27 @@ export function formatPercent(
 }
 
 /**
+ * Định dạng lãi suất theo chuẩn vi-VN: tối thiểu 1, tối đa 2 chữ số thập phân, hậu tố "%".
+ * Ví dụ: 0.2 -> "0,2%", 3 -> "3,0%", 3.25 -> "3,25%".
+ * Giá trị null hoặc undefined trả về fallback "Đang cập nhật".
+ */
+export function formatRate(
+  value: number | null | undefined,
+  fallback = DEFAULT_FALLBACK_TEXT
+): string {
+  if (value === null || value === undefined) {
+    return fallback;
+  }
+
+  const formatted = new Intl.NumberFormat(LOCALE_VI, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 2,
+  }).format(value);
+
+  return `${formatted}%`;
+}
+
+/**
  * Định dạng chuỗi văn bản an toàn, trả về fallback khi chuỗi rỗng/chỉ chứa khoảng trắng hoặc null/undefined.
  */
 export function formatText(
