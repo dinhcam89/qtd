@@ -4,18 +4,18 @@ address:
   district: null
   city: 'Tỉnh Quảng Trị'
   full: 'Thôn Vạn Trạch, Xã Bố Trạch, Tỉnh Quảng Trị'
-phone: '0232 3862 495'
-hotline: null
+phone: '0915 942 559'
+hotline: '0232 3862 495'
 email: '[CẦN BỔ SUNG: email]'
-facebook: null
+facebook: 'https://www.facebook.com/profile.php?id=100064129893408'
 zalo: null
-map_embed_url: null
+map_embed_url: 'https://maps.app.goo.gl/QHYSzgWqqKAp7GG77'
 branches:
   - name: 'Điểm giao dịch Phú Định'
     address: 'Xã Bố Trạch, Tỉnh Quảng Trị'
-    phone: null
+    phone: '0232 3862 495'
     working_hours: 'Thứ Hai - Thứ Sáu: 07:00 - 11:30, 13:30 - 17:00'
   - name: 'Điểm giao dịch Tây Trạch'
     address: 'Xã Bố Trạch, Tỉnh Quảng Trị'
-    phone: null
+    phone: '0232 3862 495'
     working_hours: 'Thứ Hai - Thứ Sáu: 07:00 - 11:30, 13:30 - 17:00'
