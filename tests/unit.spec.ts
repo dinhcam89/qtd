@@ -630,6 +630,15 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
       });
       expect(resTrue.isValid).toBe(false);
 
+      const resEmptyFixtures = decideBuildMode({
+        QTD_FIXTURES: 'empty',
+        SITE_URL: validSiteUrl,
+      });
+      expect(resEmptyFixtures.isValid).toBe(false);
+      expect(
+        resEmptyFixtures.errors.some((e) => e.includes('QTD_FIXTURES'))
+      ).toBe(true);
+
       // Cho phép khi là "0", rỗng hoặc undefined
       const res0 = decideBuildMode({
         QTD_FIXTURES: '0',

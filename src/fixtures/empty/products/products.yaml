@@ -1,0 +1,16 @@
+loan_products:
+  - name: '[CẦN BỔ SUNG: tên sản phẩm cho vay]'
+    summary: null
+    target_customers: null
+    amount_limit: null
+    term: null
+    conditions: null
+    required_documents: null
+deposit_products:
+  - name: '[CẦN BỔ SUNG: tên sản phẩm tiền gửi]'
+    summary: null
+    target_customers: null
+    amount_limit: null
+    term: null
+    conditions: null
+    required_documents: null

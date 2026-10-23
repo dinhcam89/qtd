@@ -1,0 +1,10 @@
+effective_from: null
+deposit_rates:
+  - term: '[CẦN BỔ SUNG: kỳ hạn]'
+    rate: null
+    note: null
+loan_rates:
+  - purpose: '[CẦN BỔ SUNG: mục đích vay]'
+    rate: null
+    term: null
+    note: null
