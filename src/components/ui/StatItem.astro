@@ -12,6 +12,12 @@ interface Props {
 
 const { label, value, unit, asOf, class: className = '' } = Astro.props;
 
+// Giữ các từ ghép như "thành viên" không bị rớt dòng tách rời (tránh chữ "viên" rớt dòng một mình)
+const displayLabel =
+  typeof label === 'string'
+    ? label.replace(/thành\s+viên/g, 'thành\u00A0viên')
+    : label;
+
 const isNullValue =
   value === null ||
   value === undefined ||
@@ -37,10 +43,26 @@ if (asOf && asOf !== DEFAULT_FALLBACK_TEXT && asOf !== 'Đang cập nhật') {
   }
 }
 
-const valueStr = value != null ? String(value).trim() : '';
+// Tách số và đơn vị nếu đơn vị được viết kèm trong value (vd: "52 tỷ đồng", "1270 tỷ đồng", "900 tỷ")
+let displayValue = value;
+let displayUnit = unit;
+
+if (!displayUnit && typeof value === 'string') {
+  const match = value
+    .trim()
+    .match(
+      /^([\d.,]+)\s+(tỷ\s*đồng|triệu\s*đồng|nghìn\s*đồng|tỷ|triệu|đồng)$/i
+    );
+  if (match) {
+    displayValue = match[1];
+    displayUnit = match[2];
+  }
+}
+
+const valueStr = displayValue != null ? String(displayValue).trim() : '';
 const valueLength = valueStr.length;
 
-// Tự động điều chỉnh cỡ chữ theo độ dài để các con số tiền tệ lớn (15 tỷ, 120 tỷ...) không bị tràn box
+// Tự động điều chỉnh cỡ chữ theo độ dài để các con số hiển thị to, rõ, cân đối
 let valueSizeClass = 'text-stat leading-none';
 if (valueLength > 18) {
   valueSizeClass = 'text-lg sm:text-xl min-[1280px]:text-2xl leading-tight';
@@ -64,7 +86,7 @@ if (valueLength > 18) {
       data-stat-label
       class="text-base font-medium text-ink-muted mb-2 text-balance [text-wrap:pretty]"
     >
-      {label}
+      {displayLabel}
     </div>
 
     {isNullValue ? (
@@ -75,21 +97,23 @@ if (valueLength > 18) {
         Đang cập nhật
       </div>
     ) : (
-      <div
-        data-stat-value
-        class:list={[
-          valueSizeClass,
-          'font-bold text-brand-primary tracking-tight break-words [overflow-wrap:anywhere]',
-        ]}
-      >
-        {value}
-        {unit && (
-          <span
+      <div>
+        <div
+          data-stat-value
+          class:list={[
+            valueSizeClass,
+            'font-bold text-brand-primary tracking-tight break-words [overflow-wrap:anywhere]',
+          ]}
+        >
+          {displayValue}
+        </div>
+        {displayUnit && (
+          <div
             data-stat-unit
-            class="text-base font-normal text-ink-muted ml-1"
+            class="text-base font-normal text-ink-muted mt-1 sm:mt-1.5"
           >
-            {unit}
-          </span>
+            {displayUnit}
+          </div>
         )}
       </div>
     )}

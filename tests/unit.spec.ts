@@ -59,6 +59,8 @@ test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)',
     // ISO hợp lệ dd/mm/yyyy
     expect(formatDate('2026-10-21T00:00:00Z')).toBe('21/10/2026');
     expect(formatDate('2026-03-05')).toBe('05/03/2026');
+    expect(formatDate('30/06/2025')).toBe('30/06/2025');
+    expect(formatDateIso('30/06/2025')).toBe('2025-06-30');
     expect(formatDate(new Date('2026-01-15T12:00:00Z'))).toBe('15/01/2026');
 
     // null / undefined / rỗng trả về "Đang cập nhật"

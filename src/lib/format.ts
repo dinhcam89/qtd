@@ -6,6 +6,18 @@ const LOCALE_VI = 'vi-VN';
  * Định dạng ngày theo chuẩn Việt Nam dd/mm/yyyy (Intl locale vi-VN).
  * Trả về "Đang cập nhật" khi giá trị null, undefined hoặc không hợp lệ.
  */
+function parseDateInput(value: Date | string | number): Date {
+  if (value instanceof Date) return value;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(trimmed)) {
+      const [d, m, y] = trimmed.split('/').map(Number);
+      return new Date(y, m - 1, d);
+    }
+  }
+  return new Date(value);
+}
+
 export function formatDate(
   value: Date | string | number | null | undefined,
   fallback = DEFAULT_FALLBACK_TEXT
@@ -14,7 +26,7 @@ export function formatDate(
     return fallback;
   }
 
-  const date = value instanceof Date ? value : new Date(value);
+  const date = parseDateInput(value);
   if (Number.isNaN(date.getTime())) {
     return fallback;
   }
@@ -37,7 +49,7 @@ export function formatDateIso(
   if (value === null || value === undefined || value === '') {
     return '';
   }
-  const date = value instanceof Date ? value : new Date(value);
+  const date = parseDateInput(value);
   if (Number.isNaN(date.getTime())) {
     return '';
   }
@@ -74,11 +86,14 @@ export function formatAsOf(
  * Trả về "Đang cập nhật" khi null/undefined.
  */
 export function formatNumber(
-  value: number | bigint | null | undefined,
+  value: number | bigint | string | null | undefined,
   fallback = DEFAULT_FALLBACK_TEXT
 ): string {
-  if (value === null || value === undefined) {
+  if (value === null || value === undefined || value === '') {
     return fallback;
+  }
+  if (typeof value === 'string') {
+    return value.trim();
   }
 
   return new Intl.NumberFormat(LOCALE_VI).format(value);
@@ -116,11 +131,14 @@ export function formatFileSize(
  * Trả về "Đang cập nhật" khi null/undefined.
  */
 export function formatCurrency(
-  value: number | bigint | null | undefined,
+  value: number | bigint | string | null | undefined,
   fallback = DEFAULT_FALLBACK_TEXT
 ): string {
-  if (value === null || value === undefined) {
+  if (value === null || value === undefined || value === '') {
     return fallback;
+  }
+  if (typeof value === 'string') {
+    return value.trim();
   }
 
   return `${new Intl.NumberFormat(LOCALE_VI).format(value)} đồng`;
