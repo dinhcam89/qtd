@@ -18,10 +18,22 @@ interface Props {
 const { site, contact, schedule } = Astro.props;
 
 // Kiểm tra logo có tồn tại trong public/images/ hay không
-const hasLogoPng = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.png'));
-const hasLogoSvg = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.svg'));
-const hasLogoWebp = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.webp'));
-const logoSrc = hasLogoSvg ? '/images/logo.svg' : hasLogoWebp ? '/images/logo.webp' : hasLogoPng ? '/images/logo.png' : null;
+const hasLogoPng = fs.existsSync(
+  path.resolve(process.cwd(), 'public/images/logo.png')
+);
+const hasLogoSvg = fs.existsSync(
+  path.resolve(process.cwd(), 'public/images/logo.svg')
+);
+const hasLogoWebp = fs.existsSync(
+  path.resolve(process.cwd(), 'public/images/logo.webp')
+);
+const logoSrc = hasLogoSvg
+  ? '/images/logo.svg'
+  : hasLogoWebp
+    ? '/images/logo.webp'
+    : hasLogoPng
+      ? '/images/logo.png'
+      : null;
 
 const phoneHref = toTelHref(contact.phone);
 const hotlineHref = toTelHref(contact.hotline);
@@ -35,21 +47,24 @@ const currentYear = new Date().getFullYear();
   class="border-t border-border-default bg-surface-muted text-ink-base mt-auto"
 >
   <Container class="py-12 lg:py-16">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_1.4fr_1fr] lg:grid-cols-[1fr_1.45fr_0.95fr] gap-8 lg:gap-12">
       <!-- Cột 1: Thông tin Quỹ -->
       <div class="space-y-3">
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-3">
           {logoSrc && (
             <img
               src={logoSrc}
               alt={`Logo ${formatText(site.name)}`}
-              width="36"
-              height="36"
-              class="h-8 w-auto object-contain shrink-0"
+              width="48"
+              height="48"
+              class="h-11 sm:h-12 w-auto object-contain shrink-0"
               loading="lazy"
             />
           )}
-          <h2 data-site-footer-brand class="text-lg font-bold text-brand-primary">
+          <h2
+            data-site-footer-brand
+            class="text-lg font-bold text-brand-primary"
+          >
             {formatText(site.name)}
           </h2>
         </div>
@@ -67,6 +82,25 @@ const currentYear = new Date().getFullYear();
           <span class="font-medium text-ink-base">Địa bàn hoạt động:</span>{' '}
           {formatText(site.operating_area)}
         </p>
+        <div class="pt-1.5">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-page border border-border-default text-xs font-semibold text-ink-base shadow-xs">
+            <svg
+              class="w-4 h-4 text-emerald-600 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+            Tham gia Bảo hiểm tiền gửi Việt Nam
+          </span>
+        </div>
       </div>
 
       <!-- Cột 2: Thông tin liên hệ -->

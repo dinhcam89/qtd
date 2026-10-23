@@ -15,7 +15,10 @@ const { rates, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel as any;
 ---
 
-<div data-rates-tables class="space-y-8">
+<div data-rates-tables class="space-y-6 sm:space-y-8">
+  <!-- Dòng lưu ý lãi suất đặt lên đầu, ngay sau tiêu đề biểu lãi suất -->
+  <Notice variant="warning">{RATE_DISCLAIMER}</Notice>
+
   <!-- Bảng 1: Lãi suất tiền gửi (một thẻ table duy nhất, CSS chuyển sang card trên mobile) -->
   <div class="space-y-3">
     <Heading class="text-xl font-semibold text-brand-primary">
@@ -147,7 +150,4 @@ const Heading = headingLevel as any;
       <p class="text-base text-ink-muted">{DEFAULT_FALLBACK_TEXT}</p>
     )}
   </div>
-
-  <!-- Dòng lưu ý lãi suất bắt buộc, luôn nằm ngay cạnh các bảng -->
-  <Notice variant="warning">{RATE_DISCLAIMER}</Notice>
 </div>
