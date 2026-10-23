@@ -401,12 +401,25 @@ test.describe('Smoke tests', () => {
     }
 
     // Kiểm tra các thẻ có cùng chiều cao (nếu trên cùng hàng)
-    const cardHeights = await cards.evaluateAll((list) =>
-      list.map((el) => Math.round(el.getBoundingClientRect().height))
+    const cardMetrics = await cards.evaluateAll((list) =>
+      list.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top), height: Math.round(r.height) };
+      })
     );
-    const firstHeight = cardHeights[0];
-    for (const h of cardHeights) {
-      expect(Math.abs(h - firstHeight)).toBeLessThanOrEqual(2);
+    const rows = new Map<number, number[]>();
+    for (const m of cardMetrics) {
+      const list = rows.get(m.top) || [];
+      list.push(m.height);
+      rows.set(m.top, list);
+    }
+    for (const [, heights] of rows) {
+      if (heights.length > 1) {
+        const firstHeight = heights[0];
+        for (const h of heights) {
+          expect(Math.abs(h - firstHeight)).toBeLessThanOrEqual(2);
+        }
+      }
     }
 
     expect(consoleErrors).toEqual([]);
