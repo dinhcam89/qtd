@@ -1,4 +1,6 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import type { ContactData } from '../lib/schemas/contact';
 import type { ScheduleData } from '../lib/schemas/schedule';
 import type { SiteData } from '../lib/schemas/site';
@@ -15,6 +17,12 @@ interface Props {
 
 const { site, contact, schedule } = Astro.props;
 
+// Kiểm tra logo có tồn tại trong public/images/ hay không
+const hasLogoPng = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.png'));
+const hasLogoSvg = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.svg'));
+const hasLogoWebp = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.webp'));
+const logoSrc = hasLogoSvg ? '/images/logo.svg' : hasLogoWebp ? '/images/logo.webp' : hasLogoPng ? '/images/logo.png' : null;
+
 const phoneHref = toTelHref(contact.phone);
 const hotlineHref = toTelHref(contact.hotline);
 const emailHref = toMailtoHref(contact.email);
@@ -30,9 +38,21 @@ const currentYear = new Date().getFullYear();
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
       <!-- Cột 1: Thông tin Quỹ -->
       <div class="space-y-3">
-        <h2 data-site-footer-brand class="text-lg font-bold text-brand-primary">
-          {formatText(site.name)}
-        </h2>
+        <div class="flex items-center gap-2.5">
+          {logoSrc && (
+            <img
+              src={logoSrc}
+              alt={`Logo ${formatText(site.name)}`}
+              width="36"
+              height="36"
+              class="h-8 w-auto object-contain shrink-0"
+              loading="lazy"
+            />
+          )}
+          <h2 data-site-footer-brand class="text-lg font-bold text-brand-primary">
+            {formatText(site.name)}
+          </h2>
+        </div>
         {site.short_name && (
           <p class="text-sm text-ink-muted">
             <span class="font-medium text-ink-base">Tên viết tắt:</span>{' '}

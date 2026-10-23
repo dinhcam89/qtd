@@ -1,4 +1,6 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import { NAV_ITEMS, PRIMARY_NAV_ITEMS } from '../lib/nav';
 import Container from './ui/Container.astro';
 
@@ -7,6 +9,12 @@ interface Props {
 }
 
 const { siteName = '' } = Astro.props;
+
+// Kiểm tra logo có tồn tại trong public/images/ hay không
+const hasLogoPng = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.png'));
+const hasLogoSvg = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.svg'));
+const hasLogoWebp = fs.existsSync(path.resolve(process.cwd(), 'public/images/logo.webp'));
+const logoSrc = hasLogoSvg ? '/images/logo.svg' : hasLogoWebp ? '/images/logo.webp' : hasLogoPng ? '/images/logo.png' : null;
 ---
 
 <header
@@ -15,14 +23,23 @@ const { siteName = '' } = Astro.props;
 >
   <Container>
     <div class="flex items-center justify-between min-h-[4.5rem] py-3">
-      <!-- Tên Quỹ dạng chữ, không vẽ logo/khẩu hiệu giả -->
+      <!-- Logo và Tên Quỹ -->
       <a
         href="/"
         data-header-brand
         data-site-brand
-        class="text-xl sm:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors"
+        class="inline-flex items-center gap-2.5 sm:gap-3 text-xl sm:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors"
       >
-        {siteName}
+        {logoSrc && (
+          <img
+            src={logoSrc}
+            alt={`Logo ${siteName}`}
+            width="40"
+            height="40"
+            class="h-9 sm:h-10 w-auto object-contain shrink-0"
+          />
+        )}
+        <span>{siteName}</span>
       </a>
 
       <!-- Menu ngang trên Desktop (lg+): chỉ các mục primary, các trang con nằm ở Giới thiệu/footer -->
