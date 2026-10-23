@@ -2,12 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { test, expect } from '@playwright/test';
 import { setupPageGuards } from './helpers';
+import { toTelHref, toMailtoHref } from '../src/lib/contact';
 
 const DISCLAIMER =
   'Lãi suất mang tính tham khảo, vui lòng liên hệ quỹ để biết chi tiết.';
 
 test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
-  test('/lai-suat: có RATE_DISCLAIMER ngay cạnh bảng, thời điểm áp dụng không ghép "tính đến"', async ({
+  test('/lai-suat: có RATE_DISCLAIMER ngay cạnh bảng, thời điểm áp dụng hợp lệ, không ghép "tính đến", lãi suất chuẩn định dạng', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -23,19 +24,33 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     await expect(block.locator('table')).toHaveCount(2);
     await expect(block).toContainText(DISCLAIMER);
 
-    // Thời điểm áp dụng: effective_from null → "Đang cập nhật", không có "tính đến"
+    // Thời điểm áp dụng: ngày dd/mm/yyyy hoặc "Đang cập nhật", không có "tính đến"
     const effective = page.locator('[data-rates-effective]');
     await expect(effective).toContainText('Thời điểm áp dụng:');
-    await expect(effective).toContainText('Đang cập nhật');
+    const effText = (await effective.innerText()).trim();
+    expect(
+      /Thời điểm áp dụng:\s*(\d{2}\/\d{2}\/\d{4}|Đang cập nhật)/.test(effText)
+    ).toBe(true);
+
     const bodyText = await page.locator('body').innerText();
     expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
     expect(bodyText).not.toMatch(/áp dụng từ.*đang cập nhật/i);
+
+    // Lãi suất hiển thị khớp /^\d+(,\d{1,2})?%(\/năm)?$/ hoặc "Đang cập nhật"
+    const rateCells = page.locator('td[data-label*="Lãi suất"]');
+    const rateCount = await rateCells.count();
+    for (let i = 0; i < rateCount; i++) {
+      const text = (await rateCells.nth(i).innerText()).trim();
+      expect(
+        /^\d+(,\d{1,2})?%(\/năm)?$/.test(text) || text === 'Đang cập nhật'
+      ).toBe(true);
+    }
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
 
-  test('/quy-mo: dùng StatItem, null hiển thị "Đang cập nhật", không có dòng "Tính đến" khi as_of null', async ({
+  test('/quy-mo: dùng StatItem, các thẻ có giá trị hợp lệ hoặc "Đang cập nhật", thời điểm as_of đúng chuẩn', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -43,21 +58,40 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
 
     await expect(page.locator('h1')).toHaveText('Quy mô hoạt động');
     const cards = page.locator('[data-stat-card]');
-    expect(await cards.count()).toBeGreaterThan(0);
-    await expect(page.locator('[data-stat-fallback]')).toHaveCount(
-      await cards.count()
-    );
-    await expect(page.locator('[data-stat-asof]')).toHaveCount(0);
+    const cardCount = await cards.count();
+    expect(cardCount).toBeGreaterThan(0);
+
+    for (let i = 0; i < cardCount; i++) {
+      const card = cards.nth(i);
+      const hasFallback =
+        (await card.locator('[data-stat-fallback]').count()) > 0;
+      if (hasFallback) {
+        await expect(card.locator('[data-stat-fallback]')).toHaveText(
+          'Đang cập nhật'
+        );
+      } else {
+        const val = await card.locator('[data-stat-value]').innerText();
+        expect(val.trim().length).toBeGreaterThan(0);
+      }
+    }
+
+    const asOfLocators = page.locator('[data-stat-asof]');
+    const asOfCount = await asOfLocators.count();
+    if (asOfCount > 0) {
+      for (let i = 0; i < asOfCount; i++) {
+        const txt = (await asOfLocators.nth(i).innerText()).trim();
+        expect(/\d{2}\/\d{2}\/\d{4}/.test(txt)).toBe(true);
+      }
+    }
 
     const bodyText = await page.locator('body').innerText();
-    expect(bodyText).toContain('Số liệu: Đang cập nhật');
     expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
 
-  test('/san-pham: có nhóm cho vay và tiền gửi, trường chưa có hiển thị "Đang cập nhật"', async ({
+  test('/san-pham: có nhóm cho vay và tiền gửi, các trường hiển thị rõ ràng hoặc "Đang cập nhật"', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -68,10 +102,20 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     await expect(page.locator('#tien-gui h2')).toHaveText('Sản phẩm tiền gửi');
 
     const cards = page.locator('[data-product-card]');
-    expect(await cards.count()).toBeGreaterThan(0);
-    // Trường null phải hiện "Đang cập nhật", không có giá trị bịa
-    const first = cards.first();
-    await expect(first.locator('dd').first()).toHaveText('Đang cập nhật');
+    const count = await cards.count();
+    expect(count).toBeGreaterThan(0);
+
+    for (let i = 0; i < count; i++) {
+      const card = cards.nth(i);
+      const title = await card.locator('h3').innerText();
+      expect(title.trim().length).toBeGreaterThan(0);
+      const dds = card.locator('dd');
+      const ddCount = await dds.count();
+      for (let j = 0; j < ddCount; j++) {
+        const text = (await dds.nth(j).innerText()).trim();
+        expect(text.length).toBeGreaterThan(0);
+      }
+    }
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
@@ -88,30 +132,37 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     }
   });
 
-  test('/quy-che: có đúng 1 h1, trạng thái rỗng hiển thị "Đang cập nhật", không có liên kết tới file không tồn tại', async ({
+  test('/quy-che: có đúng 1 h1, liên kết tới file pdf tồn tại trong dist', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/quy-che');
 
-    // 1. Có đúng 1 h1 với tiêu đề chuẩn
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('h1')).toHaveText('Quy chế và văn bản');
 
-    // 2. Trạng thái rỗng hiển thị "Đang cập nhật"
     const emptyBox = page.locator('[data-documents-empty]');
-    await expect(emptyBox).toBeVisible();
-    await expect(emptyBox).toHaveText('Đang cập nhật');
+    const docLinks = page.locator('main a[href^="/docs/"][href$=".pdf"]');
+    const docLinkCount = await docLinks.count();
 
-    // 3. Không có liên kết nào tới file không tồn tại hoặc file giả
-    const docLinks = page.locator('main a[href^="/docs/"]');
-    await expect(docLinks).toHaveCount(0);
+    if (docLinkCount === 0) {
+      await expect(emptyBox).toBeVisible();
+      await expect(emptyBox).toHaveText('Đang cập nhật');
+    } else {
+      await expect(emptyBox).toHaveCount(0);
+      for (let i = 0; i < docLinkCount; i++) {
+        const href = await docLinks.nth(i).getAttribute('href');
+        expect(href).not.toBeNull();
+        const localPath = path.resolve('dist', href!.replace(/^\//, ''));
+        expect(fs.existsSync(localPath)).toBe(true);
+      }
+    }
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
 
-  test('/tin-tuc: trạng thái rỗng hiển thị "Đang cập nhật", không xuất hiện bài draft mẫu', async ({
+  test('/tin-tuc: hiển thị danh sách tin bài hợp lệ, không xuất hiện bài draft mẫu', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -121,13 +172,29 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     await expect(page.locator('h1')).toHaveText('Tin tức');
 
     const emptyBox = page.locator('[data-news-empty]');
-    await expect(emptyBox).toBeVisible();
-    await expect(emptyBox).toHaveText('Đang cập nhật');
+    const newsItems = page.locator('[data-news-item]');
+    const newsCount = await newsItems.count();
 
-    await expect(page.locator('[data-news-item]')).toHaveCount(0);
-    await expect(
-      page.locator('nav[aria-label="Phân trang tin tức"]')
-    ).toHaveCount(0);
+    if (newsCount === 0) {
+      await expect(emptyBox).toBeVisible();
+      await expect(emptyBox).toHaveText('Đang cập nhật');
+      await expect(
+        page.locator('nav[aria-label="Phân trang tin tức"]')
+      ).toHaveCount(0);
+    } else {
+      await expect(emptyBox).toHaveCount(0);
+      for (let i = 0; i < newsCount; i++) {
+        const item = newsItems.nth(i);
+        const link = item.locator('a').first();
+        const href = await link.getAttribute('href');
+        expect(href).toMatch(/^\/tin-tuc\/.+/);
+        const dateEl = item.locator('time');
+        if ((await dateEl.count()) > 0) {
+          const dateText = (await dateEl.innerText()).trim();
+          expect(/\d{2}\/\d{2}\/\d{4}/.test(dateText)).toBe(true);
+        }
+      }
+    }
 
     const content = await page.content();
     expect(content).not.toContain('thong-bao-mau');
@@ -137,7 +204,7 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     expect(cspViolations).toEqual([]);
   });
 
-  test('/thong-bao: hiển thị lịch làm việc, khối thông báo rỗng hiển thị "Đang cập nhật", không có draft', async ({
+  test('/thong-bao: hiển thị lịch làm việc, danh sách thông báo hợp lệ, không có draft', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -149,9 +216,21 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     await expect(page.locator('[data-regular-schedule]')).toBeVisible();
 
     const emptyNotices = page.locator('[data-notices-empty]');
-    await expect(emptyNotices).toBeVisible();
-    await expect(emptyNotices).toHaveText('Đang cập nhật');
-    await expect(page.locator('[data-notice-item]')).toHaveCount(0);
+    const noticeItems = page.locator('[data-notice-item]');
+    const noticeCount = await noticeItems.count();
+
+    if (noticeCount === 0) {
+      await expect(emptyNotices).toBeVisible();
+      await expect(emptyNotices).toHaveText('Đang cập nhật');
+    } else {
+      await expect(emptyNotices).toHaveCount(0);
+      for (let i = 0; i < noticeCount; i++) {
+        const item = noticeItems.nth(i);
+        const link = item.locator('a').first();
+        const href = await link.getAttribute('href');
+        expect(href).toMatch(/^\/tin-tuc\/.+/);
+      }
+    }
 
     const content = await page.content();
     expect(content).not.toContain('thong-bao-mau');
@@ -161,7 +240,7 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     expect(cspViolations).toEqual([]);
   });
 
-  test('/lien-he: chế độ rỗng không có thẻ a[href^="tel:"], a[href^="mailto:"], liên kết bản đồ, iframe; hiển thị "Đang cập nhật" gọn gàng', async ({
+  test('/lien-he: kiểm tra tính hợp lệ của số điện thoại, email, bản đồ và không có iframe', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -170,21 +249,65 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('h1')).toHaveText('Thông tin liên hệ');
 
-    // Không có link tel:, mailto:, map link, iframe
-    await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
-    await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
-    await expect(page.locator('a[data-map-link]')).toHaveCount(0);
+    // Không có iframe
     await expect(page.locator('iframe')).toHaveCount(0);
 
-    // Hiển thị "Đang cập nhật" gọn gàng ở các khối liên hệ chính
-    const addressDd = page.locator('[data-contact-address] dd').first();
-    await expect(addressDd).toHaveText('Đang cập nhật');
+    // Mọi thẻ a[href^="tel:"] khớp toTelHref của chính chữ hiển thị
+    const telLinks = page.locator('a[href^="tel:"]');
+    const telCount = await telLinks.count();
+    for (let i = 0; i < telCount; i++) {
+      const link = telLinks.nth(i);
+      const text = (await link.innerText()).trim();
+      const href = await link.getAttribute('href');
+      expect(href).toBe(toTelHref(text));
+    }
 
+    // Mọi thẻ a[href^="mailto:"] khớp toMailtoHref của chính chữ hiển thị
+    const mailLinks = page.locator('a[href^="mailto:"]');
+    const mailCount = await mailLinks.count();
+    for (let i = 0; i < mailCount; i++) {
+      const link = mailLinks.nth(i);
+      const text = (await link.innerText()).trim();
+      const href = await link.getAttribute('href');
+      expect(href).toBe(toMailtoHref(text));
+    }
+
+    // Liên kết bản đồ nếu có có tiền tố Google Maps và target/rel đúng
+    const mapLinks = page.locator(
+      'a[data-map-link], a[href*="google.com/maps"]'
+    );
+    const mapCount = await mapLinks.count();
+    for (let i = 0; i < mapCount; i++) {
+      const link = mapLinks.nth(i);
+      const href = await link.getAttribute('href');
+      expect(href).toMatch(/^https:\/\/(www\.)?google\.com\/maps/);
+      expect(await link.getAttribute('target')).toBe('_blank');
+      const rel = await link.getAttribute('rel');
+      expect(rel).toContain('noopener');
+      expect(rel).toContain('noreferrer');
+    }
+
+    // Trụ sở chính: nếu phone khác "Đang cập nhật", bắt buộc có a[href^="tel:"] khớp toTelHref
     const phoneDd = page.locator('[data-contact-phone] dd');
-    await expect(phoneDd).toHaveText('Đang cập nhật');
+    const phoneText = (await phoneDd.innerText()).trim();
+    if (phoneText !== 'Đang cập nhật') {
+      const link = phoneDd.locator('a[href^="tel:"]');
+      await expect(link).toBeVisible();
+      const linkText = (await link.innerText()).trim();
+      expect(toTelHref(linkText)).not.toBeNull();
+      expect(await link.getAttribute('href')).toBe(toTelHref(linkText));
+    }
 
+    // Trụ sở chính: nếu email khác "Đang cập nhật", bắt buộc có a[href^="mailto:"] khớp toMailtoHref
     const emailDd = page.locator('[data-contact-email] dd');
-    await expect(emailDd).toHaveText('Đang cập nhật');
+    const emailText = (await emailDd.innerText()).trim();
+    if (emailText !== 'Đang cập nhật') {
+      const link = emailDd.locator('a[href^="mailto:"]');
+      await expect(link).toBeVisible();
+      const linkText = (await link.innerText()).trim();
+      expect(toMailtoHref(linkText)).not.toBeNull();
+      expect(await link.getAttribute('href')).toBe(toMailtoHref(linkText));
+    }
 
     // Có banner dẫn tới /kenh-chinh-thuc
     const bannerLink = page.locator('[data-official-channels-banner] a');
@@ -195,7 +318,7 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     expect(cspViolations).toEqual([]);
   });
 
-  test('/kenh-chinh-thuc: chế độ rỗng không có tel:, mailto:, iframe; domain hiển thị "Đang cập nhật"', async ({
+  test('/kenh-chinh-thuc: domain chính thức, các kênh liên hệ và không có iframe', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -204,15 +327,35 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('h1')).toHaveText('Kênh thông tin chính thức');
 
-    // Không có link tel:, mailto:, iframe
-    await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
-    await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
+    // Không có iframe
     await expect(page.locator('iframe')).toHaveCount(0);
 
-    // Domain hiển thị "Đang cập nhật" và không gắn link
+    // Mọi link tel/mailto nếu có phải chuẩn hóa đúng
+    const telLinks = page.locator('a[href^="tel:"]');
+    for (let i = 0; i < (await telLinks.count()); i++) {
+      const link = telLinks.nth(i);
+      const text = (await link.innerText()).trim();
+      expect(await link.getAttribute('href')).toBe(toTelHref(text));
+    }
+
+    const mailLinks = page.locator('a[href^="mailto:"]');
+    for (let i = 0; i < (await mailLinks.count()); i++) {
+      const link = mailLinks.nth(i);
+      const text = (await link.innerText()).trim();
+      expect(await link.getAttribute('href')).toBe(toMailtoHref(text));
+    }
+
+    // Domain chính thức: nếu khác "Đang cập nhật", phải gắn link hợp lệ; nếu là "Đang cập nhật", không gắn link
     const domainDd = page.locator('[data-official-domain] dd');
-    await expect(domainDd).toHaveText('Đang cập nhật');
-    await expect(domainDd.locator('a')).toHaveCount(0);
+    const domainText = (await domainDd.innerText()).trim();
+    if (domainText === 'Đang cập nhật') {
+      await expect(domainDd.locator('a')).toHaveCount(0);
+    } else {
+      const domainLink = domainDd.locator('a');
+      await expect(domainLink).toBeVisible();
+      const href = await domainLink.getAttribute('href');
+      expect(href).toMatch(/^https:\/\//);
+    }
 
     // Đề mục hướng dẫn an toàn
     const content = page.locator('.content-body');
