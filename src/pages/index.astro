@@ -6,6 +6,7 @@ import LinkButton from '../components/ui/LinkButton.astro';
 import StatItem from '../components/ui/StatItem.astro';
 import Card from '../components/ui/Card.astro';
 import RatesTables from '../components/RatesTables.astro';
+import HomeSlider from '../components/HomeSlider.astro';
 import { getSite, getRates } from '../lib/data';
 import {
   getPublishedNews,
@@ -69,6 +70,11 @@ const siteDescription =
             Thông tin liên hệ
           </LinkButton>
         </div>
+      </div>
+
+      <!-- Slider hình ảnh hoạt động tiêu biểu -->
+      <div class="pt-8 sm:pt-10">
+        <HomeSlider />
       </div>
     </Container>
   </Section>
