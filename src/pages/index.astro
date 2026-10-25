@@ -161,12 +161,36 @@ const siteDescription =
     </Container>
   </Section>
 
-  <!-- 4. Khối Tin mới (Ẩn hoàn toàn nếu chưa có bài công khai, đã lọc draft: true) -->
-  {publishedNews.length > 0 && (
-    <Section id="tin-tuc" variant="muted" class="scroll-mt-20">
-      <Container>
-        <div class="space-y-6">
-          <h2 class="text-2xl font-bold text-ink-base">Tin tức & Thông báo</h2>
+  <!-- 4. Khối Tin tức & Thông báo mới nhất -->
+  <Section id="tin-tuc" variant="muted" class="scroll-mt-20">
+    <Container>
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 border-b border-border-default pb-3">
+          <div>
+            <h2 class="text-2xl font-bold text-ink-base">
+              Tin tức & Thông báo
+            </h2>
+            <p class="text-sm text-ink-muted mt-0.5">
+              Các thông tin, thông báo và hoạt động mới nhất của Quỹ
+            </p>
+          </div>
+          <a
+            data-home-news-link
+            href="/tin-tuc/"
+            class="inline-flex items-center text-sm font-semibold text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded"
+          >
+            Xem tất cả &rarr;
+          </a>
+        </div>
+
+        {publishedNews.length === 0 ? (
+          <div
+            data-home-news-empty
+            class="p-8 text-center rounded-xl border border-border-default bg-surface-page"
+          >
+            <p class="text-ink-muted text-base">{DEFAULT_FALLBACK_TEXT}</p>
+          </div>
+        ) : (
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {publishedNews.slice(0, 3).map((item) => (
               <Card
@@ -179,17 +203,8 @@ const siteDescription =
               />
             ))}
           </div>
-          <p>
-            <a
-              data-home-news-link
-              href="/tin-tuc/"
-              class="inline-flex items-center min-h-[44px] font-medium text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded"
-            >
-              Xem tất cả tin tức &rarr;
-            </a>
-          </p>
-        </div>
-      </Container>
-    </Section>
-  )}
+        )}
+      </div>
+    </Container>
+  </Section>
 </BaseLayout>
