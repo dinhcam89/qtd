@@ -14,3 +14,25 @@ deposit_products:
     term: null
     conditions: null
     required_documents: null
+payment_services:
+  - name: 'Ngân hàng số Co-opbank Mobile Banking'
+    summary: 'Hỗ trợ thành viên sử dụng dịch vụ ngân hàng số, chuyển tiền, thanh toán và quản lý tài khoản linh hoạt.'
+    target_customers: 'Thành viên và khách hàng cá nhân có nhu cầu giao dịch trực tuyến'
+    amount_limit: null
+    term: null
+    conditions: 'Có tài khoản thanh toán và sử dụng điện thoại thông minh'
+    required_documents: 'Giấy tờ tùy thân (CCCD) còn hiệu lực'
+  - name: 'Thẻ chip Co-opBank NAPAS'
+    summary: 'Phát hành thẻ chip thanh toán nội địa cho khách hàng, rút tiền tại ATM và thanh toán tiện lợi tại các điểm chấp nhận thẻ trên toàn quốc.'
+    target_customers: 'Thành viên và khách hàng có nhu cầu sử dụng thẻ thanh toán'
+    amount_limit: null
+    term: null
+    conditions: 'Có tài khoản thanh toán tại Quỹ / Co-opBank'
+    required_documents: 'CCCD còn hiệu lực'
+  - name: 'Đại lý cung ứng dịch vụ thanh toán'
+    summary: 'Nhận hồ sơ mở tài khoản thanh toán, kiểm tra và xác minh thông tin khách hàng, tiếp nhận hồ sơ phát hành thẻ ngân hàng và xử lý chứng từ giao dịch kết nối với Ngân hàng Hợp tác xã Việt Nam (Co-opBank).'
+    target_customers: 'Cá nhân, hộ gia đình và tổ chức trên địa bàn'
+    amount_limit: null
+    term: null
+    conditions: 'Tuân thủ quy chế đại lý thanh toán và quy định của Ngân hàng Nhà nước'
+    required_documents: 'Hồ sơ mở tài khoản và giấy tờ pháp lý theo hướng dẫn'

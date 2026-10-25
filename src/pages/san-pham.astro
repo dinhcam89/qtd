@@ -20,6 +20,16 @@ const groups: Array<{ id: string; title: string; items: ProductItem[] }> = [
     title: 'Sản phẩm tiền gửi',
     items: products.deposit_products,
   },
+  ...(products.payment_services && products.payment_services.length > 0
+    ? [
+        {
+          id: 'dich-vu-thanh-toan',
+          title:
+            'Dịch vụ đại lý thanh toán và chuyển đổi số (Phối hợp với Co-opBank)',
+          items: products.payment_services,
+        },
+      ]
+    : []),
 ];
 
 const fields: Array<{ key: keyof ProductItem; label: string }> = [

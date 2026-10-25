@@ -1,10 +1,5 @@
-working_days: '[CẦN BỔ SUNG: ngày làm việc trong tuần]'
-morning_hours: '[CẦN BỔ SUNG: giờ làm việc buổi sáng]'
-afternoon_hours: '[CẦN BỔ SUNG: giờ làm việc buổi chiều]'
-notes: '[CẦN BỔ SUNG: lưu ý làm việc/nghỉ lễ]'
-holidays:
-  - title: '[CẦN BỔ SUNG: tên dịp nghỉ lễ]'
-    start_date: null
-    end_date: null
-    return_date: null
-    note: null
+working_days: "Thứ Hai - Thứ Sáu\nThứ Bảy (chỉ làm việc buổi chiều)"
+morning_hours: '07:00 - 11:30'
+afternoon_hours: '13:30 - 17:00'
+notes: 'Nghỉ sáng Thứ Bảy, cả ngày Chủ Nhật và các ngày nghỉ Lễ, Tết theo quy định của Nhà nước.'
+holidays: []

@@ -51,7 +51,18 @@ const logoSrc = hasLogoSvg
             class="h-14 sm:h-16 w-auto object-contain shrink-0"
           />
         )}
-        <span>{siteName}</span>
+        {siteName.toUpperCase().includes('QUỸ TÍN DỤNG NHÂN DÂN') ? (
+          <span class="flex flex-col text-left leading-none py-0.5">
+            <span class="text-xs sm:text-xs lg:text-sm font-bold text-ink-base uppercase tracking-wider">
+              QUỸ TÍN DỤNG NHÂN DÂN
+            </span>
+            <span class="text-lg sm:text-xl lg:text-2xl font-extrabold text-brand-primary tracking-tight mt-0.5">
+              {siteName.replace(/^QUỸ TÍN DỤNG NHÂN DÂN\s*/i, '')}
+            </span>
+          </span>
+        ) : (
+          <span>{siteName}</span>
+        )}
       </a>
 
       <!-- Menu ngang trên Desktop (lg+): chỉ các mục primary, các trang con nằm ở Giới thiệu/footer -->
@@ -69,6 +80,31 @@ const logoSrc = hasLogoSvg
           </a>
         ))}
       </nav>
+
+      <!-- Bộ chọn ngôn ngữ Tiếng Việt / Tiếng Anh (Góc trên bên phải) -->
+      <div class="hidden lg:flex items-center ml-2 xl:ml-3 pl-2 xl:pl-3 border-l border-border-default shrink-0">
+        <div
+          class="inline-flex items-center p-0.5 rounded-lg bg-surface-muted border border-border-default text-xs font-semibold"
+          role="group"
+          aria-label="Lựa chọn ngôn ngữ"
+        >
+          <span
+            class="px-2 py-1 rounded-md bg-brand-primary text-white shadow-xs cursor-default select-none"
+            aria-current="true"
+          >
+            VI
+          </span>
+          <button
+            type="button"
+            id="lang-en-btn"
+            class="px-2 py-1 rounded-md text-ink-muted hover:text-ink-base transition-colors focus-visible:outline-2 focus-visible:outline-border-focus"
+            title="English (Phiên bản tiếng Anh đang được chuẩn bị)"
+            aria-label="Chuyển sang tiếng Anh"
+          >
+            EN
+          </button>
+        </div>
+      </div>
 
       <!-- Nút Hamburger trên Mobile (vùng bấm tối thiểu 44x44px) -->
       <button
@@ -128,6 +164,29 @@ const logoSrc = hasLogoSvg
             </a>
           </li>
         ))}
+        <li class="pt-2 border-t border-border-default px-4 py-2">
+          <div class="flex items-center justify-between text-sm font-medium text-ink-muted">
+            <span>Ngôn ngữ / Language:</span>
+            <div
+              class="inline-flex items-center p-0.5 rounded-lg bg-surface-muted border border-border-default text-xs font-semibold"
+              role="group"
+              aria-label="Lựa chọn ngôn ngữ"
+            >
+              <span class="px-2.5 py-1 rounded-md bg-brand-primary text-white shadow-xs">
+                VI
+              </span>
+              <button
+                type="button"
+                id="lang-en-btn-mobile"
+                class="px-2.5 py-1 rounded-md text-ink-muted hover:text-ink-base"
+                title="English (Phiên bản tiếng Anh đang được chuẩn bị)"
+                aria-label="Chuyển sang tiếng Anh"
+              >
+                EN
+              </button>
+            </div>
+          </div>
+        </li>
       </ul>
     </nav>
   </Container>

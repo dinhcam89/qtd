@@ -98,21 +98,21 @@ const currentYear = new Date().getFullYear();
             formatText(site.operating_area)
           )}
         </p>
-        <div class="pt-2">
+        <div class="pt-3">
           <a
             href="https://div.gov.vn"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-block rounded-xl border border-border-default bg-surface-page p-2 shadow-xs hover:border-brand-primary/40 hover:shadow-sm transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+            class="inline-block rounded-2xl border border-border-default bg-surface-page p-3 shadow-xs hover:border-brand-primary/40 hover:shadow-md transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
             title="Bảo hiểm tiền gửi Việt Nam (DIV) - Mở trang web chính thức trong tab mới"
             aria-label="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam (mở trang web chính thức div.gov.vn trong tab mới)"
           >
             <img
               src="/images/bhtg-chung-nhan.png"
               alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
-              width="140"
-              height="85"
-              class="h-14 sm:h-16 w-auto object-contain block"
+              width="320"
+              height="195"
+              class="h-28 sm:h-36 w-auto object-contain block"
               loading="lazy"
             />
           </a>
@@ -180,10 +180,12 @@ const currentYear = new Date().getFullYear();
       <!-- Cột 3: Thời gian làm việc -->
       <div class="space-y-3">
         <h2 class="text-lg font-bold text-brand-primary">Thời gian làm việc</h2>
-        <p class="text-sm text-ink-muted">
-          <span class="font-medium text-ink-base">Ngày làm việc:</span>{' '}
-          {formatText(schedule.working_days)}
-        </p>
+        <div>
+          <span class="text-sm font-medium text-ink-base">Ngày làm việc:</span>
+          <p class="text-sm font-semibold text-ink-base whitespace-pre-line mt-0.5">
+            {formatText(schedule.working_days)}
+          </p>
+        </div>
         <p class="text-sm text-ink-muted">
           <span class="font-medium text-ink-base">Buổi sáng:</span>{' '}
           {formatText(schedule.morning_hours)}

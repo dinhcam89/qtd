@@ -74,6 +74,18 @@ function initMenu(): void {
       closeMenu(false);
     }
   });
+
+  // Thông báo khi bấm chọn tiếng Anh (chưa có bản dịch đầy đủ)
+  const enButtons = document.querySelectorAll(
+    '#lang-en-btn, #lang-en-btn-mobile'
+  );
+  enButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      alert(
+        'Phiên bản tiếng Anh đang được cập nhật. Website Quỹ tín dụng nhân dân Vạn Trạch hiện phục vụ thông tin bằng tiếng Việt.'
+      );
+    });
+  });
 }
 
 if (document.readyState === 'loading') {
