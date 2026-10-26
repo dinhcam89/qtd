@@ -42,11 +42,25 @@ const siteDescription =
     class="border-b border-border-default pt-8 pb-12 sm:pt-12 sm:pb-16"
   >
     <Container>
-      <div class="max-w-3xl space-y-5">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-primary tracking-tight leading-tight">
-          {formatText(site.name)}
+      <div class="max-w-4xl space-y-5">
+        <h1 class="text-xl min-[380px]:text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+          {site.name &&
+          site.name.toUpperCase().includes('QUỸ TÍN DỤNG NHÂN DÂN') ? (
+            <>
+              <span class="block text-ink-base whitespace-nowrap sm:whitespace-normal">
+                QUỸ TÍN DỤNG NHÂN DÂN
+              </span>
+              <span class="block text-brand-primary mt-1 sm:mt-2 font-extrabold text-3xl min-[380px]:text-4xl sm:text-5xl lg:text-6xl">
+                {site.name.replace(/^QUỸ TÍN DỤNG NHÂN DÂN\s*/i, '')}
+              </span>
+            </>
+          ) : (
+            <span class="text-brand-primary text-3xl sm:text-4xl lg:text-5xl font-bold">
+              {formatText(site.name)}
+            </span>
+          )}
         </h1>
-        <p class="text-lg sm:text-xl text-ink-muted leading-relaxed">
+        <p class="text-base sm:text-lg text-ink-muted leading-relaxed">
           {formatText(site.description)}
         </p>
         <div
