@@ -1,0 +1,1148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import Card from '../components/ui/Card.astro';
+import RatesTables from '../components/RatesTables.astro';
+import { getSite, getRates, getContact, getSchedule } from '../lib/data';
+import {
+  getPublishedNews,
+  getNewsDetailHref,
+  getNewsCategoryLabel,
+} from '../lib/news';
+import {
+  formatAsOf,
+  formatDate,
+  formatDateIso,
+  formatNumber,
+} from '../lib/format';
+import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+
+const site = await getSite();
+const rates = await getRates();
+const contact = await getContact();
+const schedule = await getSchedule();
+const publishedNews = await getPublishedNews();
+
+const siteTitle = `POC Giao diện phong cách Vietcombank — Quỹ tín dụng nhân dân ${site.name}`;
+const siteDescription = `Bản thử nghiệm giao diện hiện đại phong cách Vietcombank kết hợp bản sắc tương trợ cộng đồng Quỹ tín dụng nhân dân ${site.name}.`;
+
+// Lấy lãi suất cao nhất trong kỳ hạn tiền gửi để hiển thị trên thanh tiện ích
+const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
+  if (item.rate !== null && item.rate > max) {
+    return item.rate;
+  }
+  return max;
+}, 0);
+---
+
+<BaseLayout title={siteTitle} description={siteDescription}>
+  <!-- 0. Banner thông báo chế độ xem thử nghiệm POC -->
+  <div class="bg-gradient-to-r from-emerald-800 via-brand-primary to-teal-900 text-white text-xs sm:text-sm py-2.5 px-4 shadow-inner border-b border-white/10">
+    <Container class="flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-400 text-emerald-950 font-bold text-[11px] tracking-wider uppercase">
+          Bản thử nghiệm POC
+        </span>
+        <span>
+          Giao diện hiện đại phong cách ngân hàng số{' '}
+          <strong>Vietcombank</strong> kết hợp bản sắc tương trợ cộng đồng{' '}
+          <strong>QTDND Vạn Trạch</strong>.
+        </span>
+      </div>
+      <a
+        href="/"
+        class="inline-flex items-center gap-1 font-semibold text-emerald-200 hover:text-white underline underline-offset-2 shrink-0 text-xs sm:text-sm focus-visible:outline-2 focus-visible:outline-white rounded"
+      >
+        &larr; Quay lại trang chủ hiện tại
+      </a>
+    </Container>
+  </div>
+
+  <!-- 1. Thanh phân khúc khách hàng & Tiện ích đỉnh trang (Vietcombank Customer Segment Bar) -->
+  <div class="bg-surface-muted border-b border-border-default/80 text-xs sm:text-sm hidden md:block">
+    <Container class="flex items-center justify-between py-1.5">
+      <div class="flex items-center space-x-1 sm:space-x-2 text-ink-muted">
+        <span class="font-semibold text-brand-primary bg-white px-3 py-1 rounded-md shadow-2xs border border-border-default">
+          Dành cho Thành viên & Cá nhân
+        </span>
+        <a
+          href="#san-pham"
+          class="px-3 py-1 rounded-md hover:text-brand-primary hover:bg-white/60 transition-colors"
+        >
+          Hộ kinh doanh & Nông nghiệp
+        </a>
+        <a
+          href="#co-opbank"
+          class="px-3 py-1 rounded-md hover:text-brand-primary hover:bg-white/60 transition-colors"
+        >
+          Ngân hàng số Co-opBank
+        </a>
+        <a
+          href="/gioi-thieu"
+          class="px-3 py-1 rounded-md hover:text-brand-primary hover:bg-white/60 transition-colors"
+        >
+          Về Quỹ tín dụng
+        </a>
+      </div>
+      <div class="flex items-center gap-4 text-ink-subtle">
+        <span>
+          Hotline:{' '}
+          <strong class="text-brand-primary">
+            {contact.phone || '0232 3848 123'}
+          </strong>
+        </span>
+        <span class="text-border-strong">|</span>
+        <span>
+          Giờ phục vụ: {schedule.morning_hours} &amp; {schedule.afternoon_hours}
+        </span>
+      </div>
+    </Container>
+  </div>
+
+  <!-- 2. Hero Section với hiệu ứng trang nền lượn sóng Vietcombank (Dynamic Wave & Radial Glow) -->
+  <section class="relative overflow-hidden bg-gradient-to-b from-brand-primary via-[#0d2f5a] to-[#071930] text-white pt-10 pb-24 sm:pt-14 sm:pb-28 lg:pt-20 lg:pb-36">
+    <!-- Hiệu ứng nền 1: Vệt sáng mềm xuyên tâm (Radial Glow) -->
+    <div
+      class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none -translate-y-1/2"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="absolute bottom-0 left-10 w-80 h-80 bg-teal-400/10 rounded-full blur-2xl pointer-events-none"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Hiệu ứng nền 2: Đường lượn sóng vector tài chính (Vietcombank Flowing Wave Ribbon SVG) -->
+    <svg
+      class="absolute inset-0 w-full h-full pointer-events-none opacity-25"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1440 680"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M-100,280 C320,480 620,120 1020,340 C1280,480 1420,240 1600,320 L1600,680 L-100,680 Z"
+        fill="url(#wave-gradient-1)"
+        opacity="0.4"
+      ></path>
+      <path
+        d="M-50,420 C280,240 680,560 1100,280 C1320,140 1480,360 1600,420 L1600,680 L-50,680 Z"
+        fill="url(#wave-gradient-2)"
+        opacity="0.3"
+      ></path>
+      <!-- Lưới chấm tọa độ kỹ thuật số tinh tế -->
+      <defs>
+        <linearGradient
+          id="wave-gradient-1"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="100%"
+        >
+          <stop offset="0%" stop-color="#10b981" stop-opacity="0.6"></stop>
+          <stop offset="50%" stop-color="#0284c7" stop-opacity="0.4"></stop>
+          <stop offset="100%" stop-color="#0f3666" stop-opacity="0.1"></stop>
+        </linearGradient>
+        <linearGradient
+          id="wave-gradient-2"
+          x1="100%"
+          y1="0%"
+          x2="0%"
+          y2="100%"
+        >
+          <stop offset="0%" stop-color="#34d399" stop-opacity="0.5"></stop>
+          <stop offset="70%" stop-color="#0369a1" stop-opacity="0.3"></stop>
+          <stop offset="100%" stop-color="#0b2347" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <Container class="relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        <!-- Cột trái: Tiêu đề, Định vị thương hiệu & Nút hành động -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-300 text-xs sm:text-sm font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Tổ chức tín dụng hợp tác xã — Vì cộng đồng thành viên</span>
+          </div>
+
+          <div class="space-y-3">
+            <h1 class="text-2xl min-[400px]:text-3xl sm:text-5xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+              <span class="block text-emerald-400 font-bold text-lg sm:text-2xl uppercase tracking-wider mb-1">
+                Quỹ Tín Dụng Nhân Dân
+              </span>
+              <span class="block text-white text-3xl sm:text-5xl lg:text-6xl tracking-tight">
+                VẠN TRẠCH
+              </span>
+            </h1>
+            <p class="text-sm sm:text-base lg:text-lg text-slate-200/90 leading-relaxed max-w-2xl font-light">
+              Kế thừa truyền thống Hợp tác xã tín dụng từ năm 1958. Điểm tựa tài
+              chính an toàn, vững chắc, đồng hành cùng bà con phát triển sản
+              xuất nông nghiệp, thương mại dịch vụ và nâng cao đời sống.
+            </p>
+          </div>
+
+          <!-- Huy hiệu an toàn tài chính DIV & Giấy phép NHNN -->
+          <div class="flex flex-wrap items-center gap-4 pt-1">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm border border-white/15 text-xs text-slate-100">
+              <svg
+                class="w-4 h-4 text-emerald-400 shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span>Bảo hiểm tiền gửi DIV bảo chứng 100%</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm border border-white/15 text-xs text-slate-100">
+              <svg
+                class="w-4 h-4 text-teal-300 shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4zm3 1h6v4H7V5zm8 8v2h1v-2h-1zm-2-2H7v4h6v-4zm2 0h1V9h-1v2zm0-4h1V5h-1v2z"></path>
+              </svg>
+              <span>Giấy phép NHNN: 04NH-GP</span>
+            </div>
+          </div>
+
+          <!-- Nút hành động chính -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            <a
+              href="#tinh-lai"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold hover:from-emerald-400 hover:to-teal-400 shadow-lg shadow-emerald-500/25 transition-all text-sm sm:text-base focus-visible:outline-2 focus-visible:outline-white"
+            >
+              Ước tính lãi tiền gửi
+              <svg
+                class="w-4 h-4 ml-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </a>
+            <a
+              href="#lai-suat"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/20 text-white font-semibold transition-all text-sm sm:text-base focus-visible:outline-2 focus-visible:outline-white"
+            >
+              Biểu lãi suất chi tiết
+            </a>
+          </div>
+        </div>
+
+        <!-- Cột phải: Thẻ hình ảnh & Trụ sở giao dịch nổi bật -->
+        <div class="lg:col-span-5">
+          <div class="relative mx-auto max-w-md lg:max-w-none">
+            <!-- Khung ảnh có viền kính mờ & bóng đổ nổi bật -->
+            <div class="relative overflow-hidden rounded-3xl border-2 border-white/20 bg-white/5 backdrop-blur-lg shadow-2xl p-2 sm:p-3">
+              <img
+                src="/images/slider/tru-so.jpg"
+                alt="Trụ sở Quỹ tín dụng nhân dân Vạn Trạch khang trang, hiện đại"
+                width="640"
+                height="420"
+                class="w-full h-64 sm:h-80 object-cover rounded-2xl"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent rounded-2xl flex flex-col justify-end p-5">
+                <div class="text-xs uppercase font-bold tracking-wider text-emerald-400 mb-1">
+                  Trụ sở chính
+                </div>
+                <div class="text-base sm:text-lg font-bold text-white">
+                  Quỹ Tín Dụng Nhân Dân Vạn Trạch
+                </div>
+                <div class="text-xs text-slate-300 mt-0.5">
+                  Xã Bố Trạch, Tỉnh Quảng Trị &bull; Sẵn sàng phục vụ bà con
+                </div>
+              </div>
+            </div>
+
+            <!-- Thẻ nổi bật tỷ lệ lãi suất hấp dẫn (Floating Rate Badge) -->
+            <div class="absolute -bottom-5 -left-4 sm:-bottom-6 sm:-left-6 bg-white text-ink-base rounded-2xl p-3 sm:p-4 shadow-xl border border-border-default flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg shrink-0">
+                %
+              </div>
+              <div>
+                <div class="text-[11px] font-semibold text-ink-muted uppercase">
+                  Lãi suất gửi tiết kiệm
+                </div>
+                <div class="text-lg sm:text-xl font-extrabold text-brand-primary">
+                  Đến {maxDepositRate.toString().replace('.', ',')}%
+                  <span class="text-xs font-normal text-ink-muted">/năm</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thẻ nổi bật thành viên -->
+            <div class="absolute -top-4 -right-3 sm:-top-5 sm:-right-4 bg-white text-ink-base rounded-2xl p-3 shadow-xl border border-border-default flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-brand-primary text-white flex items-center justify-center font-bold text-sm shrink-0">
+                8k+
+              </div>
+              <div class="text-xs font-bold text-ink-base pr-1">
+                Thành viên gắn bó
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- 3. Thanh Tiện Ích Nhanh Đỉnh Cao (Vietcombank-Style Floating Quick Tools Dock) -->
+  <section class="relative z-20 -mt-14 sm:-mt-16 lg:-mt-20">
+    <Container>
+      <div class="bg-surface-page rounded-2xl sm:rounded-3xl shadow-xl border border-border-default p-4 sm:p-6 lg:p-8 backdrop-blur-md">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+          <!-- 1. Tra cứu lãi suất -->
+          <a
+            href="#lai-suat"
+            class="group flex flex-col items-center text-center p-3.5 sm:p-4 rounded-xl hover:bg-surface-muted transition-all border border-transparent hover:border-border-default"
+          >
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors flex items-center justify-center mb-2.5 shadow-2xs">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
+              Biểu Lãi Suất
+            </span>
+            <span class="text-[11px] text-ink-muted mt-0.5 line-clamp-1">
+              Tiết kiệm &amp; Cho vay
+            </span>
+          </a>
+
+          <!-- 2. Ước tính lợi nhuận -->
+          <a
+            href="#tinh-lai"
+            class="group flex flex-col items-center text-center p-3.5 sm:p-4 rounded-xl hover:bg-surface-muted transition-all border border-transparent hover:border-border-default"
+          >
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 group-hover:bg-brand-primary group-hover:text-white transition-colors flex items-center justify-center mb-2.5 shadow-2xs">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
+              Tính Tiền Gửi
+            </span>
+            <span class="text-[11px] text-ink-muted mt-0.5 line-clamp-1">
+              Mô phỏng tiền lãi
+            </span>
+          </a>
+
+          <!-- 3. Vay vốn thành viên -->
+          <a
+            href="#san-pham"
+            class="group flex flex-col items-center text-center p-3.5 sm:p-4 rounded-xl hover:bg-surface-muted transition-all border border-transparent hover:border-border-default"
+          >
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors flex items-center justify-center mb-2.5 shadow-2xs">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
+              Vay Vốn Ưu Đãi
+            </span>
+            <span class="text-[11px] text-ink-muted mt-0.5 line-clamp-1">
+              Nông nghiệp &amp; Dịch vụ
+            </span>
+          </a>
+
+          <!-- 4. Số hóa Co-opBank -->
+          <a
+            href="#co-opbank"
+            class="group flex flex-col items-center text-center p-3.5 sm:p-4 rounded-xl hover:bg-surface-muted transition-all border border-transparent hover:border-border-default"
+          >
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors flex items-center justify-center mb-2.5 shadow-2xs">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
+              Dịch Vụ Co-opBank
+            </span>
+            <span class="text-[11px] text-ink-muted mt-0.5 line-clamp-1">
+              Mobile App &amp; Thẻ chip
+            </span>
+          </a>
+
+          <!-- 5. Trụ sở & Giờ mở cửa -->
+          <a
+            href="/lien-he"
+            class="group flex flex-col items-center text-center p-3.5 sm:p-4 rounded-xl hover:bg-surface-muted transition-all border border-transparent hover:border-border-default"
+          >
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-colors flex items-center justify-center mb-2.5 shadow-2xs">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
+              Điểm Giao Dịch
+            </span>
+            <span class="text-[11px] text-ink-muted mt-0.5 line-clamp-1">
+              Địa chỉ &amp; Bản đồ
+            </span>
+          </a>
+
+          <!-- 6. Bảo hiểm DIV -->
+          <a
+            href="https://div.gov.vn"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex flex-col items-center text-center p-3.5 sm:p-4 rounded-xl hover:bg-surface-muted transition-all border border-transparent hover:border-border-default"
+          >
+            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 group-hover:bg-teal-600 group-hover:text-white transition-colors flex items-center justify-center mb-2.5 shadow-2xs">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
+              Bảo Hiểm Tiền Gửi
+            </span>
+            <span class="text-[11px] text-ink-muted mt-0.5 line-clamp-1">
+              Bảo vệ người gửi tiền
+            </span>
+          </a>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- 4. Công cụ Ước Tính Lãi Tiết Kiệm Tương Tác Trực Tuyến (Interactive Financial Calculator) -->
+  <Section id="tinh-lai" variant="muted" class="py-14 sm:py-20 scroll-mt-20">
+    <Container>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center space-y-2 mb-8">
+          <span class="text-xs uppercase font-bold tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            Công cụ tài chính thông minh
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-ink-base">
+            Ước Tính Lợi Nhuận Tiết Kiệm Của Bạn
+          </h2>
+          <p class="text-sm sm:text-base text-ink-muted max-w-xl mx-auto">
+            Nhập số tiền gửi và lựa chọn kỳ hạn mong muốn để dự tính khoản tiền
+            sinh lời minh bạch, an tâm tuyệt đối cùng QTDND Vạn Trạch.
+          </p>
+        </div>
+
+        <!-- Khung máy tính tương tác -->
+        <div
+          data-poc-calculator
+          class="bg-surface-page rounded-3xl border border-border-default shadow-lg p-6 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+        >
+          <!-- Cột nhập liệu -->
+          <div class="md:col-span-7 space-y-6">
+            <!-- Nhập số tiền -->
+            <div>
+              <div class="flex items-center justify-between text-sm font-semibold text-ink-base mb-2">
+                <label for="calc-amount-input">Số tiền gửi (VNĐ):</label>
+                <span
+                  id="calc-amount-display"
+                  class="text-brand-primary font-bold text-base"
+                >
+                  50.000.000 đ
+                </span>
+              </div>
+              <input
+                type="number"
+                id="calc-amount-input"
+                min="1000000"
+                max="5000000000"
+                step="1000000"
+                value="50000000"
+                class="w-full px-4 py-2.5 rounded-xl border border-border-default focus:border-brand-primary focus:outline-hidden text-base font-semibold"
+              />
+              <input
+                type="range"
+                id="calc-amount-slider"
+                min="5000000"
+                max="500000000"
+                step="5000000"
+                value="50000000"
+                class="w-full mt-3 accent-emerald-600 cursor-pointer"
+              />
+              <!-- Nút chọn nhanh số tiền -->
+              <div class="flex flex-wrap gap-2 mt-3">
+                <button
+                  type="button"
+                  data-preset-amount="20000000"
+                  class="text-xs px-2.5 py-1 rounded-md bg-surface-muted hover:bg-emerald-50 hover:text-emerald-700 border border-border-default font-medium transition-colors"
+                >
+                  20 triệu
+                </button>
+                <button
+                  type="button"
+                  data-preset-amount="50000000"
+                  class="text-xs px-2.5 py-1 rounded-md bg-surface-muted hover:bg-emerald-50 hover:text-emerald-700 border border-border-default font-medium transition-colors"
+                >
+                  50 triệu
+                </button>
+                <button
+                  type="button"
+                  data-preset-amount="100000000"
+                  class="text-xs px-2.5 py-1 rounded-md bg-surface-muted hover:bg-emerald-50 hover:text-emerald-700 border border-border-default font-medium transition-colors"
+                >
+                  100 triệu
+                </button>
+                <button
+                  type="button"
+                  data-preset-amount="200000000"
+                  class="text-xs px-2.5 py-1 rounded-md bg-surface-muted hover:bg-emerald-50 hover:text-emerald-700 border border-border-default font-medium transition-colors"
+                >
+                  200 triệu
+                </button>
+              </div>
+            </div>
+
+            <!-- Chọn kỳ hạn -->
+            <div>
+              <label
+                for="calc-term-select"
+                class="block text-sm font-semibold text-ink-base mb-2"
+              >
+                Kỳ hạn gửi tiết kiệm:
+              </label>
+              <select
+                id="calc-term-select"
+                class="w-full px-4 py-2.5 rounded-xl border border-border-default focus:border-brand-primary focus:outline-hidden text-sm font-medium bg-surface-page"
+              >
+                {rates.deposit_rates
+                  .filter((r) => r.rate !== null && r.rate > 0.5)
+                  .map((termItem) => {
+                    const matchMonth = termItem.term.match(/\d+/);
+                    const monthCount = matchMonth ? matchMonth[0] : '12';
+                    const rateStr =
+                      termItem.rate !== null
+                        ? termItem.rate.toString().replace('.', ',')
+                        : '0';
+                    return (
+                      <option
+                        value={monthCount}
+                        data-rate={termItem.rate || 0}
+                        selected={termItem.term.includes('12')}
+                      >
+                        {termItem.term} — Lãi suất: {rateStr}%/năm (
+                        {termItem.note})
+                      </option>
+                    );
+                  })}
+              </select>
+            </div>
+
+            <p class="text-xs text-ink-muted italic">
+              * Lãi suất mang tính tham khảo, vui lòng liên hệ quỹ để biết chi
+              tiết.
+            </p>
+          </div>
+
+          <!-- Cột kết quả tính toán nổi bật -->
+          <div class="md:col-span-5 bg-gradient-to-br from-brand-primary via-[#0f3666] to-[#0a2344] text-white rounded-2xl p-6 sm:p-7 space-y-5 shadow-inner">
+            <div>
+              <div class="text-xs text-emerald-300 font-semibold uppercase tracking-wider">
+                Lãi suất áp dụng
+              </div>
+              <div
+                id="calc-interest-rate"
+                class="text-2xl font-extrabold text-white mt-0.5"
+              >
+                5,8%/năm
+              </div>
+            </div>
+
+            <div class="border-t border-white/15 pt-4">
+              <div class="text-xs text-slate-300">
+                Tiền lãi dự kiến nhận được:
+              </div>
+              <div
+                id="calc-estimated-profit"
+                class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1"
+              >
+                2.900.000 đ
+              </div>
+            </div>
+
+            <div class="border-t border-white/15 pt-4">
+              <div class="text-xs text-slate-300">
+                Tổng tiền nhận được khi đáo hạn:
+              </div>
+              <div
+                id="calc-total-received"
+                class="text-lg sm:text-xl font-bold text-white mt-0.5"
+              >
+                52.900.000 đ
+              </div>
+            </div>
+
+            <a
+              href="/lien-he"
+              class="block w-full text-center py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-colors shadow-md mt-2"
+            >
+              Liên hệ mở sổ tiết kiệm ngay
+            </a>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- 5. Khối Sản Phẩm Theo Nhu Cầu (Phân khúc Cá nhân / Nông nghiệp / Co-opBank) -->
+  <Section id="san-pham" variant="default" class="py-14 sm:py-20 scroll-mt-20">
+    <Container>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div>
+          <span class="text-xs uppercase font-bold tracking-widest text-brand-primary">
+            Giải pháp tài chính toàn diện
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-ink-base mt-1">
+            Sản Phẩm &amp; Dịch Vụ Cung Ứng
+          </h2>
+          <p class="text-sm text-ink-muted mt-1 max-w-xl">
+            Thiết kế riêng biệt cho thành viên, hộ sản xuất nông nghiệp, thương
+            mại địa phương và dịch vụ số liên kết Co-opBank.
+          </p>
+        </div>
+
+        <!-- Bộ chuyển đổi Tab phân khúc (Segment Tabs) -->
+        <div
+          class="inline-flex p-1 rounded-xl bg-surface-muted border border-border-default self-start md:self-auto"
+          role="tablist"
+        >
+          <button
+            type="button"
+            data-segment-tab="tab-tiet-kiem"
+            class="px-4 py-2 rounded-lg text-xs sm:text-sm bg-brand-primary text-white shadow-xs font-semibold transition-all"
+            role="tab"
+            aria-selected="true"
+          >
+            Tiền gửi tiết kiệm
+          </button>
+          <button
+            type="button"
+            data-segment-tab="tab-cho-vay"
+            class="px-4 py-2 rounded-lg text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-all font-medium"
+            role="tab"
+            aria-selected="false"
+          >
+            Cho vay thành viên
+          </button>
+          <button
+            type="button"
+            data-segment-tab="tab-co-opbank"
+            class="px-4 py-2 rounded-lg text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-all font-medium"
+            role="tab"
+            aria-selected="false"
+          >
+            Dịch vụ số Co-opBank
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 1: Tiết kiệm -->
+      <div id="tab-tiet-kiem" data-segment-panel class="block">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xl">
+              1
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Tiết kiệm có kỳ hạn
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Kỳ hạn đa dạng từ 01 tháng đến 36 tháng. Lãi suất cạnh tranh, trả
+              lãi cuối kỳ hoặc định kỳ theo nhu cầu của thành viên.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Lãi suất tới 6,2%/năm
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Rút gốc linh hoạt theo quy định
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Được bảo hiểm tiền gửi DIV bảo chứng
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-xl">
+              2
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Tiết kiệm không kỳ hạn
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Giải pháp gửi tiền linh hoạt, thuận tiện nạp - rút bất cứ lúc nào
+              trong giờ giao dịch, vẫn sinh lời theo ngày an toàn.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Lãi suất tính theo ngày thực gửi
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Thủ tục rút tiền tức thì
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Phù hợp vốn lưu động sản xuất
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xl">
+              3
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Tiết kiệm trả lãi định kỳ
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Nhận tiền lãi hàng tháng hoặc hàng quý đều đặn, nguồn thu nhập ổn
+              định an dưỡng tuổi già cho bà con thành viên.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Nhận lãi trực tiếp tại quầy hoặc tài khoản
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Dành cho kỳ hạn trung và dài hạn
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Quản lý dòng tiền nhàn rỗi thông minh
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Cho vay -->
+      <div id="tab-cho-vay" data-segment-panel class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xl">
+              🌾
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Vay phát triển nông nghiệp &amp; nông thôn
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Hỗ trợ vốn mua cây con giống, phân bón, thức ăn gia súc, máy móc
+              cơ giới hóa nông nghiệp và kinh tế trang trại.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Lãi suất ưu đãi từ 7,5%/năm
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Thu nợ linh hoạt theo mùa vụ thu hoạch
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Thẩm định tận nơi, giải ngân nhanh
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-xl">
+              🏪
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Vay kinh doanh thương mại &amp; dịch vụ
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Tiếp sức vốn lưu động cho các hộ kinh doanh buôn bán, tiểu thương,
+              xưởng sản xuất chế biến nông sản trên địa bàn.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Lãi suất từ 8,5%/năm
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Kỳ hạn ngắn và trung hạn linh hoạt
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Hồ sơ đơn giản, tối ưu thời gian
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xl">
+              🏡
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Vay xây dựng &amp; nâng cấp nhà ở
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Đồng hành cùng gia đình thành viên xây dựng tổ ấm khang trang,
+              kiên cố, cải thiện chất lượng cuộc sống bền vững.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Lãi suất từ 9,0%/năm
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Thời hạn vay trung và dài hạn
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Phương thức trả nợ theo định kỳ
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3: Co-opBank -->
+      <div id="tab-co-opbank" data-segment-panel class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xl">
+              📱
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Co-opBank Mobile Banking
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Ứng dụng ngân hàng số chuyển tiền nhanh 24/7, thanh toán hóa đơn
+              điện nước, nạp tiền điện thoại tiện lợi trên smartphone.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Hướng dẫn cài đặt và mở tài khoản tại quầy
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Miễn phí chuyển khoản liên ngân hàng
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Bảo mật bằng sinh trắc học vân tay / khuôn mặt
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xl">
+              💳
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Thẻ Chip Co-opBank NAPAS
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Phát hành thẻ chip thanh toán an toàn, rút tiền tại hàng chục
+              nghìn cây ATM toàn quốc và quẹt thẻ mua sắm không tiền mặt.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Tiêu chuẩn bảo mật EMV chống sao chép
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Thanh toán chạm không tiếp xúc tiện lợi
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Thủ tục nhận thẻ nhanh chóng tại Quỹ
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-border-default bg-surface-page p-6 space-y-4 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold text-xl">
+              🏢
+            </div>
+            <h3 class="text-lg font-bold text-brand-primary">
+              Đại lý cung ứng dịch vụ thanh toán
+            </h3>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Điểm kết nối nộp, rút tiền và xử lý chứng từ thanh toán liên kết
+              với Ngân hàng Hợp tác xã Việt Nam ngay tại địa bàn.
+            </p>
+            <ul class="text-xs text-ink-subtle space-y-1.5 pt-2 border-t border-border-default">
+              <li class="flex items-center gap-1.5">
+                &bull; Giao dịch tài chính ngay tại xã Bố Trạch
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Tiết kiệm chi phí và thời gian đi xa
+              </li>
+              <li class="flex items-center gap-1.5">
+                &bull; Đội ngũ cán bộ tận tình hướng dẫn
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- 6. Khối Quy Mô & Trụ Cột Niềm Tin (Scale & Institutional Trust Pillar) -->
+  <Section
+    id="quy-mo"
+    variant="muted"
+    class="py-14 sm:py-20 border-y border-border-default"
+  >
+    <Container>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Cột trái: Giới thiệu truyền thống & Bảo hiểm DIV -->
+        <div class="lg:col-span-5 space-y-5">
+          <span class="text-xs uppercase font-bold tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            Trụ cột tài chính vững bền
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-ink-base leading-snug">
+            Quy Mô Hoạt Động &amp; Bảo Chứng An Toàn
+          </h2>
+          <p class="text-sm sm:text-base text-ink-muted leading-relaxed">
+            Hơn 68 năm hình thành và phát triển (tiền thân là HTX Tín dụng thành
+            lập năm 1958), Quỹ tín dụng nhân dân Vạn Trạch luôn giữ vững vị thế
+            là tổ chức tín dụng hợp tác xã quy mô lớn, an toàn và uy tín hàng
+            đầu trên địa bàn.
+          </p>
+
+          <!-- Huy hiệu Bảo hiểm tiền gửi DIV tách nền chuẩn Eximbank -->
+          <div class="pt-2 flex items-center gap-4">
+            <a
+              href="https://div.gov.vn"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded"
+              title="Chứng nhận Bảo hiểm tiền gửi Việt Nam (DIV)"
+              aria-label="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
+            >
+              <img
+                src="/images/chung-nhan-bhtg-vn.png"
+                alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
+                width="218"
+                height="150"
+                class="h-16 sm:h-20 w-auto object-contain block"
+                loading="lazy"
+              />
+            </a>
+            <div class="text-xs text-ink-muted max-w-xs leading-normal">
+              <strong class="text-ink-base block">
+                Tham gia Bảo hiểm tiền gửi:
+              </strong>
+              100% người gửi tiền được bảo vệ quyền lợi hợp pháp theo quy định
+              của Luật Bảo hiểm tiền gửi.
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột phải: Lưới 4 số liệu quy mô chuẩn (Data Counters) -->
+        <div class="lg:col-span-7">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <!-- Vốn điều lệ -->
+            <div class="bg-surface-page rounded-2xl p-6 border border-border-default shadow-xs space-y-2 hover:border-brand-primary/40 transition-colors">
+              <div class="text-xs font-semibold text-ink-muted uppercase tracking-wider">
+                Vốn Điều Lệ
+              </div>
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
+                {site.stats.charter_capital || '52 tỷ đồng'}
+              </div>
+              <div class="text-xs text-emerald-600 font-medium">
+                Nền tảng vốn tự có vững chắc
+              </div>
+            </div>
+
+            <!-- Tổng tài sản -->
+            <div class="bg-surface-page rounded-2xl p-6 border border-border-default shadow-xs space-y-2 hover:border-brand-primary/40 transition-colors">
+              <div class="text-xs font-semibold text-ink-muted uppercase tracking-wider">
+                Tổng Tài Sản
+              </div>
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
+                {site.stats.total_assets || '1.270 tỷ đồng'}
+              </div>
+              <div class="text-xs text-emerald-600 font-medium">
+                Tăng trưởng bền vững, an toàn
+              </div>
+            </div>
+
+            <!-- Dư nợ cho vay -->
+            <div class="bg-surface-page rounded-2xl p-6 border border-border-default shadow-xs space-y-2 hover:border-brand-primary/40 transition-colors">
+              <div class="text-xs font-semibold text-ink-muted uppercase tracking-wider">
+                Dư Nợ Cho Vay
+              </div>
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
+                {site.stats.total_loans || '900 tỷ đồng'}
+              </div>
+              <div class="text-xs text-emerald-600 font-medium">
+                Tập trung sản xuất &amp; đời sống
+              </div>
+            </div>
+
+            <!-- Tổng thành viên -->
+            <div class="bg-surface-page rounded-2xl p-6 border border-border-default shadow-xs space-y-2 hover:border-brand-primary/40 transition-colors">
+              <div class="text-xs font-semibold text-ink-muted uppercase tracking-wider">
+                Thành Viên Tham Gia
+              </div>
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
+                {formatNumber(site.stats.members_count || 8000)}{' '}
+                <span class="text-base font-semibold text-ink-muted">
+                  thành viên
+                </span>
+              </div>
+              <div class="text-xs text-emerald-600 font-medium">
+                Cộng đồng tương trợ rộng lớn
+              </div>
+            </div>
+          </div>
+
+          <div class="text-right mt-3">
+            <span class="text-xs text-ink-muted">
+              {site.stats.as_of
+                ? `Số liệu ${formatAsOf(site.stats.as_of)}`
+                : `Số liệu: ${DEFAULT_FALLBACK_TEXT}`}
+            </span>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- 7. Khối Lãi Suất Tóm Tắt Toàn Diện -->
+  <Section id="lai-suat" variant="default" class="py-14 sm:py-20 scroll-mt-20">
+    <Container>
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 border-b border-border-default pb-4">
+          <div>
+            <span class="text-xs uppercase font-bold tracking-widest text-brand-primary">
+              Minh bạch &amp; Cạnh tranh
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-ink-base mt-1">
+              Biểu Lãi Suất Áp Dụng
+            </h2>
+            <p class="text-sm text-ink-muted mt-1">
+              {rates.effective_from
+                ? `Áp dụng từ ngày ${formatDate(rates.effective_from)}`
+                : `Thời điểm áp dụng: ${DEFAULT_FALLBACK_TEXT}`}
+            </p>
+          </div>
+          <a
+            href="/lai-suat"
+            class="inline-flex items-center text-sm font-semibold text-brand-primary hover:underline"
+          >
+            Xem trang chi tiết lãi suất &rarr;
+          </a>
+        </div>
+
+        <RatesTables rates={rates} headingLevel="h3" />
+      </div>
+    </Container>
+  </Section>
+
+  <!-- 8. Khối Tin Tức & Hoạt Động Cộng Đồng (Community News & Social Welfare) -->
+  <Section id="tin-tuc" variant="muted" class="py-14 sm:py-20 scroll-mt-20">
+    <Container>
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 border-b border-border-default pb-3">
+          <div>
+            <span class="text-xs uppercase font-bold tracking-widest text-emerald-600">
+              Nhịp sống Quỹ tín dụng
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-ink-base mt-1">
+              Tin Tức, Hoạt Động &amp; Thông Báo
+            </h2>
+            <p class="text-sm text-ink-muted mt-0.5">
+              Cập nhật các chương trình an sinh xã hội, đại hội thành viên và
+              thông báo giao dịch mới nhất.
+            </p>
+          </div>
+          <a
+            href="/tin-tuc/"
+            class="inline-flex items-center text-sm font-semibold text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+          >
+            Xem tất cả bài viết &rarr;
+          </a>
+        </div>
+
+        {publishedNews.length === 0 ? (
+          <div class="p-8 text-center rounded-xl border border-border-default bg-surface-page">
+            <p class="text-ink-muted text-base">{DEFAULT_FALLBACK_TEXT}</p>
+          </div>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {publishedNews.slice(0, 3).map((item) => (
+              <Card
+                title={item.data.title}
+                description={item.data.description}
+                href={getNewsDetailHref(item.id)}
+                badge={getNewsCategoryLabel(item.data.category)}
+                date={formatDate(item.data.pubDate)}
+                dateTime={formatDateIso(item.data.pubDate)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Script tính toán lãi suất & chuyển tab (Bundled externally by Astro - strictly CSP compliant) -->
+  <script src="../scripts/poc-calc.ts"></script>
+</BaseLayout>

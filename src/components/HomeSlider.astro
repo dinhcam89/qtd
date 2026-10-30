@@ -22,12 +22,18 @@ if (fs.existsSync(sliderDir)) {
     let title = 'Quỹ tín dụng nhân dân Vạn Trạch';
     let subtitle = 'Đồng hành phát triển — An tâm tài chính';
 
-    if (file.includes('2_9')) {
+    if (file.includes('2.9.2026')) {
       title = 'Chào mừng kỷ niệm ngày Quốc khánh 2/9';
-      subtitle = 'Tự hào đồng hành cùng sự phát triển kinh tế địa phương';
+      subtitle = 'Thông báo lịch nghỉ lễ Quốc Khánh 2/9/2026';
     } else if (file.includes('nghi-le')) {
       title = 'Thông báo phục vụ & Lịch làm việc các dịp lễ';
       subtitle = 'Tận tâm phục vụ thành viên và khách hàng';
+    } else if (file.includes('dhtv')) {
+      title = 'Đại hội thành viên năm 2026';
+      subtitle = 'Tôn vinh thành công và định hướng phát triển';
+    } else if (file.includes('asxh')) {
+      title = 'Đồng hành cùng công tác an sinh xã hội trên địa bàn';
+      subtitle = 'Trao tặng phương tiện sinh kế cho hộ khó khăn';
     }
 
     return {
