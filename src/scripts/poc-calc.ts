@@ -1,7 +1,39 @@
 /**
- * Logic tính toán lãi suất ước tính & chuyển tab phân khúc trên trang POC phong cách VCB.
+ * Logic tính toán lãi suất ước tính, lời chào theo giờ & chuyển tab phân khúc trên trang POC.
  * Tuân thủ CSP: không inline script, hoàn toàn xử lý qua DOM events.
  */
+
+function setupDynamicGreeting(): void {
+  const greetingEl = document.querySelector<HTMLElement>(
+    '[data-dynamic-greeting]'
+  );
+  if (!greetingEl) return;
+
+  const hour = new Date().getHours();
+  let greeting = 'Chào bạn';
+  let subGreeting = 'Hôm nay Quỹ có thể đồng hành gì cùng bạn?';
+
+  if (hour >= 5 && hour < 12) {
+    greeting = 'Chào buổi sáng';
+    subGreeting = 'Chúc bạn một ngày mới an lành, phát tài phát lộc!';
+  } else if (hour >= 12 && hour < 18) {
+    greeting = 'Chào buổi chiều';
+    subGreeting = 'Bạn đang tìm kiếm giải pháp tài chính gì hôm nay?';
+  } else {
+    greeting = 'Chào buổi tối';
+    subGreeting =
+      'Khám phá các sản phẩm sinh lời và tích lũy an toàn cùng Quỹ.';
+  }
+
+  const titleSpan = greetingEl.querySelector<HTMLElement>(
+    '[data-greeting-title]'
+  );
+  const subSpan = greetingEl.querySelector<HTMLElement>(
+    '[data-greeting-subtitle]'
+  );
+  if (titleSpan) titleSpan.textContent = greeting;
+  if (subSpan) subSpan.textContent = subGreeting;
+}
 
 function setupPocCalculator(): void {
   const calcContainer = document.querySelector('[data-poc-calculator]');
@@ -76,7 +108,7 @@ function setupPocCalculator(): void {
     termSelect.addEventListener('change', calculate);
   }
 
-  // Preset quick buttons (10tr, 50tr, 100tr, 500tr)
+  // Preset quick buttons (10tr, 50tr, 100tr, 200tr, 500tr)
   const presetBtns = calcContainer.querySelectorAll<HTMLButtonElement>(
     '[data-preset-amount]'
   );
@@ -113,17 +145,17 @@ function setupSegmentTabs(): void {
           t.classList.remove(
             'bg-surface-page',
             'text-ink-muted',
-            'hover:text-brand-primary'
+            'hover:text-emerald-700'
           );
           t.classList.add(
-            'bg-brand-primary',
+            'bg-[#00a85a]',
             'text-white',
             'shadow-sm',
             'font-semibold'
           );
         } else {
           t.classList.remove(
-            'bg-brand-primary',
+            'bg-[#00a85a]',
             'text-white',
             'shadow-sm',
             'font-semibold'
@@ -131,7 +163,7 @@ function setupSegmentTabs(): void {
           t.classList.add(
             'bg-surface-page',
             'text-ink-muted',
-            'hover:text-brand-primary'
+            'hover:text-emerald-700'
           );
         }
       });
@@ -150,7 +182,15 @@ function setupSegmentTabs(): void {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Chạy khởi tạo khi DOM sẵn sàng
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setupDynamicGreeting();
+    setupPocCalculator();
+    setupSegmentTabs();
+  });
+} else {
+  setupDynamicGreeting();
   setupPocCalculator();
   setupSegmentTabs();
-});
+}
