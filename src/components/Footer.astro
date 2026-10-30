@@ -17,7 +17,10 @@ interface Props {
 
 const { site, contact, schedule } = Astro.props;
 
-// Kiểm tra logo có tồn tại trong public/images/ hay không
+// Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo truyền thống)
+const hasClassicLogo = fs.existsSync(
+  path.resolve(process.cwd(), 'public/images/logo-qtdnd-classic.png')
+);
 const hasLogoPng = fs.existsSync(
   path.resolve(process.cwd(), 'public/images/logo.png')
 );
@@ -27,13 +30,15 @@ const hasLogoSvg = fs.existsSync(
 const hasLogoWebp = fs.existsSync(
   path.resolve(process.cwd(), 'public/images/logo.webp')
 );
-const logoSrc = hasLogoSvg
-  ? '/images/logo.svg'
-  : hasLogoWebp
-    ? '/images/logo.webp'
-    : hasLogoPng
-      ? '/images/logo.png'
-      : null;
+const logoSrc = hasClassicLogo
+  ? '/images/logo-qtdnd-classic.png'
+  : hasLogoSvg
+    ? '/images/logo.svg'
+    : hasLogoWebp
+      ? '/images/logo.webp'
+      : hasLogoPng
+        ? '/images/logo.png'
+        : null;
 
 const phoneHref = toTelHref(contact.phone);
 const hotlineHref = toTelHref(contact.hotline);
@@ -50,7 +55,7 @@ const currentYear = new Date().getFullYear();
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.3fr_1.4fr_0.9fr] gap-8 lg:gap-12">
       <!-- Cột 1: Thông tin Quỹ -->
       <div class="space-y-3">
-        <div class="flex items-center gap-3">
+        <div data-site-footer-brand class="flex items-center gap-3">
           {logoSrc && (
             <img
               src={logoSrc}
@@ -61,10 +66,7 @@ const currentYear = new Date().getFullYear();
               loading="lazy"
             />
           )}
-          <h2
-            data-site-footer-brand
-            class="text-base sm:text-lg font-bold text-brand-primary leading-snug"
-          >
+          <h2 class="text-base sm:text-lg font-bold text-brand-primary leading-snug">
             {site.name.toUpperCase().startsWith('QUỸ TÍN DỤNG NHÂN DÂN') ? (
               <>
                 <span class="block">QUỸ TÍN DỤNG NHÂN DÂN</span>

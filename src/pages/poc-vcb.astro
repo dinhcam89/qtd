@@ -60,30 +60,30 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
   <div class="bg-white/80 backdrop-blur-md border-b border-emerald-900/10 text-xs sm:text-sm hidden md:block">
     <div class="w-full max-w-[1536px] mx-auto px-4 sm:px-8 lg:px-12 flex items-center justify-between py-2">
       <div class="flex items-center space-x-1.5 text-ink-muted">
-        <span class="font-bold text-[#00a85a] bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200 shadow-2xs">
+        <span class="font-bold text-brand-primary bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200 shadow-2xs">
           Thành viên &amp; Cá nhân
         </span>
         <a
           href="#san-pham"
-          class="px-3 py-1 rounded-full hover:text-[#00a85a] hover:bg-emerald-50/60 transition-colors"
+          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-emerald-50/60 transition-colors"
         >
           Hộ sản xuất nông nghiệp
         </a>
         <a
           href="#san-pham"
-          class="px-3 py-1 rounded-full hover:text-[#00a85a] hover:bg-emerald-50/60 transition-colors"
+          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-emerald-50/60 transition-colors"
         >
           Hộ kinh doanh &amp; Hợp tác xã
         </a>
         <a
           href="#co-opbank"
-          class="px-3 py-1 rounded-full hover:text-[#00a85a] hover:bg-emerald-50/60 transition-colors"
+          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-emerald-50/60 transition-colors"
         >
           Ngân hàng số Co-opBank
         </a>
         <a
           href="/gioi-thieu"
-          class="px-3 py-1 rounded-full hover:text-[#00a85a] hover:bg-emerald-50/60 transition-colors"
+          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-emerald-50/60 transition-colors"
         >
           Về QTDND Vạn Trạch
         </a>
@@ -91,7 +91,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
       <div class="flex items-center gap-4 text-xs text-ink-muted font-medium">
         <span>
           Hotline:{' '}
-          <strong class="text-[#00a85a] font-bold">
+          <strong class="text-brand-primary font-bold">
             {contact.phone || '0232 3848 123'}
           </strong>
         </span>
@@ -123,7 +123,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
         <path d="M10 25 a15 15 0 0 1 25 -10 a20 20 0 0 1 35 0 a15 15 0 0 1 25 10 z"></path>
       </svg>
       <svg
-        class="absolute top-20 right-1/3 w-64 h-20 opacity-30 text-white"
+        class="hidden sm:block absolute top-20 right-1/3 w-64 h-20 opacity-30 text-white"
         fill="currentColor"
         viewBox="0 0 100 35"
       >
@@ -132,7 +132,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
 
       <!-- Các dãy đồi xanh & ruộng lúa tầng tầng lớp lớp bao quát toàn cảnh -->
       <svg
-        class="absolute bottom-0 inset-x-0 w-full h-[65%] sm:h-[72%] min-w-[1024px] object-cover"
+        class="absolute bottom-0 inset-x-0 w-full h-[65%] sm:h-[72%] object-cover"
         preserveAspectRatio="none"
         viewBox="0 0 1440 450"
         fill="none"
@@ -168,7 +168,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
 
         <!-- Dòng sông / suối xanh mát uốn lượn tượng trưng cho sự trù phú và dòng vốn lưu thông -->
         <path
-          d="M-50,420 C320,370 420,440 680,390 C960,340 1200,430 1490,380 L1490,450 L-50,450 Z"
+          d="M0,420 C320,370 420,440 680,390 C960,340 1200,430 1440,380 L1440,450 L0,450 Z"
           fill="#7dd3fc"
           opacity="0.6"
         ></path>
@@ -204,7 +204,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div data-dynamic-greeting class="space-y-0.5">
               <div class="flex items-center gap-2">
                 <span
-                  class="text-xl sm:text-2xl font-extrabold text-[#008a49]"
+                  class="text-xl sm:text-2xl font-extrabold text-brand-primary"
                   data-greeting-title
                 >
                   Chào buổi chiều
@@ -225,7 +225,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
           <!-- Tiêu đề lớn nhận diện thương hiệu Quỹ Vạn Trạch -->
           <div class="space-y-2">
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
-              <span class="block text-[#00a85a] uppercase font-bold text-base sm:text-xl tracking-wider">
+              <span class="block text-brand-primary uppercase font-bold text-base sm:text-xl tracking-wider">
                 Quỹ Tín Dụng Nhân Dân
               </span>
               <span class="block text-ink-base text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mt-1">
@@ -241,8 +241,8 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
 
           <!-- Thanh tìm kiếm nhanh hình viên thuốc (Vietcombank Quick Search Pill) -->
           <div class="max-w-xl">
-            <div class="relative flex items-center rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-emerald-300/70 p-1.5 focus-within:ring-2 focus-within:ring-[#00a85a] transition-all">
-              <span class="pl-3.5 pr-2 text-[#00a85a]">
+            <div class="relative flex items-center rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-emerald-300/70 p-1.5 focus-within:ring-2 focus-within:ring-brand-primary transition-all">
+              <span class="pl-3.5 pr-2 text-brand-primary">
                 <svg
                   class="w-5 h-5"
                   fill="none"
@@ -259,12 +259,13 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               </span>
               <input
                 type="text"
+                aria-label="Tìm kiếm sản phẩm, dịch vụ"
                 placeholder="Bạn muốn tìm: Lãi suất tiết kiệm, vay mua trâu bò, thẻ Co-opBank..."
                 class="w-full bg-transparent text-xs sm:text-sm text-ink-base placeholder:text-ink-muted focus:outline-hidden py-1.5 font-medium"
               />
               <a
                 href="#lai-suat"
-                class="inline-flex items-center px-4 py-2 rounded-full bg-[#00a85a] hover:bg-[#008a49] text-white text-xs sm:text-sm font-bold transition-colors shrink-0 shadow-xs"
+                class="inline-flex items-center px-4 py-2 rounded-full bg-brand-primary hover:bg-[#008a49] text-white text-xs sm:text-sm font-bold transition-colors shrink-0 shadow-xs"
               >
                 Tra cứu
               </a>
@@ -274,21 +275,21 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               <span class="font-semibold text-emerald-800">Gợi ý nhanh:</span>
               <a
                 href="#lai-suat"
-                class="hover:text-[#00a85a] underline underline-offset-2"
+                class="hover:text-brand-primary underline underline-offset-2"
               >
                 Lãi suất gửi 12 tháng
               </a>
               <span class="text-border-strong">&bull;</span>
               <a
                 href="#tinh-lai"
-                class="hover:text-[#00a85a] underline underline-offset-2"
+                class="hover:text-brand-primary underline underline-offset-2"
               >
                 Tính tiền lãi tiết kiệm
               </a>
               <span class="text-border-strong">&bull;</span>
               <a
                 href="#san-pham"
-                class="hover:text-[#00a85a] underline underline-offset-2"
+                class="hover:text-brand-primary underline underline-offset-2"
               >
                 Vay mùa vụ nông nghiệp
               </a>
@@ -356,7 +357,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
                 <div class="text-[11px] font-bold text-ink-base leading-tight">
                   Bảo Hiểm Tiền Gửi VN
                 </div>
-                <div class="text-[10px] text-[#00a85a] font-semibold">
+                <div class="text-[10px] text-brand-primary font-semibold">
                   Tổ chức đã tham gia BHTG
                 </div>
               </div>
@@ -377,7 +378,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             href="#san-pham"
             class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group"
           >
-            <div class="w-10 h-10 rounded-full bg-emerald-100 text-[#00a85a] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 text-brand-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <svg
                 class="w-5 h-5"
                 fill="none"
@@ -393,7 +394,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               </svg>
             </div>
             <div class="text-left">
-              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-[#00a85a]">
+              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
                 Gói Nông Nghiệp
               </div>
               <div class="text-[11px] text-ink-muted hidden sm:block">
@@ -407,7 +408,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             href="#lai-suat"
             class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group"
           >
-            <div class="w-10 h-10 rounded-full bg-emerald-100 text-[#00a85a] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 text-brand-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <svg
                 class="w-5 h-5"
                 fill="none"
@@ -423,10 +424,10 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               </svg>
             </div>
             <div class="text-left">
-              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-[#00a85a]">
+              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
                 Biểu Lãi Suất
               </div>
-              <div class="text-[11px] text-[#00a85a] font-bold">
+              <div class="text-[11px] text-brand-primary font-bold">
                 Đến {maxDepositRate}%/năm
               </div>
             </div>
@@ -437,7 +438,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             href="#tinh-lai"
             class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group"
           >
-            <div class="w-10 h-10 rounded-full bg-emerald-100 text-[#00a85a] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 text-brand-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <svg
                 class="w-5 h-5"
                 fill="none"
@@ -453,7 +454,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               </svg>
             </div>
             <div class="text-left">
-              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-[#00a85a]">
+              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
                 Tính Tiền Gửi
               </div>
               <div class="text-[11px] text-ink-muted hidden sm:block">
@@ -483,7 +484,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               </svg>
             </div>
             <div class="text-left">
-              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-[#00a85a]">
+              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
                 Vay Thành Viên
               </div>
               <div class="text-[11px] text-ink-muted hidden sm:block">
@@ -513,7 +514,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               </svg>
             </div>
             <div class="text-left">
-              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-[#00a85a]">
+              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
                 App Co-opBank
               </div>
               <div class="text-[11px] text-ink-muted hidden sm:block">
@@ -548,7 +549,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               </svg>
             </div>
             <div class="text-left">
-              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-[#00a85a]">
+              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary">
                 Mạng Lưới Quỹ
               </div>
               <div class="text-[11px] text-ink-muted hidden sm:block">
@@ -569,7 +570,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
     <div class="w-full max-w-[1536px] mx-auto px-4 sm:px-8 lg:px-12">
       <div class="max-w-4xl mx-auto">
         <div class="text-center space-y-2 mb-8">
-          <span class="text-xs uppercase font-extrabold tracking-widest text-[#008a49] bg-emerald-100/70 px-3.5 py-1 rounded-full border border-emerald-300">
+          <span class="text-xs uppercase font-extrabold tracking-widest text-brand-dark bg-emerald-100/70 px-3.5 py-1 rounded-full border border-emerald-300">
             Công cụ tài chính thông minh
           </span>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-ink-base">
@@ -594,7 +595,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
                 <label for="calc-amount-input">Số tiền gửi (VNĐ):</label>
                 <span
                   id="calc-amount-display"
-                  class="text-[#008a49] font-extrabold text-base sm:text-lg"
+                  class="text-brand-primary font-extrabold text-base sm:text-lg"
                 >
                   50.000.000 đ
                 </span>
@@ -611,6 +612,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               <input
                 type="range"
                 id="calc-amount-slider"
+                aria-label="Thanh trượt điều chỉnh số tiền gửi tiết kiệm"
                 min="5000000"
                 max="500000000"
                 step="5000000"
@@ -622,28 +624,28 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
                 <button
                   type="button"
                   data-preset-amount="20000000"
-                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-[#008a49] border border-border-default font-medium transition-colors"
+                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
                 >
                   20 triệu
                 </button>
                 <button
                   type="button"
                   data-preset-amount="50000000"
-                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-[#008a49] border border-border-default font-medium transition-colors"
+                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
                 >
                   50 triệu
                 </button>
                 <button
                   type="button"
                   data-preset-amount="100000000"
-                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-[#008a49] border border-border-default font-medium transition-colors"
+                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
                 >
                   100 triệu
                 </button>
                 <button
                   type="button"
                   data-preset-amount="200000000"
-                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-[#008a49] border border-border-default font-medium transition-colors"
+                  class="text-xs px-3 py-1 rounded-full bg-surface-muted hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
                 >
                   200 triệu
                 </button>
@@ -749,7 +751,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
     <div class="w-full max-w-[1536px] mx-auto px-4 sm:px-8 lg:px-12">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
-          <span class="text-xs uppercase font-extrabold tracking-widest text-[#008a49]">
+          <span class="text-xs uppercase font-extrabold tracking-widest text-brand-primary">
             Giải pháp tài chính hợp tác xã
           </span>
           <h2 class="text-2xl sm:text-3xl font-bold text-ink-base mt-1">
@@ -769,7 +771,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
           <button
             type="button"
             data-segment-tab="tab-tiet-kiem"
-            class="px-5 py-2 rounded-full text-xs sm:text-sm bg-[#00a85a] text-white shadow-xs font-semibold transition-all"
+            class="px-5 py-2 rounded-full text-xs sm:text-sm bg-brand-primary text-white shadow-xs font-semibold transition-all"
             role="tab"
             aria-selected="true"
           >
@@ -778,7 +780,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
           <button
             type="button"
             data-segment-tab="tab-cho-vay"
-            class="px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-[#00a85a] transition-all font-medium"
+            class="px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-all font-medium"
             role="tab"
             aria-selected="false"
           >
@@ -787,7 +789,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
           <button
             type="button"
             data-segment-tab="tab-co-opbank"
-            class="px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-[#00a85a] transition-all font-medium"
+            class="px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-all font-medium"
             role="tab"
             aria-selected="false"
           >
@@ -800,10 +802,10 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
       <div id="tab-tiet-kiem" data-segment-panel class="block">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-sm hover:shadow-lg transition-shadow">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-[#00a85a] flex items-center justify-center font-extrabold text-xl">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand-primary flex items-center justify-center font-extrabold text-xl">
               1
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Tiết kiệm có kỳ hạn
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -827,7 +829,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center font-extrabold text-xl">
               2
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Tiết kiệm không kỳ hạn
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -851,7 +853,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-extrabold text-xl">
               3
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Tiết kiệm trả lãi định kỳ
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -877,10 +879,10 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
       <div id="tab-cho-vay" data-segment-panel class="hidden">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-sm hover:shadow-lg transition-shadow">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-[#00a85a] flex items-center justify-center font-extrabold text-xl">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand-primary flex items-center justify-center font-extrabold text-xl">
               🌾
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Vay phát triển nông nghiệp &amp; nông thôn
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -904,7 +906,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-extrabold text-xl">
               🏪
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Vay kinh doanh thương mại &amp; dịch vụ
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -928,7 +930,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-extrabold text-xl">
               🏡
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Vay xây dựng &amp; nâng cấp nhà ở
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -957,7 +959,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-extrabold text-xl">
               📱
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Co-opBank Mobile Banking
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -981,7 +983,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-extrabold text-xl">
               💳
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Thẻ Chip Co-opBank NAPAS
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -1005,7 +1007,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
             <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center font-extrabold text-xl">
               🏢
             </div>
-            <h3 class="text-lg font-bold text-[#008a49]">
+            <h3 class="text-lg font-bold text-brand-primary">
               Đại lý cung ứng dịch vụ thanh toán
             </h3>
             <p class="text-sm text-ink-muted leading-relaxed">
@@ -1038,7 +1040,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         <!-- Cột trái: Bề dày lịch sử & Chứng nhận BHTG -->
         <div class="lg:col-span-5 space-y-5">
-          <span class="text-xs uppercase font-extrabold tracking-widest text-[#008a49] bg-emerald-100 px-3.5 py-1 rounded-full border border-emerald-300">
+          <span class="text-xs uppercase font-extrabold tracking-widest text-brand-dark bg-emerald-100 px-3.5 py-1 rounded-full border border-emerald-300">
             Trụ cột tài chính vững bền
           </span>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-ink-base leading-snug">
@@ -1057,7 +1059,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               href="https://div.gov.vn"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00a85a] rounded"
+              class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded"
               title="Chứng nhận Bảo hiểm tiền gửi Việt Nam (DIV)"
               aria-label="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
             >
@@ -1088,10 +1090,10 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               <div class="text-xs font-bold text-ink-muted uppercase tracking-wider">
                 Vốn Điều Lệ
               </div>
-              <div class="text-2xl sm:text-3xl font-extrabold text-[#008a49]">
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
                 {site.stats.charter_capital || '52 tỷ đồng'}
               </div>
-              <div class="text-xs text-[#00a85a] font-semibold">
+              <div class="text-xs text-brand-primary font-semibold">
                 Nền tảng vốn tự có vững chắc
               </div>
             </div>
@@ -1101,10 +1103,10 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               <div class="text-xs font-bold text-ink-muted uppercase tracking-wider">
                 Tổng Tài Sản
               </div>
-              <div class="text-2xl sm:text-3xl font-extrabold text-[#008a49]">
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
                 {site.stats.total_assets || '1.270 tỷ đồng'}
               </div>
-              <div class="text-xs text-[#00a85a] font-semibold">
+              <div class="text-xs text-brand-primary font-semibold">
                 Tăng trưởng an toàn, hiệu quả
               </div>
             </div>
@@ -1114,10 +1116,10 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               <div class="text-xs font-bold text-ink-muted uppercase tracking-wider">
                 Dư Nợ Cho Vay
               </div>
-              <div class="text-2xl sm:text-3xl font-extrabold text-[#008a49]">
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
                 {site.stats.total_loans || '900 tỷ đồng'}
               </div>
-              <div class="text-xs text-[#00a85a] font-semibold">
+              <div class="text-xs text-brand-primary font-semibold">
                 Phục vụ nông nghiệp &amp; mùa vụ
               </div>
             </div>
@@ -1127,13 +1129,13 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
               <div class="text-xs font-bold text-ink-muted uppercase tracking-wider">
                 Thành Viên Tham Gia
               </div>
-              <div class="text-2xl sm:text-3xl font-extrabold text-[#008a49]">
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-primary">
                 {formatNumber(site.stats.members_count || 8000)}{' '}
                 <span class="text-base font-semibold text-ink-muted">
                   thành viên
                 </span>
               </div>
-              <div class="text-xs text-[#00a85a] font-semibold">
+              <div class="text-xs text-brand-primary font-semibold">
                 Gắn bó, tin cậy qua nhiều thế hệ
               </div>
             </div>
@@ -1160,7 +1162,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
       <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 border-b border-border-default pb-4">
           <div>
-            <span class="text-xs uppercase font-extrabold tracking-widest text-[#008a49]">
+            <span class="text-xs uppercase font-extrabold tracking-widest text-brand-primary">
               Minh bạch &amp; Cạnh tranh
             </span>
             <h2 class="text-2xl sm:text-3xl font-bold text-ink-base mt-1">
@@ -1174,7 +1176,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
           </div>
           <a
             href="/lai-suat"
-            class="inline-flex items-center text-sm font-bold text-[#008a49] hover:underline"
+            class="inline-flex items-center text-sm font-bold text-brand-primary hover:underline"
           >
             Xem toàn bộ biểu mẫu lãi suất &rarr;
           </a>
@@ -1194,7 +1196,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
       <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 border-b border-border-default pb-3">
           <div>
-            <span class="text-xs uppercase font-extrabold tracking-widest text-[#008a49]">
+            <span class="text-xs uppercase font-extrabold tracking-widest text-brand-primary">
               Nhịp sống Quỹ tín dụng
             </span>
             <h2 class="text-2xl sm:text-3xl font-bold text-ink-base mt-1">
@@ -1207,7 +1209,7 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
           </div>
           <a
             href="/tin-tuc/"
-            class="inline-flex items-center text-sm font-bold text-[#008a49] hover:underline focus-visible:outline-2 focus-visible:outline-[#00a85a] rounded"
+            class="inline-flex items-center text-sm font-bold text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
           >
             Xem tất cả bài viết &rarr;
           </a>

@@ -157,6 +157,7 @@ if (slides.length === 0) {
         {slides.map((_, index) => (
           <button
             type="button"
+            role="tab"
             data-slider-dot={index}
             class={`h-2.5 rounded-full transition-all duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-white ${
               index === 0
@@ -164,6 +165,7 @@ if (slides.length === 0) {
                 : 'bg-white/50 w-2.5 hover:bg-white/80'
             }`}
             aria-label={`Chuyển đến hình ảnh ${index + 1}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
             aria-current={index === 0 ? 'true' : undefined}
           />
         ))}

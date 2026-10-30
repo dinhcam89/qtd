@@ -19,7 +19,7 @@ if (!latestNotice) {
   role="region"
   aria-label="Thông báo mới"
 >
-  <Container class="px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5">
+  <Container class="py-2 sm:py-2.5">
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
         <!-- Icon loa phát thanh -->
@@ -42,7 +42,7 @@ if (!latestNotice) {
           </svg>
         </span>
 
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-amber-600 text-white shrink-0">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-amber-800 text-white shrink-0">
           Thông báo
         </span>
 
@@ -53,7 +53,7 @@ if (!latestNotice) {
           </span>
           <a
             href={getNewsDetailHref(latestNotice.id)}
-            class="shrink-0 text-brand-primary font-bold hover:underline inline-flex items-center gap-0.5 ml-1 focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+            class="shrink-0 text-brand-dark font-bold hover:underline inline-flex items-center gap-0.5 ml-1 focus-visible:outline-2 focus-visible:outline-border-focus rounded"
           >
             <span>Chi tiết</span>
             <span aria-hidden="true">&rarr;</span>

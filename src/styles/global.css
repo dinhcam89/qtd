@@ -12,14 +12,16 @@
     'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, sans-serif;
 
-  /* Bảng màu thực tế sử dụng */
+  /* Bảng màu thực tế sử dụng — Tone màu xanh Logo QTDND truyền thống */
   --color-surface-page: #ffffff;
   --color-surface-muted: #f8fafc;
-  --color-surface-brand-subtle: #eff6ff;
+  --color-surface-brand-subtle: #f0faf4;
 
-  --color-brand-primary: #0f3666;
-  --color-brand-primary-hover: #0a2547;
-  --color-brand-dark: #081c36;
+  --color-brand-primary: #00803e;
+  --color-brand-primary-light: #00a85a;
+  --color-brand-primary-hover: #006d35;
+  --color-brand-dark: #014d27;
+  --color-brand-gold: #ffd100;
 
   --color-ink-base: #1f2937;
   --color-ink-muted: #4b5563;
@@ -28,7 +30,7 @@
 
   --color-border-default: #e2e8f0;
   --color-border-strong: #cbd5e1;
-  --color-border-focus: #0f3666;
+  --color-border-focus: #00803e;
 
   --color-status-info-bg: #eff6ff;
   --color-status-info-text: #1e40af;
