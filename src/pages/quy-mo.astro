@@ -65,6 +65,7 @@ const gridLgCols =
   statCards.length === 5 || statCards.length === 6
     ? 'lg:grid-cols-3'
     : 'lg:grid-cols-4';
+const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -124,23 +125,25 @@ const gridLgCols =
           </div>
 
           <div class="flex items-center gap-4 bg-white rounded-2xl p-4 sm:px-6 border border-emerald-200/80 shadow-2xs shrink-0">
-            <a
-              href="https://div.gov.vn"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded shrink-0"
-              title="Chứng nhận Bảo hiểm tiền gửi Việt Nam (DIV)"
-              aria-label="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
-            >
-              <img
-                src="/images/chung-nhan-bhtg-vn.png"
-                alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
-                width="160"
-                height="110"
-                class="h-16 sm:h-20 w-auto object-contain block"
-                loading="lazy"
-              />
-            </a>
+            {hasBrandAssets && (
+              <a
+                href="https://div.gov.vn"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded shrink-0"
+                title="Chứng nhận Bảo hiểm tiền gửi Việt Nam (DIV)"
+                aria-label="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
+              >
+                <img
+                  src="/images/chung-nhan-bhtg-vn.png"
+                  alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
+                  width="160"
+                  height="110"
+                  class="h-16 sm:h-20 w-auto object-contain block"
+                  loading="lazy"
+                />
+              </a>
+            )}
             <div class="text-xs sm:text-sm text-ink-muted max-w-xs leading-relaxed">
               <strong class="text-ink-base block font-bold">
                 Tổ chức tham gia BHTG

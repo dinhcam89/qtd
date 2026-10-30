@@ -17,6 +17,7 @@ const { Content: SuMenhContent } = await render(suMenhEntry);
 
 const pageTitle = `Giới thiệu — Quỹ tín dụng nhân dân ${formatText(site.name)}`;
 const pageDescription = pageEntry.data.description;
+const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -74,13 +75,15 @@ const pageDescription = pageEntry.data.description;
         <div class="space-y-6">
           <div class="p-6 sm:p-8 rounded-3xl bg-surface-brand-subtle border border-emerald-200/80 shadow-xs space-y-5">
             <div class="flex items-center gap-3">
-              <img
-                src="/images/logo-qtdnd-classic.png"
-                alt="Logo Quỹ tín dụng nhân dân"
-                width="48"
-                height="48"
-                class="h-12 w-auto object-contain shrink-0"
-              />
+              {hasBrandAssets && (
+                <img
+                  src="/images/logo-qtdnd-classic.png"
+                  alt="Logo Quỹ tín dụng nhân dân"
+                  width="48"
+                  height="48"
+                  class="h-12 w-auto object-contain shrink-0"
+                />
+              )}
               <div>
                 <span class="text-xs font-extrabold uppercase tracking-wider text-brand-dark">
                   Tổ chức tín dụng hợp tác
@@ -121,14 +124,16 @@ const pageDescription = pageEntry.data.description;
             </dl>
 
             <div class="pt-4 border-t border-emerald-200/80 flex items-center gap-3">
-              <img
-                src="/images/chung-nhan-bhtg-vn.png"
-                alt="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
-                width="80"
-                height="55"
-                class="h-12 w-auto object-contain shrink-0"
-                loading="lazy"
-              />
+              {hasBrandAssets && (
+                <img
+                  src="/images/chung-nhan-bhtg-vn.png"
+                  alt="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
+                  width="80"
+                  height="55"
+                  class="h-12 w-auto object-contain shrink-0"
+                  loading="lazy"
+                />
+              )}
               <p class="text-xs text-ink-muted leading-relaxed">
                 Tổ chức tham gia{' '}
                 <strong class="text-ink-base">

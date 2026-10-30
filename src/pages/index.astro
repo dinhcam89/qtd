@@ -28,6 +28,7 @@ const rates = await getRates();
 const contact = await getContact();
 const schedule = await getSchedule();
 const publishedNews = await getPublishedNews();
+const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
 
 const siteTitle = site.name
   ? `Trang chủ — Quỹ tín dụng nhân dân ${site.name}`
@@ -57,9 +58,9 @@ const validDepositOptions = rates.deposit_rates.filter(
       class="absolute inset-0 w-full h-full pointer-events-none select-none overflow-hidden"
       aria-hidden="true"
     >
-      <!-- Ánh mặt trời dịu êm góc phải -->
-      <div class="absolute top-6 right-12 sm:right-28 w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[#fde047] opacity-60 blur-xl"></div>
-      <div class="absolute top-10 right-16 sm:right-32 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#fef08a] border-2 border-white/60 shadow-lg shadow-amber-300/40"></div>
+      <!-- Ánh mặt trời dịu êm góc phải (dùng radial-gradient thay vì filter blur để cuộn trang mượt 60fps) -->
+      <div class="absolute top-2 right-8 sm:right-24 w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-[radial-gradient(circle,_rgba(253,224,71,0.65)_0%,_rgba(253,224,71,0)_70%)]"></div>
+      <div class="absolute top-10 right-16 sm:right-32 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#fef08a] border-2 border-white/60 shadow-md"></div>
 
       <!-- Đám mây trôi mềm mại -->
       <svg
@@ -141,13 +142,18 @@ const validDepositOptions = rates.deposit_rates.filter(
         <div class="lg:col-span-7 space-y-5">
           <!-- Logo QTDND cổ điển & Lời chào thân thiện kiểu Vietcombank -->
           <div class="flex items-center gap-3.5">
-            <img
-              src="/images/logo-qtdnd-classic.png"
-              alt="Logo truyền thống Quỹ tín dụng nhân dân"
-              width="68"
-              height="68"
-              class="h-14 sm:h-16 w-auto object-contain drop-shadow-md shrink-0"
-            />
+            {hasBrandAssets && (
+              <img
+                src="/images/logo-qtdnd-classic.png"
+                alt="Logo truyền thống Quỹ tín dụng nhân dân"
+                width="68"
+                height="68"
+                loading="lazy"
+                fetchpriority="low"
+                decoding="async"
+                class="h-14 sm:h-16 w-auto object-contain shrink-0"
+              />
+            )}
             <div data-dynamic-greeting class="space-y-0.5">
               <div class="flex items-center gap-2">
                 <span
@@ -173,7 +179,7 @@ const validDepositOptions = rates.deposit_rates.filter(
           <div class="space-y-3">
             <h1 class="text-xl min-[380px]:text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
               {site.name &&
-              site.name.toUpperCase().includes('QUỸ TÍN DỤNG NHÂN DÂN') ? (
+              site.name.toUpperCase().startsWith('QUỸ TÍN DỤNG NHÂN DÂN') ? (
                 <>
                   <span class="block text-brand-primary whitespace-nowrap sm:whitespace-normal">
                     QUỸ TÍN DỤNG NHÂN DÂN
@@ -183,7 +189,7 @@ const validDepositOptions = rates.deposit_rates.filter(
                   </span>
                 </>
               ) : (
-                <span class="text-brand-primary text-3xl sm:text-4xl lg:text-5xl font-bold">
+                <span class="text-brand-primary text-3xl sm:text-4xl lg:text-5xl font-bold break-words">
                   {formatText(site.name)}
                 </span>
               )}
@@ -195,7 +201,7 @@ const validDepositOptions = rates.deposit_rates.filter(
 
           <!-- Thanh tìm kiếm nhanh hình viên thuốc (Vietcombank Quick Search Pill) -->
           <div class="max-w-xl">
-            <div class="relative flex items-center rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-emerald-300/80 p-1.5 focus-within:ring-2 focus-within:ring-brand-primary transition-all">
+            <div class="relative flex items-center rounded-full bg-white shadow-md border border-emerald-300/80 p-1.5 focus-within:ring-2 focus-within:ring-brand-primary transition-shadow">
               <span class="pl-3.5 pr-2 text-brand-primary" aria-hidden="true">
                 <svg
                   class="w-5 h-5"
@@ -335,14 +341,19 @@ const validDepositOptions = rates.deposit_rates.filter(
             </div>
 
             <!-- Huy hiệu BHTG DIV nổi bật đè góc -->
-            <div class="relative sm:absolute mt-3 sm:mt-0 sm:bottom-0 sm:left-0 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-emerald-200 flex items-center gap-3 max-w-xs">
-              <img
-                src="/images/chung-nhan-bhtg-vn.png"
-                alt="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
-                width="70"
-                height="48"
-                class="h-10 sm:h-12 w-auto object-contain shrink-0"
-              />
+            <div class="relative sm:absolute mt-3 sm:mt-0 sm:bottom-0 sm:left-0 z-20 bg-white rounded-2xl p-3 shadow-lg border border-emerald-200 flex items-center gap-3 max-w-xs">
+              {hasBrandAssets && (
+                <img
+                  src="/images/chung-nhan-bhtg-vn.png"
+                  alt="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
+                  width="70"
+                  height="48"
+                  loading="lazy"
+                  fetchpriority="low"
+                  decoding="async"
+                  class="h-10 sm:h-12 w-auto object-contain shrink-0"
+                />
+              )}
               <div class="text-left">
                 <div class="text-xs font-bold text-ink-base leading-tight">
                   Bảo Hiểm Tiền Gửi VN
@@ -364,7 +375,7 @@ const validDepositOptions = rates.deposit_rates.filter(
     class="relative z-30 -mt-12 sm:-mt-14 lg:-mt-16"
   >
     <Container>
-      <div class="rounded-3xl sm:rounded-full bg-white/95 backdrop-blur-xl shadow-2xl border border-emerald-200/80 p-3 sm:p-4 lg:py-4 lg:px-8">
+      <div class="rounded-3xl sm:rounded-full bg-white shadow-lg border border-emerald-200/80 p-3 sm:p-4 lg:py-4 lg:px-8">
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 items-center">
           <!-- 1. Gợi ý sản phẩm -->
           <a
@@ -784,7 +795,7 @@ const validDepositOptions = rates.deposit_rates.filter(
             id="btn-tab-tiet-kiem"
             data-segment-tab="tab-tiet-kiem"
             aria-controls="tab-tiet-kiem"
-            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-brand-primary text-white shadow-xs font-semibold transition-all"
+            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-brand-primary text-white shadow-xs font-semibold transition-colors"
             role="tab"
             aria-selected="true"
           >
@@ -795,7 +806,7 @@ const validDepositOptions = rates.deposit_rates.filter(
             id="btn-tab-cho-vay"
             data-segment-tab="tab-cho-vay"
             aria-controls="tab-cho-vay"
-            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-all font-medium"
+            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-colors font-medium"
             role="tab"
             aria-selected="false"
           >
@@ -806,7 +817,7 @@ const validDepositOptions = rates.deposit_rates.filter(
             id="btn-tab-co-opbank"
             data-segment-tab="tab-co-opbank"
             aria-controls="tab-co-opbank"
-            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-all font-medium"
+            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-colors font-medium"
             role="tab"
             aria-selected="false"
           >
@@ -1100,24 +1111,26 @@ const validDepositOptions = rates.deposit_rates.filter(
           </div>
 
           <!-- Huy hiệu Bảo hiểm tiền gửi DIV tách nền -->
-          <div class="flex items-center gap-4 bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-emerald-200/80 shadow-xs shrink-0">
-            <a
-              href="https://div.gov.vn"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded shrink-0"
-              title="Chứng nhận Bảo hiểm tiền gửi Việt Nam (DIV)"
-              aria-label="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
-            >
-              <img
-                src="/images/chung-nhan-bhtg-vn.png"
-                alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
-                width="145"
-                height="100"
-                class="h-14 sm:h-16 w-auto object-contain block"
-                loading="lazy"
-              />
-            </a>
+          <div class="flex items-center gap-4 bg-white rounded-2xl p-4 border border-emerald-200/80 shadow-xs shrink-0">
+            {hasBrandAssets && (
+              <a
+                href="https://div.gov.vn"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded shrink-0"
+                title="Chứng nhận Bảo hiểm tiền gửi Việt Nam (DIV)"
+                aria-label="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
+              >
+                <img
+                  src="/images/chung-nhan-bhtg-vn.png"
+                  alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
+                  width="145"
+                  height="100"
+                  class="h-14 sm:h-16 w-auto object-contain block"
+                  loading="lazy"
+                />
+              </a>
+            )}
             <div class="text-xs text-ink-muted max-w-xs leading-relaxed">
               <strong class="text-ink-base block text-sm">
                 Tham gia Bảo hiểm tiền gửi

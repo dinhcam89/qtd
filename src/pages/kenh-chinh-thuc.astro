@@ -32,6 +32,7 @@ const domainUrl = buildOfficialDomainUrl(site.official_domain);
 const phoneHref = toTelHref(contact.phone);
 const hotlineHref = toTelHref(contact.hotline);
 const emailHref = toMailtoHref(contact.email);
+const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
 ---
 
 <BaseLayout title={headTitle} description={headDescription}>
@@ -81,13 +82,15 @@ const emailHref = toMailtoHref(contact.email);
         <div class="space-y-6">
           <div class="rounded-3xl border border-emerald-200/80 bg-surface-brand-subtle p-6 sm:p-8 space-y-5 shadow-xs">
             <div class="flex items-center gap-3">
-              <img
-                src="/images/logo-qtdnd-classic.png"
-                alt="Logo Quỹ tín dụng nhân dân"
-                width="44"
-                height="44"
-                class="h-11 w-auto object-contain shrink-0"
-              />
+              {hasBrandAssets && (
+                <img
+                  src="/images/logo-qtdnd-classic.png"
+                  alt="Logo Quỹ tín dụng nhân dân"
+                  width="44"
+                  height="44"
+                  class="h-11 w-auto object-contain shrink-0"
+                />
+              )}
               <div>
                 <span class="text-xs font-extrabold uppercase tracking-wider text-brand-dark">
                   Xác thực an toàn

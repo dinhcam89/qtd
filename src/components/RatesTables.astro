@@ -63,7 +63,9 @@ const Heading = headingLevel as any;
                 data-label="Lãi suất/năm"
                 class="py-[0.875rem] px-4 font-bold text-brand-primary text-left md:text-right md:pl-4 md:pr-8 tabular-nums break-words [overflow-wrap:anywhere]"
               >
-                {formatRate(item.rate)}
+                {item.rate !== null && item.rate !== undefined
+                  ? `${formatRate(item.rate)}/năm`
+                  : formatRate(item.rate)}
               </td>
               <td
                 data-label="Ghi chú"
@@ -128,7 +130,9 @@ const Heading = headingLevel as any;
                 data-label="Lãi suất/năm"
                 class="py-[0.875rem] px-4 font-bold text-brand-primary text-left md:text-right md:pl-4 md:pr-8 tabular-nums break-words [overflow-wrap:anywhere]"
               >
-                {formatRate(item.rate)}
+                {item.rate !== null && item.rate !== undefined
+                  ? `${formatRate(item.rate)}/năm`
+                  : formatRate(item.rate)}
               </td>
               <td
                 data-label="Kỳ hạn"

@@ -128,7 +128,7 @@ export function buildFinancialServiceJsonLd(params: {
     }
   }
 
-  // Địa chỉ trụ sở (PostalAddress)
+  // Địa chỉ hội sở (PostalAddress)
   if (contact?.address) {
     const addr = contact.address;
     const postalAddress: Record<string, string> = {

@@ -1,6 +1,7 @@
 /**
  * Quản lý Carousel / Slider ảnh chuyển động trên trang chủ
- * Đạt chuẩn WCAG AA: Hỗ trợ bàn phím, nút dừng/phát, tôn trọng prefers-reduced-motion
+ * Đạt chuẩn WCAG AA: Hỗ trợ bàn phím, nút dừng/phát, tôn trọng prefers-reduced-motion,
+ * tự động tạm dừng khi cuộn ra khỏi vùng nhìn (IntersectionObserver) để tránh giật lag khi cuộn.
  */
 function initHomeSlider(): void {
   const slider = document.querySelector(
@@ -26,12 +27,22 @@ function initHomeSlider(): void {
   let currentIndex = 0;
   let timer: number | null = null;
   let isPaused = false;
+  let isInViewport = false;
 
   const prefersReducedMotion = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
   ).matches;
 
-  function showSlide(index: number): void {
+  function loadSlideImage(slide: HTMLElement | undefined): void {
+    if (!slide) return;
+    const img = slide.querySelector('img[data-src]') as HTMLImageElement | null;
+    if (img && img.dataset.src) {
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    }
+  }
+
+  function showSlide(index: number, shouldLoadImage = true): void {
     if (index < 0) {
       currentIndex = slides.length - 1;
     } else if (index >= slides.length) {
@@ -43,6 +54,9 @@ function initHomeSlider(): void {
     slides.forEach((slide, i) => {
       const isActive = i === currentIndex;
       if (isActive) {
+        if (shouldLoadImage) {
+          loadSlideImage(slide);
+        }
         slide.classList.remove('opacity-0', 'pointer-events-none');
         slide.classList.add('opacity-100', 'pointer-events-auto');
         slide.setAttribute('aria-hidden', 'false');
@@ -55,13 +69,22 @@ function initHomeSlider(): void {
 
     dots.forEach((dot, i) => {
       const isActive = i === currentIndex;
+      const bar = dot.querySelector(
+        '[data-slider-dot-bar]'
+      ) as HTMLElement | null;
       if (isActive) {
-        dot.classList.remove('bg-white/50');
-        dot.classList.add('bg-white', 'w-8');
+        if (bar) {
+          bar.classList.remove('bg-white/55', 'w-2.5');
+          bar.classList.add('bg-white', 'w-7');
+        }
+        dot.setAttribute('aria-selected', 'true');
         dot.setAttribute('aria-current', 'true');
       } else {
-        dot.classList.remove('bg-white', 'w-8');
-        dot.classList.add('bg-white/50', 'w-2.5');
+        if (bar) {
+          bar.classList.remove('bg-white', 'w-7');
+          bar.classList.add('bg-white/55', 'w-2.5');
+        }
+        dot.setAttribute('aria-selected', 'false');
         dot.removeAttribute('aria-current');
       }
     });
@@ -76,7 +99,7 @@ function initHomeSlider(): void {
   }
 
   function startAutoplay(): void {
-    if (prefersReducedMotion || isPaused) return;
+    if (prefersReducedMotion || isPaused || !isInViewport) return;
     stopAutoplay();
     timer = window.setInterval(nextSlide, 5000);
   }
@@ -86,6 +109,28 @@ function initHomeSlider(): void {
       clearInterval(timer);
       timer = null;
     }
+  }
+
+  // Tạm dừng chuyển cảnh khi slider nằm ngoài khung nhìn và chỉ tải ảnh khi cuộn tới gần
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          isInViewport = entry.isIntersecting;
+          if (isInViewport) {
+            loadSlideImage(slides[currentIndex]);
+            startAutoplay();
+          } else {
+            stopAutoplay();
+          }
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(slider);
+  } else {
+    isInViewport = true;
+    loadSlideImage(slides[0]);
   }
 
   // Event Listeners
@@ -138,8 +183,8 @@ function initHomeSlider(): void {
     }
   });
 
-  // Khởi động
-  showSlide(0);
+  // Khởi động trạng thái ban đầu (chỉ tải ảnh khi vào vùng nhìn)
+  showSlide(0, isInViewport);
   startAutoplay();
 }
 

@@ -21,18 +21,21 @@ const contactPhone = contact?.phone || '0232 3848 123';
 const scheduleMorning = schedule?.morning_hours || '07:00 - 11:30';
 const scheduleAfternoon = schedule?.afternoon_hours || '13:30 - 17:00';
 
+const publicRoot =
+  process.env.QTD_FIXTURES === '1' ? 'src/fixtures/public' : 'public';
+
 // Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo truyền thống)
 const hasClassicLogo = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo-qtdnd-classic.png')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo-qtdnd-classic.png`)
 );
 const hasLogoSvg = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo.svg')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.svg`)
 );
 const hasLogoWebp = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo.webp')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.webp`)
 );
 const hasLogoPng = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo.png')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.png`)
 );
 const logoSrc = hasClassicLogo
   ? '/images/logo-qtdnd-classic.png'
@@ -46,13 +49,13 @@ const logoSrc = hasClassicLogo
 ---
 
 <header
-  class="border-b border-emerald-900/10 bg-white/85 backdrop-blur-md sticky top-0 z-40 transition-colors"
+  class="border-b border-emerald-900/10 bg-white/98 shadow-2xs sticky top-0 z-40 transition-colors"
   id="site-header"
 >
   <!-- 1. Thanh phân khúc khách hàng đỉnh trang kiểu Vietcombank (Customer Segment Bar) -->
   <nav
     aria-label="Phân khúc khách hàng"
-    class="border-b border-emerald-900/10 bg-white/70 backdrop-blur-md text-xs sm:text-sm hidden md:block"
+    class="border-b border-emerald-900/10 bg-surface-brand-subtle/60 text-xs sm:text-sm hidden md:block"
   >
     <Container class="flex items-center justify-between py-2">
       <div class="flex items-center space-x-1.5 text-ink-muted">
@@ -105,7 +108,7 @@ const logoSrc = hasClassicLogo
         href="/"
         data-header-brand
         data-site-brand
-        class="inline-flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl xl:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors mr-auto shrink-0"
+        class="inline-flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl xl:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors mr-auto min-w-0"
       >
         {logoSrc && (
           <img
@@ -113,20 +116,23 @@ const logoSrc = hasClassicLogo
             alt={`Logo ${siteName}`}
             width="64"
             height="64"
+            loading="lazy"
+            fetchpriority="low"
+            decoding="async"
             class="h-14 sm:h-16 w-auto object-contain shrink-0"
           />
         )}
-        {siteName.toUpperCase().includes('QUỸ TÍN DỤNG NHÂN DÂN') ? (
-          <span class="flex flex-col text-left leading-none py-0.5">
+        {siteName.toUpperCase().startsWith('QUỸ TÍN DỤNG NHÂN DÂN') ? (
+          <span class="flex flex-col text-left leading-none py-0.5 min-w-0">
             <span class="text-xs sm:text-xs lg:text-sm font-bold text-brand-primary uppercase tracking-wider">
               QUỸ TÍN DỤNG NHÂN DÂN
             </span>
-            <span class="text-lg sm:text-xl xl:text-2xl font-extrabold text-brand-primary tracking-tight mt-0.5">
+            <span class="text-lg sm:text-xl xl:text-2xl font-extrabold text-brand-primary tracking-tight mt-0.5 break-words">
               {siteName.replace(/^QUỸ TÍN DỤNG NHÂN DÂN\s*/i, '')}
             </span>
           </span>
         ) : (
-          <span>{siteName}</span>
+          <span class="min-w-0 break-words leading-tight">{siteName}</span>
         )}
       </a>
 

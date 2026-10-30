@@ -410,3 +410,23 @@
        - `fixtures`: 99 tests
        - **Tổng cộng:** 385 tests (trong đó 274 tests cho `npm test` production, 67 tests cho `npm run test:empty`, 154 tests cho `npm run test:fixtures`).
      - Thời gian chạy `verify`: bước `empty` chỉ tốn ~13.96 giây, không làm tăng thời gian verify quá 60 giây.
+
+---
+
+## 15. Chuyển đổi toàn diện giao diện theo chuẩn Ngân hàng số Hiện đại & Tông màu QTDND (Migration POC v2 — Phase 1 đến Phase 5) & Tối ưu hiệu năng cuộn trang
+
+- **Ngày thực hiện:** 2026-10-30
+- **Bối cảnh & Mục tiêu:**
+  - Chuyển đổi toàn bộ 14 trang web từ phong cách cũ sang kiến trúc giao diện POC v2 lấy cảm hứng từ Vietcombank kết hợp bản sắc Quỹ tín dụng nhân dân (tông màu xanh lá logo truyền thống `#00803e`, sắc vàng bông lúa `#ffd100`, bố cục màn ảnh rộng `max-w-[1536px]`, nền phong cảnh nông thôn tràn viền `w-full`).
+  - Khắc phục triệt để tình trạng giật lag khi cuộn chuột trên trang web và tối ưu điểm hiệu năng Lighthouse CI.
+- **Tóm tắt 5 Phase đã hoàn thành:**
+  1. **Phase 1 (`59d8e35`):** Cập nhật biến màu thương hiệu trong `src/styles/global.css` (`--color-brand-primary: #00803e`, `--color-brand-primary-hover: #006832`, `--color-brand-dark: #014d27`, `--color-brand-gold: #ffd100`, `--color-surface-brand-subtle: #f0faf4`), nâng cấp `Container.astro` lên `max-w-[1536px]`, đồng bộ `Header.astro` (kèm Customer Segment Bar) và `Footer.astro` với logo QTDND cổ điển và tem Bảo hiểm tiền gửi Việt Nam (DIV) tách nền.
+  2. **Phase 2 (`697b0eb`):** Chuyển đổi trang chủ chính thức `src/pages/index.astro` sang bố cục Full-Bleed Scenic Hero (đồi núi, ruộng bậc thang lúa vàng, dòng sông uốn lượn), lời chào theo giờ thực tế, thanh tìm kiếm nhanh hình viên thuốc, thanh 6 tiện ích nổi Floating Pill Dock, công cụ ước tính lãi tiết kiệm tương tác trực tuyến (`src/scripts/poc-calc.ts`), tab phân khúc sản phẩm, khối Quy mô & DIV và lưới Tin tức.
+  3. **Phase 3 (`05d3ab5`):** Nâng cấp `PageHeader.astro` tràn viền đồng điệu phong cảnh nông thôn và 3 trang nghiệp vụ cốt lõi: `/lai-suat` (tích hợp công cụ tính lãi tiền gửi tương tác), `/san-pham` (thẻ sản phẩm bo tròn `rounded-3xl`, hộp điểm nhấn quy trình), `/quy-mo` (khối cam kết bảo vệ quyền lợi người gửi tiền & chứng nhận DIV).
+  4. **Phase 4 (`4ea0e43`):** Đồng bộ giao diện `Card.astro`, `Pagination.astro` và toàn bộ các trang thông tin & truyền thông: `/gioi-thieu`, `/lich-su`, `/ban-lanh-dao`, `/quy-che`, `/tin-tuc/[slug]`, `/thong-bao`, `/lien-he`, `/kenh-chinh-thuc`, `/404`.
+  5. **Phase 5 & Tối ưu hiệu năng cuộn trang 60fps:**
+     - Dọn dẹp route thử nghiệm tạm `/poc-vcb` khỏi `src/lib/nav.ts` và xóa `src/pages/poc-vcb.astro`.
+     - **Loại bỏ hiệu ứng gây nghẽn GPU khi cuộn (`backdrop-blur` & `filter: blur`):** Gỡ bỏ toàn bộ `backdrop-blur-md`/`backdrop-blur-xl` lồng nhau trên thanh `<header class="sticky top-0">`, Floating Pill Dock, `PageHeader.astro`, `HomeSlider.astro`, và thay thế `blur-xl` trên mặt trời Hero bằng `radial-gradient` thuần CSS không tốn chi phí kết xuất lại mỗi khung hình khi cuộn.
+     - **Trì hoãn tải ảnh `HomeSlider` theo vùng nhìn (`IntersectionObserver` + `data-src`):** Ngăn trình duyệt tải đồng loạt 7 ảnh banner độ phân giải cao (~4,9 MB, trong đó có file PNG 3,25 MB) ngay lúc mở trang chủ; chỉ tải ảnh của slide đang hiển thị khi người dùng cuộn tới gần và tự động tạm dừng `setInterval` khi cuộn ra khỏi vùng nhìn.
+     - **Preload bộ font tiếng Việt (`Be Vietnam Pro` woff2) trong `BaseLayout.astro`:** Tăng tốc độ hiển thị chữ (LCP), nâng điểm Lighthouse Performance toàn diện (`/` đạt 92%, `/lai-suat/` đạt 94%, `/tin-tuc/` đạt 94%, Accessibility 98%–100%, Best Practices 100%, SEO 100%).
+     - Toàn bộ 11 bước trong `npm run verify` (`lint`, `check`, `build`, `test`, `empty`, `fixtures`, `check:dist`, `lhci:quick`, `check:contrast`, `check:placeholders`, `eol`) đều đạt `[PASS]` 100%.

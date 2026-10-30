@@ -211,10 +211,10 @@ Thực hiện Phase 5 trong docs/ROADMAP-MIGRATION-POC.md:
 
 ## BẢNG MA TRẬN THEO DÕI TIẾN ĐỘ CHUYỂN ĐỔI
 
-| Phase | Nội dung chính                 | Trọng tâm thay đổi                                                      | Trạng thái |
-| :---: | :----------------------------- | :---------------------------------------------------------------------- | :--------: |
-| **1** | Design System & Global Tokens  | Màu xanh QTDND `#00a85a`, Container widescreen, Header/Footer           |  Sẵn sàng  |
-| **2** | Trang Chủ Chính Thức (`/`)     | Phong cảnh tràn viền, Lời chào thời gian thực, Pill Dock, Tính lãi suất |  Sẵn sàng  |
-| **3** | Trang Nghiệp Vụ Cốt Lõi        | Bảng lãi suất thẻ kính, Sản phẩm theo nhu cầu, Quy mô & Bảo hiểm DIV    |  Sẵn sàng  |
-| **4** | Trang Thông Tin & Truyền Thông | Giới thiệu HTX 1958, Tin tức & Thông báo, Liên hệ & Bản đồ              |  Sẵn sàng  |
-| **5** | Kiểm Thử & Chốt Nghiệm Thu     | WCAG AA, Smoke 3 Viewports, Lighthouse, `npm run verify`                |  Sẵn sàng  |
+| Phase | Nội dung chính                 | Trọng tâm thay đổi                                                      |          Trạng thái           |
+| :---: | :----------------------------- | :---------------------------------------------------------------------- | :---------------------------: |
+| **1** | Design System & Global Tokens  | Màu xanh QTDND `#00803e`, Container widescreen, Header/Footer           | `[x] Đã hoàn thành (59d8e35)` |
+| **2** | Trang Chủ Chính Thức (`/`)     | Phong cảnh tràn viền, Lời chào thời gian thực, Pill Dock, Tính lãi suất | `[x] Đã hoàn thành (697b0eb)` |
+| **3** | Trang Nghiệp Vụ Cốt Lõi        | Bảng lãi suất thẻ kính, Sản phẩm theo nhu cầu, Quy mô & Bảo hiểm DIV    | `[x] Đã hoàn thành (05d3ab5)` |
+| **4** | Trang Thông Tin & Truyền Thông | Giới thiệu HTX 1958, Tin tức & Thông báo, Liên hệ & Bản đồ              | `[x] Đã hoàn thành (4ea0e43)` |
+| **5** | Kiểm Thử & Chốt Nghiệm Thu     | WCAG AA, Smoke 3 Viewports, Lighthouse, Tối ưu cuộn mượt 60fps          |      `[x] Đã hoàn thành`      |

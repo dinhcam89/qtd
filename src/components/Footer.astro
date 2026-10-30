@@ -17,18 +17,24 @@ interface Props {
 
 const { site, contact, schedule } = Astro.props;
 
+const publicRoot =
+  process.env.QTD_FIXTURES === '1' ? 'src/fixtures/public' : 'public';
+
 // Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo truyền thống)
 const hasClassicLogo = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo-qtdnd-classic.png')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo-qtdnd-classic.png`)
 );
 const hasLogoPng = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo.png')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.png`)
 );
 const hasLogoSvg = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo.svg')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.svg`)
 );
 const hasLogoWebp = fs.existsSync(
-  path.resolve(process.cwd(), 'public/images/logo.webp')
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.webp`)
+);
+const hasBhtgCert = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/chung-nhan-bhtg-vn.png`)
 );
 const logoSrc = hasClassicLogo
   ? '/images/logo-qtdnd-classic.png'
@@ -100,25 +106,27 @@ const currentYear = new Date().getFullYear();
             formatText(site.operating_area)
           )}
         </p>
-        <div class="pt-3">
-          <a
-            href="https://div.gov.vn"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded"
-            title="Bảo hiểm tiền gửi Việt Nam (DIV) - Mở trang web chính thức trong tab mới"
-            aria-label="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam (mở trang web chính thức div.gov.vn trong tab mới)"
-          >
-            <img
-              src="/images/chung-nhan-bhtg-vn.png"
-              alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
-              width="218"
-              height="150"
-              class="h-20 sm:h-24 w-auto object-contain block"
-              loading="lazy"
-            />
-          </a>
-        </div>
+        {hasBhtgCert && (
+          <div class="pt-3">
+            <a
+              href="https://div.gov.vn"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus rounded"
+              title="Bảo hiểm tiền gửi Việt Nam (DIV) - Mở trang web chính thức trong tab mới"
+              aria-label="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam (mở trang web chính thức div.gov.vn trong tab mới)"
+            >
+              <img
+                src="/images/chung-nhan-bhtg-vn.png"
+                alt="Chứng nhận tổ chức đã tham gia Bảo hiểm tiền gửi Việt Nam"
+                width="218"
+                height="150"
+                class="h-20 sm:h-24 w-auto object-contain block"
+                loading="lazy"
+              />
+            </a>
+          </div>
+        )}
       </div>
 
       <!-- Cột 2: Thông tin liên hệ -->

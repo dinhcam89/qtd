@@ -41,12 +41,6 @@ export const ALL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Thông báo', href: '/thong-bao', primary: false },
   { label: 'Liên hệ', href: '/lien-he', primary: true },
   { label: 'Kênh chính thức', href: '/kenh-chinh-thuc', primary: false },
-  {
-    label: 'Thử nghiệm POC',
-    href: '/poc-vcb',
-    primary: false,
-    hidden: true,
-  },
 ] as const;
 
 /**
