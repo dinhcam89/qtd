@@ -145,25 +145,25 @@ function setupSegmentTabs(): void {
           t.classList.remove(
             'bg-surface-page',
             'text-ink-muted',
-            'hover:text-emerald-700'
+            'hover:text-brand-primary'
           );
           t.classList.add(
-            'bg-[#00a85a]',
+            'bg-brand-primary',
             'text-white',
-            'shadow-sm',
+            'shadow-xs',
             'font-semibold'
           );
         } else {
           t.classList.remove(
-            'bg-[#00a85a]',
+            'bg-brand-primary',
             'text-white',
-            'shadow-sm',
+            'shadow-xs',
             'font-semibold'
           );
           t.classList.add(
             'bg-surface-page',
             'text-ink-muted',
-            'hover:text-emerald-700'
+            'hover:text-brand-primary'
           );
         }
       });
