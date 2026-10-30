@@ -6,6 +6,7 @@ import PageHeader from '../components/ui/PageHeader.astro';
 import RatesTables from '../components/RatesTables.astro';
 import { getSite, getRates } from '../lib/data';
 import { formatDate, formatText } from '../lib/format';
+import { DEFAULT_FALLBACK_TEXT, RATE_DISCLAIMER } from '../lib/constants';
 
 const site = await getSite();
 const rates = await getRates();
@@ -15,6 +16,10 @@ const pageDescription = `Biểu lãi suất tiền gửi và cho vay tham khảo
 
 // Thời điểm áp dụng lấy từ effective_from; chưa có thì hiện "Đang cập nhật" (không ghép "tính đến")
 const effectiveFrom = formatDate(rates.effective_from);
+
+const validDepositOptions = rates.deposit_rates.filter(
+  (r) => r.rate !== null && r.rate > 0.5
+);
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -26,13 +31,207 @@ const effectiveFrom = formatDate(rates.effective_from);
 
   <Section class="bg-surface-page">
     <Container>
-      <div data-page-content class="space-y-8">
-        <p data-rates-effective class="text-base text-ink-muted">
-          <span class="font-medium text-ink-base">Thời điểm áp dụng:</span>{' '}
-          {effectiveFrom}
-        </p>
-        <RatesTables rates={rates} headingLevel="h2" />
+      <div data-page-content class="space-y-12">
+        <!-- Khối Biểu lãi suất chính thức -->
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:px-6 rounded-2xl bg-surface-brand-subtle border border-emerald-200/80">
+            <p data-rates-effective class="text-base text-ink-muted">
+              <span class="font-semibold text-ink-base">
+                Thời điểm áp dụng:
+              </span>{' '}
+              <span class="font-bold text-brand-primary">{effectiveFrom}</span>
+            </p>
+            <a
+              href="#tinh-lai"
+              class="inline-flex items-center gap-1.5 text-sm font-bold text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+            >
+              Công cụ ước tính tiền lãi tiết kiệm &darr;
+            </a>
+          </div>
+
+          <RatesTables rates={rates} headingLevel="h2" />
+        </div>
+
+        <!-- Khối Công cụ tính lãi tiền gửi tương tác phía dưới bảng lãi suất -->
+        <section
+          id="tinh-lai"
+          aria-labelledby="calc-heading"
+          class="pt-8 border-t border-border-default scroll-mt-20 space-y-6"
+        >
+          <div class="space-y-1.5">
+            <span class="inline-block text-xs uppercase font-extrabold tracking-widest text-brand-dark bg-emerald-100/80 px-3.5 py-1 rounded-full border border-emerald-300">
+              Tiện ích tính lãi trực tuyến
+            </span>
+            <h2
+              id="calc-heading"
+              class="text-2xl sm:text-3xl font-bold text-ink-base"
+            >
+              Công cụ ước tính tiền lãi tiết kiệm
+            </h2>
+            <p class="text-sm sm:text-base text-ink-muted max-w-2xl">
+              Nhập số tiền dự kiến gửi và chọn kỳ hạn để tham khảo mức tiền lãi
+              nhận được khi đáo hạn.
+            </p>
+          </div>
+
+          <div
+            data-poc-calculator
+            class="bg-surface-muted rounded-3xl border border-emerald-200/80 shadow-md p-6 sm:p-8 lg:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+          >
+            <!-- Cột nhập liệu -->
+            <div class="md:col-span-7 space-y-6">
+              <div>
+                <div class="flex items-center justify-between text-sm font-semibold text-ink-base mb-2">
+                  <label for="calc-amount-input">Số tiền gửi (VNĐ):</label>
+                  <span
+                    id="calc-amount-display"
+                    class="text-brand-primary font-extrabold text-base sm:text-lg"
+                  >
+                    50.000.000 đ
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  id="calc-amount-input"
+                  min="1000000"
+                  max="5000000000"
+                  step="1000000"
+                  value="50000000"
+                  class="w-full px-4 py-2.5 rounded-xl bg-surface-page border border-border-default focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden text-base font-semibold"
+                />
+                <input
+                  type="range"
+                  id="calc-amount-slider"
+                  aria-label="Thanh trượt điều chỉnh số tiền gửi tiết kiệm"
+                  min="5000000"
+                  max="500000000"
+                  step="5000000"
+                  value="50000000"
+                  class="w-full mt-3 accent-brand-primary cursor-pointer"
+                />
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <button
+                    type="button"
+                    data-preset-amount="20000000"
+                    class="text-xs px-3 py-1.5 rounded-full bg-surface-page hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
+                  >
+                    20 triệu
+                  </button>
+                  <button
+                    type="button"
+                    data-preset-amount="50000000"
+                    class="text-xs px-3 py-1.5 rounded-full bg-surface-page hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
+                  >
+                    50 triệu
+                  </button>
+                  <button
+                    type="button"
+                    data-preset-amount="100000000"
+                    class="text-xs px-3 py-1.5 rounded-full bg-surface-page hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
+                  >
+                    100 triệu
+                  </button>
+                  <button
+                    type="button"
+                    data-preset-amount="200000000"
+                    class="text-xs px-3 py-1.5 rounded-full bg-surface-page hover:bg-emerald-100/70 hover:text-brand-primary border border-border-default font-medium transition-colors"
+                  >
+                    200 triệu
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label
+                  for="calc-term-select"
+                  class="block text-sm font-semibold text-ink-base mb-2"
+                >
+                  Kỳ hạn gửi tiết kiệm:
+                </label>
+                <select
+                  id="calc-term-select"
+                  class="w-full px-4 py-2.5 rounded-xl border border-border-default focus:border-brand-primary focus:ring-1 focus:ring-brand-primary focus:outline-hidden text-sm font-medium bg-surface-page"
+                >
+                  {validDepositOptions.length > 0 ? (
+                    validDepositOptions.map((termItem) => {
+                      const matchMonth = termItem.term.match(/\d+/);
+                      const monthCount = matchMonth ? matchMonth[0] : '12';
+                      const rateStr =
+                        termItem.rate !== null
+                          ? termItem.rate.toString().replace('.', ',')
+                          : '0';
+                      return (
+                        <option
+                          value={monthCount}
+                          data-rate={termItem.rate || 0}
+                          selected={termItem.term.includes('12')}
+                        >
+                          {termItem.term} — Lãi suất: {rateStr}%/năm (
+                          {termItem.note})
+                        </option>
+                      );
+                    })
+                  ) : (
+                    <option value="12" data-rate="0" selected>
+                      12 tháng — {DEFAULT_FALLBACK_TEXT}
+                    </option>
+                  )}
+                </select>
+              </div>
+
+              <p class="text-xs text-ink-muted italic">* {RATE_DISCLAIMER}</p>
+            </div>
+
+            <!-- Cột kết quả tính toán -->
+            <div class="md:col-span-5 bg-[#014d27] bg-gradient-to-br from-[#006d35] via-[#015a30] to-[#014d27] text-white rounded-2xl p-6 sm:p-7 space-y-5 shadow-inner">
+              <div>
+                <div class="text-xs text-white font-bold uppercase tracking-wider">
+                  Lãi suất áp dụng
+                </div>
+                <div
+                  id="calc-interest-rate"
+                  class="text-2xl sm:text-3xl font-extrabold text-white mt-0.5"
+                >
+                  5,4%/năm
+                </div>
+              </div>
+
+              <div class="border-t border-white/25 pt-4">
+                <div class="text-xs text-white/95">
+                  Tiền lãi dự kiến nhận được:
+                </div>
+                <div
+                  id="calc-estimated-profit"
+                  class="text-2xl sm:text-3xl font-extrabold text-[#ffd100] mt-1"
+                >
+                  2.700.000 đ
+                </div>
+              </div>
+
+              <div class="border-t border-white/25 pt-4">
+                <div class="text-xs text-white/95">
+                  Tổng tiền nhận được khi đáo hạn:
+                </div>
+                <div
+                  id="calc-total-received"
+                  class="text-lg sm:text-xl font-bold text-white mt-0.5"
+                >
+                  52.700.000 đ
+                </div>
+              </div>
+
+              <a
+                href="/lien-he"
+                class="block w-full text-center py-3 px-4 rounded-xl bg-[#ffd100] hover:bg-amber-300 text-emerald-950 font-extrabold text-sm transition-colors shadow-md mt-2"
+              >
+                Liên hệ mở sổ tiết kiệm
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
     </Container>
   </Section>
+
+  <script src="../scripts/poc-calc.ts"></script>
 </BaseLayout>
