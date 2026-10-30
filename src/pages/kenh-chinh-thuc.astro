@@ -40,7 +40,7 @@ const emailHref = toMailtoHref(contact.email);
     description={pageEntry.data.description}
     breadcrumb={breadcrumbItems}
   >
-    <p class="mt-2 text-sm text-ink-subtle">
+    <p class="mt-2 text-sm text-ink-subtle font-medium">
       Cập nhật: {formatDate(pageEntry.data.updated)}
     </p>
   </PageHeader>
@@ -65,7 +65,7 @@ const emailHref = toMailtoHref(contact.email);
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Card
                 title="Thông tin liên hệ"
-                description="Xem địa chỉ trụ sở, số điện thoại và mạng lưới các điểm giao dịch của Quỹ."
+                description="Xem địa chỉ hội sở, số điện thoại và mạng lưới các điểm giao dịch của Quỹ."
                 href="/lien-he"
               />
               <Card
@@ -79,11 +79,25 @@ const emailHref = toMailtoHref(contact.email);
 
         <!-- Cột phải: Bảng thông tin nhận diện chính thức -->
         <div class="space-y-6">
-          <div class="rounded-xl border border-brand-primary/20 bg-surface-muted p-6 sm:p-8 space-y-5 shadow-xs">
-            <h2 class="text-lg font-bold text-brand-primary">
-              Kênh liên lạc chính thức
-            </h2>
-            <dl class="space-y-4 text-sm">
+          <div class="rounded-3xl border border-emerald-200/80 bg-surface-brand-subtle p-6 sm:p-8 space-y-5 shadow-xs">
+            <div class="flex items-center gap-3">
+              <img
+                src="/images/logo-qtdnd-classic.png"
+                alt="Logo Quỹ tín dụng nhân dân"
+                width="44"
+                height="44"
+                class="h-11 w-auto object-contain shrink-0"
+              />
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-brand-dark">
+                  Xác thực an toàn
+                </span>
+                <h2 class="text-lg font-bold text-brand-primary">
+                  Kênh liên lạc chính thức
+                </h2>
+              </div>
+            </div>
+            <dl class="space-y-4 text-sm border-t border-emerald-200/80 pt-4">
               <div data-official-domain>
                 <dt class="font-semibold text-ink-base">
                   Tên miền website chính thức:
@@ -94,7 +108,7 @@ const emailHref = toMailtoHref(contact.email);
                       href={domainUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                      class="inline-flex items-center min-h-[44px] text-brand-primary font-semibold hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
                     >
                       {domainUrl}
                     </a>
@@ -113,7 +127,7 @@ const emailHref = toMailtoHref(contact.email);
                     {hotlineHref ? (
                       <a
                         href={hotlineHref}
-                        class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                        class="inline-flex items-center min-h-[44px] text-brand-primary font-semibold hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
                       >
                         {contact.hotline}
                       </a>
@@ -132,7 +146,7 @@ const emailHref = toMailtoHref(contact.email);
                   {phoneHref ? (
                     <a
                       href={phoneHref}
-                      class="inline-flex items-center min-h-[44px] text-brand-primary font-medium hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
+                      class="inline-flex items-center min-h-[44px] text-brand-primary font-semibold hover:underline focus-visible:outline-2 focus-visible:outline-border-focus rounded"
                     >
                       {contact.phone}
                     </a>
@@ -161,7 +175,7 @@ const emailHref = toMailtoHref(contact.email);
               </div>
 
               <div data-official-address>
-                <dt class="font-semibold text-ink-base">Địa chỉ trụ sở:</dt>
+                <dt class="font-semibold text-ink-base">Địa chỉ hội sở:</dt>
                 <dd class="text-ink-muted mt-1 break-words">
                   {formatContactText(contact.address?.full)}
                 </dd>

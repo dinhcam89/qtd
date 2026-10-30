@@ -10,22 +10,32 @@ import LinkButton from '../components/ui/LinkButton.astro';
   description="Trang bạn yêu cầu không tồn tại hoặc đã được thay đổi địa chỉ liên kết."
   noindex={true}
 >
-  <Section variant="default" class="py-16 sm:py-24">
-    <Container data-page-content>
-      <div class="text-center max-w-xl mx-auto space-y-6">
-        <p class="text-sm font-bold tracking-widest text-brand-primary uppercase">
+  <Section variant="brand-subtle" class="py-16 sm:py-24">
+    <Container>
+      <div class="text-center max-w-xl mx-auto p-8 sm:p-12 rounded-3xl bg-surface-page border border-emerald-200/80 shadow-md space-y-6">
+        <img
+          src="/images/logo-qtdnd-classic.png"
+          alt="Logo Quỹ tín dụng nhân dân"
+          width="60"
+          height="60"
+          class="h-14 w-auto object-contain mx-auto"
+        />
+        <span class="inline-block text-xs font-extrabold tracking-widest text-brand-dark bg-emerald-100/80 border border-emerald-300 px-3.5 py-1 rounded-full uppercase">
           Mã lỗi 404
-        </p>
-        <h1 class="text-3xl sm:text-4xl font-bold text-ink-base">
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-primary">
           Không tìm thấy trang
         </h1>
         <p class="text-base text-ink-muted leading-relaxed">
           Trang bạn đang tìm kiếm không tồn tại, đã bị xóa hoặc tạm thời không
           khả dụng.
         </p>
-        <div class="pt-4">
+        <div class="pt-2 flex flex-wrap items-center justify-center gap-4">
           <LinkButton href="/" variant="primary">
             Quay về trang chủ
+          </LinkButton>
+          <LinkButton href="/lien-he" variant="secondary">
+            Thông tin liên hệ
           </LinkButton>
         </div>
       </div>

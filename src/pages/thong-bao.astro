@@ -37,27 +37,32 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
           <h2 class="text-xl sm:text-2xl font-bold text-brand-primary border-b border-border-default pb-2">
             Lịch làm việc thường xuyên
           </h2>
-          <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="p-4 rounded-lg border border-border-default bg-surface-muted">
-              <dt class="text-sm font-medium text-ink-muted">Ngày làm việc</dt>
+          <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div class="p-5 sm:p-6 rounded-2xl border border-emerald-200/80 bg-surface-brand-subtle shadow-2xs">
+              <dt class="text-sm font-semibold text-ink-muted">
+                Ngày làm việc
+              </dt>
               <dd
                 data-field="working-days"
-                class="mt-1 font-semibold text-ink-base whitespace-pre-line"
+                class="mt-1.5 text-base sm:text-lg font-bold text-ink-base whitespace-pre-line"
               >
                 {formatText(schedule.working_days)}
               </dd>
             </div>
-            <div class="p-4 rounded-lg border border-border-default bg-surface-muted">
-              <dt class="text-sm font-medium text-ink-muted">Buổi sáng</dt>
-              <dd data-field="morning" class="mt-1 font-semibold text-ink-base">
+            <div class="p-5 sm:p-6 rounded-2xl border border-emerald-200/80 bg-surface-brand-subtle shadow-2xs">
+              <dt class="text-sm font-semibold text-ink-muted">Buổi sáng</dt>
+              <dd
+                data-field="morning"
+                class="mt-1.5 text-base sm:text-lg font-bold text-brand-primary"
+              >
                 {formatText(schedule.morning_hours)}
               </dd>
             </div>
-            <div class="p-4 rounded-lg border border-border-default bg-surface-muted">
-              <dt class="text-sm font-medium text-ink-muted">Buổi chiều</dt>
+            <div class="p-5 sm:p-6 rounded-2xl border border-emerald-200/80 bg-surface-brand-subtle shadow-2xs">
+              <dt class="text-sm font-semibold text-ink-muted">Buổi chiều</dt>
               <dd
                 data-field="afternoon"
-                class="mt-1 font-semibold text-ink-base"
+                class="mt-1.5 text-base sm:text-lg font-bold text-brand-primary"
               >
                 {formatText(schedule.afternoon_hours)}
               </dd>
@@ -65,7 +70,7 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
           </dl>
           {schedule.notes && (
             <p data-field="notes" class="text-base text-ink-muted">
-              <span class="font-medium text-ink-base">Lưu ý:</span>{' '}
+              <span class="font-semibold text-ink-base">Lưu ý:</span>{' '}
               {formatText(schedule.notes)}
             </p>
           )}
@@ -84,11 +89,11 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
               {holidays.map((holiday) => (
                 <li
                   data-holiday-item
-                  class="p-4 sm:p-5 rounded-lg border border-border-default bg-surface-page"
+                  class="p-5 sm:p-6 rounded-2xl border border-emerald-200/80 bg-surface-page shadow-xs"
                 >
                   <h3
                     data-holiday-title
-                    class="text-lg font-semibold text-ink-base break-words"
+                    class="text-lg font-bold text-brand-primary break-words"
                   >
                     {formatText(holiday.title)}
                   </h3>
@@ -97,7 +102,10 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
                       <dt class="text-sm font-medium text-ink-muted">
                         Từ ngày
                       </dt>
-                      <dd data-field="start" class="text-ink-base">
+                      <dd
+                        data-field="start"
+                        class="text-ink-base font-semibold"
+                      >
                         {formatDate(holiday.start_date)}
                       </dd>
                     </div>
@@ -105,7 +113,7 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
                       <dt class="text-sm font-medium text-ink-muted">
                         Đến ngày
                       </dt>
-                      <dd data-field="end" class="text-ink-base">
+                      <dd data-field="end" class="text-ink-base font-semibold">
                         {formatDate(holiday.end_date)}
                       </dd>
                     </div>
@@ -113,7 +121,10 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
                       <dt class="text-sm font-medium text-ink-muted">
                         Ngày làm việc trở lại
                       </dt>
-                      <dd data-field="return" class="text-ink-base">
+                      <dd
+                        data-field="return"
+                        class="text-brand-primary font-bold"
+                      >
                         {formatDate(holiday.return_date)}
                       </dd>
                     </div>
@@ -136,16 +147,19 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
           {notices.length === 0 ? (
             <div
               data-notices-empty
-              class="p-8 text-center rounded-lg border border-border-default bg-surface-muted"
+              class="p-8 text-center rounded-2xl border border-emerald-200/80 bg-surface-brand-subtle"
             >
               <p class="text-ink-muted text-base sm:text-lg">
                 {DEFAULT_FALLBACK_TEXT}
               </p>
             </div>
           ) : (
-            <ul class="divide-y divide-border-default border border-border-default rounded-lg overflow-hidden">
+            <ul class="divide-y divide-border-default border border-emerald-200/80 rounded-2xl overflow-hidden bg-surface-page shadow-xs">
               {notices.map((entry) => (
-                <li data-notice-item class="p-4 sm:p-5">
+                <li
+                  data-notice-item
+                  class="p-4 sm:p-5 hover:bg-surface-brand-subtle/60 transition-colors"
+                >
                   <a
                     href={getNewsDetailHref(entry.id)}
                     class="font-semibold text-brand-primary hover:underline break-words focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded"
@@ -165,7 +179,7 @@ const pageDescription = `Lịch làm việc thường xuyên, các kỳ nghỉ v
             <a
               data-view-all
               href="/tin-tuc/"
-              class="inline-flex items-center min-h-[44px] font-medium text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded"
+              class="inline-flex items-center min-h-[44px] font-semibold text-brand-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded"
             >
               Xem tất cả &rarr;
             </a>

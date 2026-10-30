@@ -32,7 +32,7 @@ const pageDescription = `Danh mục điều lệ, quy chế hoạt động, bi�
         {groups.length === 0 ? (
           <div
             data-documents-empty
-            class="p-8 text-center rounded-lg border border-border-default bg-surface-muted"
+            class="p-8 text-center rounded-2xl border border-emerald-200/80 bg-surface-brand-subtle"
           >
             <p class="text-ink-muted text-base sm:text-lg">
               {DEFAULT_FALLBACK_TEXT}
@@ -44,14 +44,14 @@ const pageDescription = `Danh mục điều lệ, quy chế hoạt động, bi�
               <h2 class="text-xl sm:text-2xl font-bold text-brand-primary border-b border-border-default pb-2">
                 {group.label}
               </h2>
-              <ul class="divide-y divide-border-default border border-border-default rounded-lg bg-surface-page overflow-hidden">
+              <ul class="divide-y divide-border-default border border-emerald-200/80 rounded-2xl bg-surface-page overflow-hidden shadow-xs">
                 {group.items.map((doc) => {
                   const dateText = formatDate(doc.date);
                   const sizeText = formatFileSize(doc.sizeBytes);
                   const downloadAria = `Tải xuống: ${doc.title} (PDF, ${sizeText})`;
 
                   return (
-                    <li class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-surface-muted/50 transition-colors">
+                    <li class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-surface-brand-subtle/60 transition-colors">
                       <div class="space-y-1">
                         <h3 class="text-base sm:text-lg font-semibold text-ink-base">
                           {doc.title}
@@ -74,7 +74,7 @@ const pageDescription = `Danh mục điều lệ, quy chế hoạt động, bi�
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={downloadAria}
-                          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-md bg-brand-primary text-white text-sm font-medium hover:bg-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus transition-colors"
+                          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-brand-primary text-white text-sm font-semibold hover:bg-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus transition-colors shadow-2xs"
                         >
                           <svg
                             class="w-4 h-4"

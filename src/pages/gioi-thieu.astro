@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/ui/Container.astro';
 import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
 import Card from '../components/ui/Card.astro';
 import { getSite, getPageEntry } from '../lib/data';
 import { formatText, formatDate } from '../lib/format';
@@ -19,43 +20,15 @@ const pageDescription = pageEntry.data.description;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
-  <!-- Hero / Tiêu đề trang -->
-  <section class="border-b border-border-default bg-surface-muted py-8 md:py-12">
-    <Container>
-      <!-- Breadcrumb -->
-      <nav
-        aria-label="Đường dẫn điều hướng"
-        class="mb-4 text-sm text-ink-muted"
-      >
-        <ol class="flex items-center space-x-2">
-          <li>
-            <a
-              href="/"
-              class="hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-border-focus rounded"
-            >
-              Trang chủ
-            </a>
-          </li>
-          <li aria-hidden="true" class="text-border-strong">
-            /
-          </li>
-          <li class="font-medium text-ink-base" aria-current="page">
-            Giới thiệu
-          </li>
-        </ol>
-      </nav>
-
-      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-brand-primary">
-        Giới thiệu chung
-      </h1>
-      <p class="mt-3 text-base sm:text-lg text-ink-muted max-w-3xl">
-        {pageEntry.data.description}
-      </p>
-      <p class="mt-2 text-sm text-ink-subtle">
-        Cập nhật: {formatDate(pageEntry.data.updated)}
-      </p>
-    </Container>
-  </section>
+  <PageHeader
+    title="Giới thiệu chung"
+    description={pageEntry.data.description}
+    breadcrumb={[{ label: 'Trang chủ', href: '/' }, { label: 'Giới thiệu' }]}
+  >
+    <p class="mt-2 text-sm text-ink-subtle font-medium">
+      Cập nhật: {formatDate(pageEntry.data.updated)}
+    </p>
+  </PageHeader>
 
   <!-- Thông tin pháp lý & tôn chỉ hoạt động -->
   <Section class="bg-surface-page">
@@ -69,22 +42,10 @@ const pageDescription = pageEntry.data.description;
 
           <!-- Khối điều hướng trang con liên quan -->
           <div class="pt-8 border-t border-border-default">
-            <h2 class="text-xl font-bold text-brand-primary mb-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-brand-primary mb-4">
               Tìm hiểu thêm về Quỹ
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Tạm thời ẩn các mục Lịch sử hình thành và Ban lãnh đạo theo yêu cầu người dùng, giữ nguyên pages
-              <Card
-                title="Lịch sử hình thành"
-                description="Xem chặng đường thành lập và các mốc phát triển quan trọng của Quỹ qua các thời kỳ."
-                href="/lich-su"
-              />
-              <Card
-                title="Ban lãnh đạo"
-                description="Cơ cấu Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ."
-                href="/ban-lanh-dao"
-              />
-              */}
               <Card
                 title="Quy mô hoạt động"
                 description="Các số liệu tổng hợp về thành viên, vốn điều lệ, tổng tài sản và dư nợ của Quỹ."
@@ -109,38 +70,73 @@ const pageDescription = pageEntry.data.description;
           </div>
         </div>
 
-        <!-- Cột phụ: Thông tin tóm tắt pháp lý -->
+        <!-- Cột phụ: Thông tin tóm tắt pháp lý & Bảo hiểm tiền gửi -->
         <div class="space-y-6">
-          <div class="p-6 rounded-lg bg-surface-muted border border-border-default shadow-xs space-y-4">
-            <h2 class="text-lg font-bold text-brand-primary">
-              Thông tin pháp lý
-            </h2>
-            <dl class="space-y-3 text-sm">
+          <div class="p-6 sm:p-8 rounded-3xl bg-surface-brand-subtle border border-emerald-200/80 shadow-xs space-y-5">
+            <div class="flex items-center gap-3">
+              <img
+                src="/images/logo-qtdnd-classic.png"
+                alt="Logo Quỹ tín dụng nhân dân"
+                width="48"
+                height="48"
+                class="h-12 w-auto object-contain shrink-0"
+              />
               <div>
-                <dt class="font-medium text-ink-base">Tên tổ chức:</dt>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-brand-dark">
+                  Tổ chức tín dụng hợp tác
+                </span>
+                <h2 class="text-lg font-bold text-brand-primary leading-snug">
+                  Thông tin pháp lý
+                </h2>
+              </div>
+            </div>
+
+            <dl class="space-y-3.5 text-sm border-t border-emerald-200/80 pt-4">
+              <div>
+                <dt class="font-semibold text-ink-base">Tên tổ chức:</dt>
                 <dd class="text-ink-muted mt-0.5">{formatText(site.name)}</dd>
               </div>
               {site.short_name && (
                 <div>
-                  <dt class="font-medium text-ink-base">Tên viết tắt:</dt>
+                  <dt class="font-semibold text-ink-base">Tên viết tắt:</dt>
                   <dd class="text-ink-muted mt-0.5">
                     {formatText(site.short_name)}
                   </dd>
                 </div>
               )}
               <div>
-                <dt class="font-medium text-ink-base">Giấy phép hoạt động:</dt>
+                <dt class="font-semibold text-ink-base">
+                  Giấy phép hoạt động:
+                </dt>
                 <dd class="text-ink-muted mt-0.5">
                   {formatText(site.license_number)}
                 </dd>
               </div>
               <div>
-                <dt class="font-medium text-ink-base">Địa bàn hoạt động:</dt>
+                <dt class="font-semibold text-ink-base">Địa bàn hoạt động:</dt>
                 <dd class="text-ink-muted mt-0.5">
                   {formatText(site.operating_area)}
                 </dd>
               </div>
             </dl>
+
+            <div class="pt-4 border-t border-emerald-200/80 flex items-center gap-3">
+              <img
+                src="/images/chung-nhan-bhtg-vn.png"
+                alt="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
+                width="80"
+                height="55"
+                class="h-12 w-auto object-contain shrink-0"
+                loading="lazy"
+              />
+              <p class="text-xs text-ink-muted leading-relaxed">
+                Tổ chức tham gia{' '}
+                <strong class="text-ink-base">
+                  Bảo hiểm tiền gửi Việt Nam (DIV)
+                </strong>
+                .
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -151,8 +147,11 @@ const pageDescription = pageEntry.data.description;
   <Section class="bg-surface-muted border-t border-border-default">
     <Container>
       <div class="max-w-3xl">
-        <h2 class="text-2xl font-bold text-brand-primary mb-4">
-          Sứ mệnh & Tầm nhìn
+        <span class="inline-block text-xs uppercase font-extrabold tracking-widest text-brand-dark bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300 mb-2">
+          Định hướng phát triển
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-brand-primary mb-4">
+          Sứ mệnh &amp; Tầm nhìn
         </h2>
         <div class="content-body">
           <SuMenhContent />
