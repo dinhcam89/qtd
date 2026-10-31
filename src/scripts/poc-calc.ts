@@ -16,13 +16,13 @@ function setupDynamicGreeting(): void {
 
   if (hour >= 5 && hour < 12) {
     greeting = 'Chào buổi sáng';
-    subGreeting = 'Chúc bạn một ngày mới an lành, phát tài phát lộc!';
+    subGreeting = 'Chúc quý khách hàng và thành viêb một ngày mới an lành!';
   } else if (hour >= 12 && hour < 18) {
     greeting = 'Chào buổi chiều';
-    subGreeting = 'Bạn đang tìm kiếm giải pháp tài chính gì hôm nay?';
+    subGreeting = 'Quý khách hàng đang tìm kiếm gì hôm nay?';
   } else {
     greeting = 'Chào buổi tối';
-    subGreeting = 'Bạn đang tìm kiếm gì hôm nay?';
+    subGreeting = 'Quý khách hàng đang tìm kiếm gì hôm nay?';
   }
 
   const titleSpan = greetingEl.querySelector<HTMLElement>(
@@ -198,15 +198,69 @@ function setupSegmentTabs(): void {
   });
 }
 
+function setupPocBgOptions(): void {
+  const buttons = document.querySelectorAll<HTMLButtonElement>(
+    '[data-bg-option-btn]'
+  );
+  const layers = document.querySelectorAll<HTMLElement>(
+    '[data-bg-option-layer]'
+  );
+  if (buttons.length === 0 || layers.length === 0) return;
+
+  function activateOption(optionId: string): void {
+    layers.forEach((layer) => {
+      const id = layer.getAttribute('data-bg-option-layer');
+      if (id === optionId) {
+        layer.classList.remove('opacity-0', 'pointer-events-none');
+        layer.classList.add('opacity-100');
+      } else {
+        layer.classList.remove('opacity-100');
+        layer.classList.add('opacity-0', 'pointer-events-none');
+      }
+    });
+
+    buttons.forEach((btn) => {
+      const id = btn.getAttribute('data-bg-option-btn');
+      const isActive = id === optionId;
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      if (isActive) {
+        btn.classList.remove('bg-white/80', 'text-ink-base', 'hover:bg-white');
+        btn.classList.add('bg-brand-primary', 'text-white', 'shadow-xs');
+      } else {
+        btn.classList.remove('bg-brand-primary', 'text-white', 'shadow-xs');
+        btn.classList.add('bg-white/80', 'text-ink-base', 'hover:bg-white');
+      }
+    });
+  }
+
+  // Hỗ trợ chọn sẵn qua query ?bg=1..4
+  const params = new URLSearchParams(window.location.search);
+  const initialBg = params.get('bg');
+  if (initialBg && ['1', '2', '3', '4'].includes(initialBg)) {
+    activateOption(initialBg);
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const optionId = btn.getAttribute('data-bg-option-btn');
+      if (optionId) {
+        activateOption(optionId);
+      }
+    });
+  });
+}
+
 // Chạy khởi tạo khi DOM sẵn sàng
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     setupDynamicGreeting();
     setupPocCalculator();
     setupSegmentTabs();
+    setupPocBgOptions();
   });
 } else {
   setupDynamicGreeting();
   setupPocCalculator();
   setupSegmentTabs();
+  setupPocBgOptions();
 }

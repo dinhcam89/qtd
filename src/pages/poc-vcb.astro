@@ -59,217 +59,208 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
   description={siteDescription}
   transparentHeader={true}
 >
-  <!-- 1. Hero Section POC: Hoạt ảnh Cánh đồng lúa Nông thôn Việt Nam & Khối QR Zalo kiểu Vietcombank -->
-  <section class="relative w-full pt-6 pb-24 sm:pt-10 sm:pb-28 lg:pt-12 lg:pb-36 border-b border-emerald-900/10">
-    <!-- Lớp nền Bầu trời & Cánh đồng lúa có hoạt ảnh mượt 60fps bao phủ lên sát đỉnh trang (-top-52) -->
+  <!-- 1. Hero Section POC: Bộ 4 Phương án Nền Màu nước Thoáng rộng kiểu Vietcombank & Khối QR Zalo -->
+  <section class="relative w-full pt-4 pb-28 sm:pt-6 sm:pb-36 lg:pt-8 lg:pb-44 border-b border-emerald-900/10">
+    <!-- Lớp nền Bầu trời & Phong cảnh Màu nước bao phủ lên sát đỉnh trang (-top-52), 72% bầu trời mở thoáng đãng -->
     <div
-      class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#92d3f5] via-[#c5ebe9] via-42% to-[#eef8ec] z-0"
+      class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#89ccf2] via-[#cbe8f6] via-48% to-[#eef8f2] z-0"
       aria-hidden="true"
     >
-      <!-- Quầng sáng bầu trời ban mai -->
-      <div class="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.6)_0%,_rgba(255,255,255,0)_72%)]"></div>
-
-      <!-- Mặt trời ban mai & Tia nắng ấm áp chuyển động nhẹ (animate-sunbeam-pulse) -->
-      <div class="absolute top-48 right-6 sm:right-20 w-40 h-40 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,_rgba(253,224,71,0.58)_0%,_rgba(254,240,138,0.22)_45%,_rgba(253,224,71,0)_72%)] animate-sunbeam-pulse"></div>
-      <div class="absolute top-58 right-16 sm:right-32 w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-[#fef08a] border-2 border-white/70 shadow-md"></div>
-
-      <!-- Toàn cảnh Cánh đồng lúa Nông thôn, Dòng vốn xanh & Mái nhà Hợp tác xã có hoạt ảnh -->
-      <svg
-        class="absolute bottom-0 inset-x-0 w-full h-[68%] sm:h-[75%] object-cover"
-        preserveAspectRatio="none"
-        viewBox="0 0 1440 460"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+      <!-- Option 1 (Mặc định): Mái hiên Quê hương & Đèn lồng ấm áp (Màu nước chuẩn phong cách VCB Quán Nhà) -->
+      <div
+        data-bg-option-layer="1"
+        class="absolute inset-0 w-full h-full opacity-100 transition-opacity duration-500"
       >
-        <!-- Tầng 1: Dãy núi xa mờ thanh bình -->
-        <path
-          d="M0,175 Q320,85 690,155 T1440,105 L1440,460 L0,460 Z"
-          fill="#9ed4b2"
-          opacity="0.38"
-        ></path>
-
-        <!-- Tầng 2: Đồi chè & rừng cây xanh mát (chuyển động làn gió chậm) -->
-        <g class="animate-rice-wave-slow">
-          <path
-            d="M0,228 Q340,145 710,218 T1440,168 L1440,460 L0,460 Z"
-            fill="#66be82"
-            opacity="0.48"
-          ></path>
-          <!-- Đường vân ruộng bậc thang xa -->
-          <path
-            d="M40,245 Q340,175 700,235 T1420,192"
-            stroke="#dcfce7"
-            stroke-width="2"
-            stroke-opacity="0.45"
-            fill="none"
-          ></path>
-        </g>
-
-        <!-- Tầng 3: Cánh đồng lúa xanh đang thì con gái (chuyển động nhịp sóng lúa) -->
-        <g class="animate-rice-wave-delayed">
-          <path
-            d="M0,285 C330,205 630,305 980,235 C1180,195 1340,255 1440,245 L1440,460 L0,460 Z"
-            fill="#34b367"
-            opacity="0.58"
-          ></path>
-          <!-- Đường bờ thửa ruộng lúa -->
-          <path
-            d="M0,305 C330,228 630,322 980,255 C1180,215 1340,270 1440,260"
-            stroke="#bbf7d0"
-            stroke-width="2.5"
-            stroke-opacity="0.5"
-            fill="none"
-          ></path>
-        </g>
-
-        <!-- Tầng 4: Cánh đồng lúa chín vàng mùa gặt bội thu (Tone vàng lúa QTDND) -->
-        <g class="animate-rice-wave-slow">
-          <path
-            d="M0,348 C380,275 720,385 1090,305 C1270,265 1375,325 1440,315 L1440,460 L0,460 Z"
-            fill="#d4e66e"
-            opacity="0.62"
-          ></path>
-          <path
-            d="M0,375 C410,315 760,405 1120,335 C1290,300 1385,348 1440,340 L1440,460 L0,460 Z"
-            fill="#eab308"
-            opacity="0.22"
-          ></path>
-        </g>
-
-        <!-- Tầng 5: Dòng kênh thủy lợi / Dòng vốn tín dụng xanh mát chảy qua thôn xóm -->
-        <path
-          d="M0,418 C310,368 425,438 685,388 C960,338 1200,428 1440,378 L1440,460 L0,460 Z"
-          fill="#7dd3fc"
-          opacity="0.65"
-        ></path>
-        <g class="animate-water-shimmer">
-          <path
-            d="M60,425 Q320,388 580,412 T1180,395"
-            stroke="#ffffff"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-dasharray="18 14"
-            stroke-opacity="0.65"
-            fill="none"
-          ></path>
-        </g>
-
-        <!-- Tầng 6: Cụm mái nhà ngói nông thôn mới & Điểm tựa hợp tác xã bên phải chân trời -->
-        <g opacity="0.82">
-          <!-- Thảm đồi nhỏ nơi đặt nhà văn hóa / hợp tác xã -->
-          <path
-            d="M1060,355 Q1240,318 1440,342 L1440,415 L1060,415 Z"
-            fill="#15803d"
-            opacity="0.35"
-          ></path>
-          <!-- Mái nhà ngói đỏ truyền thống Việt Nam -->
-          <rect
-            x="1225"
-            y="312"
-            width="76"
-            height="36"
-            rx="3"
-            fill="#fef3c7"
-            stroke="#d97706"
-            stroke-width="1.5"
+        {hasBrandAssets && (
+          <img
+            src="/images/poc-bg-option1.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover object-bottom"
           />
-          <polygon points="1215,314 1263,288 1311,314" fill="#dc2626" />
-          <rect x="1254" y="324" width="18" height="24" rx="2" fill="#92400e" />
-          <rect
-            x="1234"
-            y="322"
-            width="12"
-            height="12"
-            rx="1.5"
-            fill="#fde68a"
-            stroke="#b45309"
-            stroke-width="1"
-          />
-          <rect
-            x="1280"
-            y="322"
-            width="12"
-            height="12"
-            rx="1.5"
-            fill="#fde68a"
-            stroke="#b45309"
-            stroke-width="1"
-          />
-          <!-- Cây xanh bóng mát làng quê -->
-          <circle cx="1198" cy="318" r="18" fill="#16a34a" />
-          <circle cx="1210" cy="310" r="14" fill="#22c55e" />
-          <rect x="1201" y="332" width="4" height="16" fill="#78350f" />
-          <circle cx="1332" cy="322" r="15" fill="#15803d" />
-          <rect x="1330" y="334" width="3.5" height="14" fill="#78350f" />
-        </g>
+        )}
+        <!-- Lớp hòa trộn bầu trời phía trên giúp Header trong suốt liền mạch -->
+        <div class="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#89ccf2] via-[#aedcf6]/70 to-transparent"></div>
+        <!-- Hiệu ứng ánh sáng ấm áp tỏa nhẹ quanh mái hiên làng quê góc phải dưới -->
+        <div class="absolute bottom-12 right-8 sm:right-24 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-[radial-gradient(circle,_rgba(254,240,138,0.45)_0%,_rgba(253,224,71,0)_70%)] animate-sunbeam-pulse"></div>
+      </div>
 
-        <!-- Tầng 7: Bông lúa vàng đung đưa nhẹ trong gió ở tiền cảnh (animate-rice-stalk-sway) -->
-        <g
-          class="animate-rice-stalk-sway"
-          stroke="#ca8a04"
-          stroke-width="2"
+      <!-- Option 2: Cánh đồng lúa Bậc thang Mùa vàng & Lũy tre làng -->
+      <div
+        data-bg-option-layer="2"
+        class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500"
+      >
+        {hasBrandAssets && (
+          <img
+            src="/images/poc-bg-option2.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover object-bottom"
+            loading="lazy"
+          />
+        )}
+        <div class="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#89ccf2] via-[#b8e2f8]/70 to-transparent"></div>
+        <div class="absolute top-52 right-12 sm:right-28 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-[radial-gradient(circle,_rgba(254,249,195,0.55)_0%,_rgba(254,240,138,0)_72%)] animate-sunbeam-pulse"></div>
+      </div>
+
+      <!-- Option 3: Cây đa Sân đình & Đồng cỏ Nông thôn Thanh bình -->
+      <div
+        data-bg-option-layer="3"
+        class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500"
+      >
+        {hasBrandAssets && (
+          <img
+            src="/images/poc-bg-option3.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover object-bottom"
+            loading="lazy"
+          />
+        )}
+        <div class="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#8acdf3] via-[#bfe5f7]/70 to-transparent"></div>
+        <div class="absolute bottom-16 right-12 sm:right-24 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-[radial-gradient(circle,_rgba(254,240,138,0.4)_0%,_rgba(254,240,138,0)_70%)] animate-sunbeam-pulse"></div>
+      </div>
+
+      <!-- Option 4: Vector Màu nước Thuần (Chân trời thấp 32%, bầu trời mở 68%, sóng lúa chuyển động mượt) -->
+      <div
+        data-bg-option-layer="4"
+        class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500 bg-gradient-to-b from-[#86c9f0] via-[#c7e9f5] via-52% to-[#f4faec]"
+      >
+        <div class="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.55)_0%,_rgba(255,255,255,0)_72%)]"></div>
+        <!-- Chân trời thấp chỉ chiếm 32% đáy để toàn bộ phần trên thoáng đãng như VCB -->
+        <svg
+          class="absolute bottom-0 inset-x-0 w-full h-[30%] sm:h-[34%] object-cover"
+          preserveAspectRatio="none"
+          viewBox="0 0 1440 240"
           fill="none"
-          opacity="0.65"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M95,455 Q102,415 116,390" />
-          <ellipse
-            cx="114"
-            cy="395"
-            rx="4"
-            ry="2"
-            transform="rotate(-25 114 395)"
-            fill="#facc15"
-          />
-          <ellipse
-            cx="108"
-            cy="406"
-            rx="4"
-            ry="2"
-            transform="rotate(-25 108 406)"
-            fill="#facc15"
-          />
-          <path d="M115,455 Q124,420 138,398" />
-          <ellipse
-            cx="135"
-            cy="402"
-            rx="4"
-            ry="2"
-            transform="rotate(-20 135 402)"
-            fill="#eab308"
-          />
-
-          <path d="M980,455 Q988,412 1004,386" />
-          <ellipse
-            cx="1001"
-            cy="390"
-            rx="4.5"
-            ry="2"
-            transform="rotate(-25 1001 390)"
-            fill="#facc15"
-          />
-          <ellipse
-            cx="994"
-            cy="402"
-            rx="4.5"
-            ry="2"
-            transform="rotate(-25 994 402)"
-            fill="#facc15"
-          />
-          <path d="M1002,455 Q1012,418 1026,395" />
-          <ellipse
-            cx="1023"
-            cy="399"
-            rx="4"
-            ry="2"
-            transform="rotate(-20 1023 399)"
-            fill="#eab308"
-          />
-        </g>
-      </svg>
+          <!-- Núi mờ màu nước xa bên trái -->
+          <path
+            d="M0,95 Q220,25 480,85 T980,95 L1440,110 L1440,240 L0,240 Z"
+            fill="#a7dcd0"
+            opacity="0.45"
+          ></path>
+          <!-- Đồi cỏ xanh non màu nước (chuyển động làn gió nhẹ) -->
+          <g class="animate-rice-wave-slow">
+            <path
+              d="M0,125 Q320,65 680,120 T1440,95 L1440,240 L0,240 Z"
+              fill="#8ce063"
+              opacity="0.55"
+            ></path>
+          </g>
+          <!-- Thảm đồng lúa xanh vàng tươi sáng -->
+          <g class="animate-rice-wave-delayed">
+            <path
+              d="M0,158 C340,110 660,175 1020,130 C1210,108 1350,135 1440,128 L1440,240 L0,240 Z"
+              fill="#62c856"
+              opacity="0.65"
+            ></path>
+            <path
+              d="M0,185 C390,145 740,205 1110,162 C1280,142 1380,168 1440,162 L1440,240 L0,240 Z"
+              fill="#d8ef6e"
+              opacity="0.7"
+            ></path>
+          </g>
+          <!-- Đường làng uốn lượn màu kem ấm -->
+          <path
+            d="M520,240 C560,205 630,185 690,165 C720,185 670,210 640,240 Z"
+            fill="#f5ebc6"
+            opacity="0.85"
+          ></path>
+          <!-- Mái hiên nhà gỗ làng quê ấm áp bên góc phải -->
+          <g opacity="0.9">
+            <polygon points="1160,118 1255,78 1350,118" fill="#eab308" />
+            <polygon points="1172,118 1255,84 1338,118" fill="#facc15" />
+            <rect
+              x="1182"
+              y="118"
+              width="146"
+              height="56"
+              rx="4"
+              fill="#fef3c7"
+              stroke="#d97706"
+              stroke-width="2"
+            />
+            <rect
+              x="1200"
+              y="130"
+              width="28"
+              height="44"
+              rx="2"
+              fill="#b45309"
+            />
+            <rect
+              x="1242"
+              y="130"
+              width="28"
+              height="44"
+              rx="2"
+              fill="#92400e"
+            />
+            <rect
+              x="1284"
+              y="130"
+              width="28"
+              height="44"
+              rx="2"
+              fill="#b45309"
+            />
+            <circle cx="1195" cy="124" r="5" fill="#fde047" />
+            <circle cx="1255" cy="124" r="5" fill="#fde047" />
+            <circle cx="1315" cy="124" r="5" fill="#fde047" />
+          </g>
+        </svg>
+      </div>
     </div>
 
     <!-- Nội dung chính Hero tràn rộng, thoáng đãng và cân đối theo bố cục Vietcombank -->
     <Container class="relative z-10">
+      <!-- Thanh chuyển đổi nhanh 4 Option Background để người dùng so sánh trực tiếp -->
+      <div
+        role="group"
+        aria-label="Chọn phương án ảnh nền trang chủ"
+        class="mb-4 inline-flex flex-wrap items-center gap-1.5 rounded-2xl sm:rounded-full bg-white/75 backdrop-blur-xs p-1.5 shadow-xs border border-white/80"
+      >
+        <span class="px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-brand-dark">
+          Đổi nền POC:
+        </span>
+        <button
+          type="button"
+          data-bg-option-btn="1"
+          aria-pressed="true"
+          class="px-3 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer bg-brand-primary text-white shadow-xs"
+        >
+          Option 1: Mái hiên Quê hương (Chuẩn VCB)
+        </button>
+        <button
+          type="button"
+          data-bg-option-btn="2"
+          aria-pressed="false"
+          class="px-3 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer bg-white/80 text-ink-base hover:bg-white"
+        >
+          Option 2: Cánh đồng &amp; Lũy tre
+        </button>
+        <button
+          type="button"
+          data-bg-option-btn="3"
+          aria-pressed="false"
+          class="px-3 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer bg-white/80 text-ink-base hover:bg-white"
+        >
+          Option 3: Cây đa &amp; Làng quê
+        </button>
+        <button
+          type="button"
+          data-bg-option-btn="4"
+          aria-pressed="false"
+          class="px-3 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer bg-white/80 text-ink-base hover:bg-white"
+        >
+          Option 4: Vector Màu nước
+        </button>
+      </div>
       <div
         data-page-content
         class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center py-6 sm:py-10 lg:py-14"
