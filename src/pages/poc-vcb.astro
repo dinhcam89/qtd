@@ -2,12 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/ui/Container.astro';
 import Section from '../components/ui/Section.astro';
-import LinkButton from '../components/ui/LinkButton.astro';
 import StatItem from '../components/ui/StatItem.astro';
 import Card from '../components/ui/Card.astro';
 import RatesTables from '../components/RatesTables.astro';
 import HomeSlider from '../components/HomeSlider.astro';
-import { getSite, getRates, getContact, getSchedule } from '../lib/data';
+import { getSite, getRates, getContact } from '../lib/data';
 import {
   getPublishedNews,
   getNewsDetailHref,
@@ -26,7 +25,6 @@ import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
 const site = await getSite();
 const rates = await getRates();
 const contact = await getContact();
-const schedule = await getSchedule();
 const publishedNews = await getPublishedNews();
 const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
 
@@ -270,23 +268,19 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
       </svg>
     </div>
 
-    <!-- Nội dung chính Hero tràn rộng (Widescreen Full-Width) -->
+    <!-- Nội dung chính Hero tràn rộng, thoáng đãng và cân đối theo bố cục Vietcombank -->
     <Container class="relative z-10">
-      <!-- Nhãn đánh dấu Phiên bản POC -->
-      <div class="mb-4 inline-flex flex-wrap items-center gap-2 rounded-full bg-white/85 px-3.5 py-1 text-xs font-bold text-brand-dark shadow-2xs border border-emerald-300/80">
-        <span class="w-2 h-2 rounded-full bg-brand-primary"></span>
-        <span>
-          BẢN THỬ NGHIỆM POC: HOẠT ẢNH NÔNG THÔN MỚI &amp; KẾT NỐI ZALO QR
-        </span>
-        <a href="/" class="underline hover:text-brand-primary ml-1">
-          &larr; Xem trang chủ hiện tại
-        </a>
-      </div>
+      <div
+        data-page-content
+        class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center py-6 sm:py-10 lg:py-14"
+      >
+        <!-- Cột trái (5 cột): Tinh gọn đúng chuẩn VCB (Tên Quỹ + Lời chào thời gian thực + Thanh tìm kiếm viên thuốc) -->
+        <div class="lg:col-span-5 space-y-5">
+          <h1 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-brand-dark">
+            {formatText(site.name)}
+          </h1>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-        <!-- Cột trái (6 cột): Lời chào thời gian thực, Tiêu đề Quỹ, Thanh tìm kiếm & Nút hành động -->
-        <div class="lg:col-span-6 space-y-5">
-          <!-- Icon Mặt trời (Sáng/Chiều) & Mặt trăng (Tối) chuẩn phong cách Vietcombank -->
+          <!-- Icon Mặt trời (Sáng/Chiều) & Mặt trăng (Tối) + Lời chào chuẩn phong cách Vietcombank -->
           <div data-dynamic-greeting class="flex items-center gap-3.5">
             <div
               data-greeting-icon-day
@@ -351,59 +345,30 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
             </div>
 
             <div class="space-y-0.5">
-              <div class="flex items-center gap-2">
-                <span
-                  class="text-lg sm:text-2xl font-extrabold text-brand-dark tracking-tight"
-                  data-greeting-title
-                >
-                  Chào buổi sáng
-                </span>
-              </div>
+              <span
+                class="block text-2xl sm:text-3xl font-extrabold text-ink-base tracking-tight"
+                data-greeting-title
+              >
+                Chào buổi sáng
+              </span>
               <p
                 class="text-xs sm:text-sm text-ink-base font-medium"
                 data-greeting-subtitle
               >
-                Quý thành viên và bà con cần hỗ trợ nguồn vốn hay gửi tiết kiệm
-                hôm nay?
+                Quý khách hàng đang tìm kiếm gì hôm nay?
               </p>
             </div>
           </div>
 
-          <!-- Tiêu đề lớn nhận diện thương hiệu Quỹ (căn sát mép trái Container) -->
-          <div class="space-y-3">
-            <h1 class="text-xl min-[380px]:text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
-              {site.name &&
-              site.name.toUpperCase().startsWith('QUỸ TÍN DỤNG NHÂN DÂN') ? (
-                <>
-                  <span class="block text-brand-primary whitespace-nowrap sm:whitespace-normal">
-                    QUỸ TÍN DỤNG NHÂN DÂN
-                  </span>
-                  <span class="block text-brand-primary mt-1 sm:mt-2 font-extrabold text-3xl min-[380px]:text-4xl sm:text-5xl lg:text-6xl">
-                    {site.name.replace(/^QUỸ TÍN DỤNG NHÂN DÂN\s*/i, '')}
-                  </span>
-                </>
-              ) : (
-                <span class="text-brand-primary text-3xl sm:text-4xl lg:text-5xl font-bold break-words">
-                  {formatText(site.name)}
-                </span>
-              )}
-            </h1>
-            <p class="text-base sm:text-lg text-ink-base leading-relaxed max-w-2xl">
-              Điểm tựa tài chính hợp tác xã ngay tại quê hương — tiếp sức nguồn
-              vốn sản xuất nông nghiệp, kinh doanh dịch vụ và tích lũy an toàn
-              cho mọi gia đình.
-            </p>
-          </div>
-
-          <!-- Thanh tìm kiếm nhanh hình viên thuốc (Vietcombank Quick Search Pill) -->
-          <div class="max-w-xl">
-            <div class="relative flex items-center rounded-full bg-white shadow-md border border-emerald-300/80 p-1.5 focus-within:ring-2 focus-within:ring-brand-primary transition-shadow">
-              <span class="pl-3.5 pr-2 text-brand-primary" aria-hidden="true">
+          <!-- Thanh tìm kiếm nhanh hình viên thuốc tinh gọn (Vietcombank Quick Search Pill) -->
+          <div class="max-w-md">
+            <div class="relative flex items-center rounded-full bg-white shadow-md border border-white/90 px-4 py-3 focus-within:ring-2 focus-within:ring-brand-primary transition-shadow">
+              <span class="pr-3 text-ink-muted" aria-hidden="true">
                 <svg
-                  class="w-5 h-5"
+                  class="w-4 h-4 sm:w-5 sm:h-5"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   viewBox="0 0 24 24"
                 >
                   <path
@@ -416,131 +381,60 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
               <input
                 type="text"
                 aria-label="Tìm kiếm sản phẩm, dịch vụ"
-                placeholder="Tìm nhanh: Vay trồng trọt chăn nuôi, gửi tiết kiệm, QR Zalo..."
-                class="w-full bg-transparent text-xs sm:text-sm text-ink-base placeholder:text-ink-muted focus:outline-hidden py-1.5 font-medium"
+                placeholder="Tiền gửi tiết kiệm, vay vốn, lãi suất..."
+                class="w-full bg-transparent text-xs sm:text-sm text-ink-base placeholder:text-ink-muted focus:outline-hidden font-medium"
               />
-              <a
-                href="#lai-suat"
-                class="inline-flex items-center px-4 py-2 rounded-full bg-brand-primary hover:bg-brand-primary-hover text-white text-xs sm:text-sm font-bold transition-colors shrink-0 shadow-xs"
-              >
-                Tra cứu
-              </a>
             </div>
-            <!-- Từ khóa gợi ý nhanh -->
-            <div class="flex flex-wrap items-center gap-2 mt-2.5 px-2 text-xs text-ink-base">
-              <span class="font-bold text-brand-dark">Bà con quan tâm:</span>
-              <a
-                href="#ket-noi-zalo"
-                class="text-brand-dark hover:text-brand-primary underline underline-offset-2 font-semibold"
-              >
-                Quét QR Zalo hỏi thủ tục vay
-              </a>
-              <span class="text-ink-muted" aria-hidden="true">
-                &bull;
-              </span>
-              <a
-                href="#tinh-lai"
-                class="text-brand-dark hover:text-brand-primary underline underline-offset-2 font-semibold"
-              >
-                Tính tiền lãi tiết kiệm
-              </a>
-              <span class="text-ink-muted" aria-hidden="true">
-                &bull;
-              </span>
-              <a
-                href="#san-pham"
-                class="text-brand-dark hover:text-brand-primary underline underline-offset-2 font-semibold"
-              >
-                Vay mùa vụ nông thôn
-              </a>
-            </div>
-          </div>
-
-          <!-- Hai nút hành động chính -->
-          <div
-            data-hero-actions
-            class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-1"
-          >
-            <LinkButton
-              data-hero-btn
-              href="#lai-suat"
-              variant="primary"
-              class="w-full sm:w-auto text-center"
-            >
-              Xem biểu lãi suất
-            </LinkButton>
-            <LinkButton
-              data-hero-btn
-              href="#ket-noi-zalo"
-              variant="secondary"
-              class="w-full sm:w-auto text-center bg-white"
-            >
-              Tư vấn qua Zalo Quỹ
-            </LinkButton>
           </div>
         </div>
 
-        <!-- Cột phải (6 cột): Tổ hợp QR Zalo + Thẻ Sổ Tiết Kiệm lắc nhẹ + Cụm Chủ đề Nông thôn (Bố cục chuẩn VCB) -->
-        <div class="lg:col-span-6">
-          <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
-            <!-- Khối 1 (Trái - 5 cột): Hộp Mã QR Zalo Mẫu kèm mũi tên vẽ tay kiểu VCB ("Quét để liên hệ") -->
-            <div class="sm:col-span-5 flex flex-col items-center">
-              <!-- Mũi tên cong hướng dẫn quét mã QR kiểu Vietcombank -->
-              <div class="mb-2 flex flex-col items-center text-center">
-                <span class="inline-block px-3 py-1 rounded-full bg-white border border-emerald-300 text-xs font-extrabold text-brand-dark shadow-2xs">
-                  Quét Zalo gặp cán bộ Quỹ
+        <!-- Cột phải (7 cột): Bố cục 3 cụm ngang tinh gọn chuẩn VCB (Hộp QR Zalo vuông + Thẻ đứng nghiêng nhẹ + Tiêu đề nghệ thuật trên nền trời) -->
+        <div class="lg:col-span-7">
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-5 sm:gap-6 lg:gap-7">
+            <!-- Cụm 1: Mã QR Zalo vuông trắng tinh gọn + Mũi tên cong kiểu VCB ("Quét để liên hệ") -->
+            <div class="flex flex-col items-center shrink-0 sm:-mt-6">
+              <div class="mb-1.5 flex flex-col items-center text-center">
+                <span class="text-xs font-extrabold text-brand-dark tracking-tight italic">
+                  Quét Zalo liên hệ
                 </span>
                 <svg
-                  class="w-16 h-7 text-brand-dark mt-0.5"
-                  viewBox="0 0 80 32"
+                  class="w-16 h-6 text-brand-primary"
+                  viewBox="0 0 80 28"
                   fill="none"
                   aria-hidden="true"
                 >
                   <path
-                    d="M12 6 C32 2, 48 10, 44 26"
+                    d="M64 24 C54 6, 32 4, 16 14"
                     stroke="currentColor"
-                    stroke-width="2.2"
+                    stroke-width="2"
                     stroke-linecap="round"
-                    stroke-dasharray="3 3"
                   />
                   <path
-                    d="M38 21 L44 27 L50 20"
+                    d="M22 8 L15 15 L24 17"
                     stroke="currentColor"
-                    stroke-width="2.2"
+                    stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
               </div>
 
-              <!-- Hộp QR Zalo nổi (animate-qr-float) -->
               <a
                 href={zaloHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                title="Quét mã QR hoặc bấm để mở Zalo liên hệ Quỹ tín dụng nhân dân"
-                class="animate-qr-float group relative rounded-3xl bg-white p-4 shadow-xl border-2 border-emerald-300 hover:border-brand-primary transition-colors flex flex-col items-center w-full max-w-[210px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus"
+                title="Quét mã QR Zalo hoặc bấm để liên hệ Quỹ tín dụng nhân dân"
+                aria-label="Quét mã QR Zalo liên hệ Quỹ tín dụng nhân dân"
+                class="animate-qr-float group relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-white p-2.5 shadow-xl border-2 border-white hover:border-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus"
               >
-                <!-- Header nhỏ trên thẻ QR -->
-                <div class="flex items-center justify-between w-full mb-2 px-1">
-                  <span class="inline-flex items-center gap-1 text-[11px] font-extrabold text-[#0052cc]">
-                    <span class="w-2 h-2 rounded-full bg-[#0068ff]"></span>
-                    ZALO HỖ TRỢ
-                  </span>
-                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-brand-dark">
-                    QR Mẫu
-                  </span>
-                </div>
-
-                <!-- Khung mã QR SVG sắc nét + Tia quét hoạt ảnh (animate-qr-scan) -->
-                <div class="relative w-32 h-32 rounded-xl bg-white p-1.5 border border-slate-200 overflow-hidden">
-                  <!-- Thanh tia quét laser xanh ngọc di chuyển mượt -->
+                <div class="relative w-full h-full rounded-lg bg-white overflow-hidden">
+                  <!-- Tia quét hoạt ảnh tinh tế -->
                   <div
                     class="animate-qr-scan absolute inset-x-1 top-1 h-1 rounded-full bg-gradient-to-r from-transparent via-[#00a85a] to-transparent pointer-events-none z-20"
                     aria-hidden="true"
                   ></div>
 
-                  <!-- Mã QR Vector Mẫu chuẩn bố cục Finder Pattern -->
+                  <!-- Mã QR Vector Mẫu sắc nét -->
                   <svg
                     viewBox="0 0 120 120"
                     class="w-full h-full text-slate-900"
@@ -548,11 +442,9 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                     aria-hidden="true"
                   >
                     <rect width="120" height="120" fill="#ffffff" />
-                    <!-- 3 Góc định vị chuẩn QR (Finder Patterns) -->
                     <path d="M8,8 h28 v28 h-28 z M13,13 v18 h18 v-18 z M17,17 h10 v10 h-10 z" />
                     <path d="M84,8 h28 v28 h-28 z M89,13 v18 h18 v-18 z M93,17 h10 v10 h-10 z" />
                     <path d="M8,84 h28 v28 h-28 z M13,89 v18 h18 v-18 z M17,93 h10 v10 h-10 z" />
-                    <!-- Các điểm dữ liệu QR mô phỏng -->
                     <rect x="42" y="8" width="6" height="6" />
                     <rect x="54" y="8" width="12" height="6" />
                     <rect x="72" y="8" width="6" height="6" />
@@ -579,13 +471,13 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                     <rect x="54" y="102" width="18" height="10" />
                     <rect x="78" y="96" width="12" height="6" />
                     <rect x="84" y="106" width="28" height="6" />
-                    <!-- Tâm QR: Huy hiệu Zalo xanh dương -->
+                    <!-- Tâm QR: Biểu tượng Zalo -->
                     <rect
-                      x="42"
-                      y="42"
-                      width="36"
-                      height="36"
-                      rx="8"
+                      x="44"
+                      y="44"
+                      width="32"
+                      height="32"
+                      rx="7"
                       fill="#0068ff"
                       stroke="#ffffff"
                       stroke-width="3"
@@ -595,7 +487,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                       y="64"
                       text-anchor="middle"
                       fill="#ffffff"
-                      font-size="12"
+                      font-size="11"
                       font-weight="800"
                       font-family="sans-serif"
                     >
@@ -603,106 +495,71 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                     </text>
                   </svg>
                 </div>
-
-                <!-- Thông tin số Zalo dưới mã QR -->
-                <div class="mt-2.5 text-center">
-                  <div class="text-xs font-extrabold text-ink-base">
-                    {zaloDisplay}
-                  </div>
-                  <div class="text-[11px] font-semibold text-brand-primary group-hover:underline mt-0.5">
-                    Bấm hoặc quét mở Zalo &nearr;
-                  </div>
-                </div>
               </a>
             </div>
 
-            <!-- Khối 2 (Phải - 7 cột): Thẻ Sổ Tiết Kiệm & Tín Dụng Nông Thôn lắc nhẹ + 3 Thẻ trụ cột kinh tế hộ gia đình -->
-            <div class="sm:col-span-7 space-y-4">
-              <!-- Khẩu hiệu chủ đề Nông thôn kiểu VCB Banner -->
-              <div class="rounded-2xl bg-white/90 border border-emerald-200 px-4 py-2.5 shadow-xs">
-                <div class="text-[11px] font-extrabold uppercase tracking-wider text-brand-primary">
-                  Đồng hành cùng nông thôn mới
-                </div>
-                <div class="text-sm sm:text-base font-extrabold text-brand-dark leading-snug">
-                  Vốn Kịp Mùa Vụ — Tiết Kiệm Sinh Lời An Tâm
-                </div>
+            <!-- Cụm 2: Thẻ đứng Sổ Tiết Kiệm nghiêng nhẹ & lắc định kỳ (giống thẻ đứng giữa của VCB) -->
+            <div class="w-48 sm:w-52 shrink-0 rounded-2xl bg-[#014d27] bg-gradient-to-b from-[#006d35] via-[#015a30] to-[#014d27] p-4 sm:p-5 text-white shadow-2xl border-2 border-white/40 animate-card-periodic-sway flex flex-col justify-between min-h-[240px] sm:min-h-[260px]">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold tracking-wider uppercase text-white">
+                  QTDND
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/30 text-[#ffd100]">
+                  DIV Bảo chứng
+                </span>
               </div>
 
-              <!-- Thẻ chính: Sổ Tiết Kiệm Thành Viên (có hiệu ứng lắc nhẹ định kỳ animate-card-periodic-sway) -->
-              <div class="relative z-10 rounded-3xl bg-[#014d27] bg-gradient-to-br from-[#006d35] via-[#015a30] to-[#014d27] p-5 sm:p-6 text-white shadow-2xl border-2 border-white/40 animate-card-periodic-sway transition-transform duration-300">
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#ffd100]"></span>
-                    <span class="text-xs uppercase font-extrabold tracking-wider text-white">
-                      Sổ Tiết Kiệm Thành Viên
-                    </span>
-                  </div>
-                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-black/30 text-white">
-                    Bảo hiểm DIV 100%
-                  </span>
+              <!-- Chip thẻ & Họa tiết bông lúa vàng -->
+              <div class="my-3 space-y-2">
+                <div class="w-9 h-7 rounded-md bg-amber-300/90 border border-amber-200/80 flex items-center justify-center">
+                  <div class="w-5 h-4 border border-amber-700/40 rounded-xs"></div>
                 </div>
-
-                <div class="my-4 space-y-1">
-                  <div class="text-xs text-white/95 font-medium">
-                    Lãi suất tiền gửi tiết kiệm lên đến:
+                <div class="pt-1">
+                  <div class="text-[11px] text-white/90 font-medium">
+                    Tiết kiệm lãi suất đến
                   </div>
-                  <div class="text-3xl sm:text-4xl font-extrabold text-white flex items-baseline gap-1">
+                  <div class="text-2xl sm:text-3xl font-extrabold text-[#ffd100] leading-none mt-0.5">
                     {maxDepositRate > 0
                       ? `${maxDepositRate.toString().replace('.', ',')}%`
                       : DEFAULT_FALLBACK_TEXT}
                     {maxDepositRate > 0 && (
-                      <span class="text-sm font-semibold text-white">/năm</span>
+                      <span class="text-xs font-semibold text-white">/năm</span>
                     )}
                   </div>
-                  <div class="text-xs text-white/90 pt-0.5">
-                    Nguồn vốn huy động tại chỗ phục vụ trực tiếp bà con xã nhà
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between text-xs border-t border-white/25 pt-3">
-                  <span class="font-semibold text-white">
-                    {formatText(site.short_name || site.name)}
-                  </span>
-                  <span class="text-white/95 font-medium">
-                    Hỗ trợ tận tình tại Hội sở &amp; PGD
-                  </span>
                 </div>
               </div>
 
-              <!-- Dải 3 thẻ nhỏ đại diện 3 mũi nhọn phát triển kinh tế nông thôn (giống hàng thẻ nhỏ bên phải của VCB) -->
-              <div class="grid grid-cols-3 gap-2">
+              <div class="border-t border-white/25 pt-2.5 flex items-center justify-between text-[11px]">
+                <span class="font-bold text-white truncate">Sổ Tiết Kiệm</span>
+                <span class="font-extrabold text-[#ffd100]">THÀNH VIÊN</span>
+              </div>
+            </div>
+
+            <!-- Cụm 3: Tiêu đề chủ đề Nông thôn nổi trực tiếp trên nền trời (không đóng khung hộp, thoáng như VCB) -->
+            <div class="text-center sm:text-left max-w-[260px] space-y-2.5">
+              <div class="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-brand-dark">
+                <span>{formatText(site.short_name || 'QTDND')}</span>
+                <span class="text-ink-muted font-normal">&times;</span>
+                <span class="text-brand-primary">Đồng hành Nông thôn</span>
+              </div>
+
+              <div class="space-y-1">
+                <div class="text-xl sm:text-2xl font-extrabold text-brand-dark leading-tight tracking-tight">
+                  Điểm tựa vốn quê hương
+                </div>
+                <div class="text-sm sm:text-base font-bold text-ink-base">
+                  Tiết kiệm an tâm — Vay vốn thuận lợi
+                </div>
+              </div>
+
+              <div class="pt-1">
                 <a
-                  href="#san-pham"
-                  class="rounded-xl bg-white p-2.5 border border-emerald-200 shadow-xs hover:border-brand-primary transition-colors text-left"
+                  href={zaloHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block rounded-full bg-brand-primary hover:bg-brand-primary-hover text-white px-5 py-1.5 text-xs sm:text-sm font-bold shadow-sm transition-colors"
                 >
-                  <div class="text-xs font-extrabold text-brand-dark">
-                    01. Mùa vụ
-                  </div>
-                  <div class="text-[11px] text-ink-muted mt-0.5 leading-tight">
-                    Vay trồng trọt &amp; chăn nuôi
-                  </div>
-                </a>
-                <a
-                  href="#san-pham"
-                  class="rounded-xl bg-white p-2.5 border border-emerald-200 shadow-xs hover:border-brand-primary transition-colors text-left"
-                >
-                  <div class="text-xs font-extrabold text-brand-dark">
-                    02. Buôn bán
-                  </div>
-                  <div class="text-[11px] text-ink-muted mt-0.5 leading-tight">
-                    Vốn lưu động tiểu thương
-                  </div>
-                </a>
-                <a
-                  href="#san-pham"
-                  class="rounded-xl bg-white p-2.5 border border-emerald-200 shadow-xs hover:border-brand-primary transition-colors text-left"
-                >
-                  <div class="text-xs font-extrabold text-brand-dark">
-                    03. Chuyển tiền
-                  </div>
-                  <div class="text-[11px] text-ink-muted mt-0.5 leading-tight">
-                    Ngân hàng số Co-opBank
-                  </div>
+                  Hỗ trợ Zalo: {zaloDisplay}
                 </a>
               </div>
             </div>
@@ -712,31 +569,14 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
     </Container>
   </section>
 
-  <!-- 2. Thanh Tiện Ích Dock Nổi Hình Viên Thuốc (Vietcombank Floating Pill Dock) -->
+  <!-- 2. Thanh Tiện Ích Dock Nổi Hình Viên Thuốc 5 Mục Cân Đối (Vietcombank Floating Pill Dock) -->
   <section
     aria-label="Lối tắt tiện ích nhanh"
     class="relative z-30 -mt-12 sm:-mt-14 lg:-mt-16"
   >
     <Container>
       <div class="rounded-3xl sm:rounded-full bg-white shadow-lg border border-emerald-200/80 p-3 sm:p-4 lg:py-4 lg:px-8">
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 items-center">
-          <a
-            href="#ket-noi-zalo"
-            class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group"
-          >
-            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform font-extrabold text-xs">
-              Zalo
-            </div>
-            <div class="min-w-0">
-              <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary truncate">
-                Quét QR Zalo
-              </div>
-              <div class="text-[11px] text-ink-muted truncate">
-                Hỏi thủ tục nhanh
-              </div>
-            </div>
-          </a>
-
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4 items-center">
           <a
             href="#lai-suat"
             class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group"
@@ -800,7 +640,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
           </a>
 
           <a
-            href="#san-pham"
+            href="#quy-mo"
             class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group"
           >
             <div class="w-10 h-10 rounded-full bg-emerald-100 text-brand-dark flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -815,16 +655,16 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                 ></path>
               </svg>
             </div>
             <div class="min-w-0">
               <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary truncate">
-                Vốn nông thôn
+                Quy mô &amp; Uy tín
               </div>
               <div class="text-[11px] text-ink-muted truncate">
-                Nông nghiệp &amp; dịch vụ
+                Số liệu minh bạch
               </div>
             </div>
           </a>
@@ -861,7 +701,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
 
           <a
             href="/lien-he"
-            class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group"
+            class="flex items-center gap-3 p-2.5 sm:px-4 sm:py-2.5 rounded-full hover:bg-emerald-50 transition-colors group col-span-2 sm:col-span-1"
           >
             <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <svg
@@ -886,7 +726,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
             </div>
             <div class="min-w-0">
               <div class="text-xs sm:text-sm font-bold text-ink-base group-hover:text-brand-primary truncate">
-                Hội sở &amp; PGD
+                Hội sở &amp; Liên hệ
               </div>
               <div class="text-[11px] text-ink-muted truncate">
                 Chỉ đường Google Maps
@@ -897,171 +737,6 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
       </div>
     </Container>
   </section>
-
-  <!-- 3. Khối Chuyên đề POC: Đồng hành phát triển kinh tế nông thôn & Kết nối QR Zalo trực tuyến -->
-  <Section id="ket-noi-zalo" variant="default" class="pt-12 pb-8 scroll-mt-20">
-    <Container>
-      <div
-        data-page-content
-        class="rounded-3xl border border-emerald-200/90 bg-surface-brand-subtle p-6 sm:p-10 shadow-xs"
-      >
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <!-- Cột nội dung: 3 trụ cột hỗ trợ người dân nông thôn phát triển kinh tế -->
-          <div class="lg:col-span-8 space-y-6">
-            <div>
-              <span class="inline-block text-xs font-extrabold uppercase tracking-wider text-brand-dark bg-white px-3.5 py-1 rounded-full border border-emerald-200">
-                Gắn bó mật thiết với bà con nông thôn
-              </span>
-              <h2 class="text-2xl sm:text-3xl font-extrabold text-ink-base mt-2">
-                Hỗ trợ người dân phát triển kinh tế hộ gia đình &amp; nông thôn
-                mới
-              </h2>
-              <p class="text-sm sm:text-base text-ink-muted mt-2 leading-relaxed">
-                Quỹ tín dụng nhân dân {formatText(site.name)} hoạt động ngay tại
-                địa bàn xã nhà, thấu hiểu chu kỳ mùa vụ và nhu cầu thực tế của
-                từng thôn xóm để đưa nguồn vốn hợp tác xã đến tận tay bà con.
-              </p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div class="rounded-2xl bg-white p-5 border border-emerald-200/80 shadow-2xs space-y-2">
-                <div class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-100 text-brand-dark font-extrabold text-sm">
-                  01
-                </div>
-                <h3 class="text-base font-bold text-brand-primary">
-                  Thủ tục gần gũi, dễ hiểu
-                </h3>
-                <p class="text-xs sm:text-sm text-ink-muted leading-relaxed">
-                  Cán bộ Quỹ là người địa phương, hướng dẫn hồ sơ tận tình tại
-                  Hội sở hoặc qua Zalo trước khi bà con đến quầy.
-                </p>
-              </div>
-
-              <div class="rounded-2xl bg-white p-5 border border-emerald-200/80 shadow-2xs space-y-2">
-                <div class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-amber-100 text-amber-900 font-extrabold text-sm">
-                  02
-                </div>
-                <h3 class="text-base font-bold text-brand-primary">
-                  Giải ngân đúng thời vụ
-                </h3>
-                <p class="text-xs sm:text-sm text-ink-muted leading-relaxed">
-                  Đáp ứng kịp thời vốn mua giống, vật tư nông nghiệp, chăn nuôi
-                  và mở rộng buôn bán nhỏ tại địa phương.
-                </p>
-              </div>
-
-              <div class="rounded-2xl bg-white p-5 border border-emerald-200/80 shadow-2xs space-y-2">
-                <div class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-blue-100 text-blue-900 font-extrabold text-sm">
-                  03
-                </div>
-                <h3 class="text-base font-bold text-brand-primary">
-                  Gửi tiền an tâm tại chỗ
-                </h3>
-                <p class="text-xs sm:text-sm text-ink-muted leading-relaxed">
-                  Tiền gửi tiết kiệm được tham gia Bảo hiểm tiền gửi Việt Nam
-                  (DIV) và trực tiếp quay vòng xây dựng quê hương.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cột phải: Thẻ QR Zalo lớn để người dân quét bằng điện thoại -->
-          <div class="lg:col-span-4">
-            <div class="rounded-3xl bg-white p-6 border-2 border-emerald-300 shadow-md text-center space-y-4">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-extrabold text-[#0052cc]">
-                <span>Kết nối Zalo Chính Thức (QR Mẫu)</span>
-              </div>
-
-              <div class="mx-auto w-40 h-40 rounded-2xl bg-white p-2.5 border border-slate-200 shadow-2xs relative overflow-hidden">
-                <div
-                  class="animate-qr-scan absolute inset-x-2 top-2 h-1 rounded-full bg-gradient-to-r from-transparent via-[#0068ff] to-transparent pointer-events-none z-20"
-                  aria-hidden="true"
-                ></div>
-                <svg
-                  viewBox="0 0 120 120"
-                  class="w-full h-full text-slate-900"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <rect width="120" height="120" fill="#ffffff" />
-                  <path d="M8,8 h28 v28 h-28 z M13,13 v18 h18 v-18 z M17,17 h10 v10 h-10 z" />
-                  <path d="M84,8 h28 v28 h-28 z M89,13 v18 h18 v-18 z M93,17 h10 v10 h-10 z" />
-                  <path d="M8,84 h28 v28 h-28 z M13,89 v18 h18 v-18 z M17,93 h10 v10 h-10 z" />
-                  <rect x="42" y="8" width="6" height="6" />
-                  <rect x="54" y="8" width="12" height="6" />
-                  <rect x="72" y="8" width="6" height="6" />
-                  <rect x="42" y="20" width="12" height="6" />
-                  <rect x="60" y="20" width="6" height="12" />
-                  <rect x="72" y="26" width="6" height="6" />
-                  <rect x="42" y="32" width="6" height="6" />
-                  <rect x="8" y="42" width="12" height="6" />
-                  <rect x="26" y="42" width="6" height="12" />
-                  <rect x="8" y="54" width="6" height="6" />
-                  <rect x="18" y="60" width="12" height="6" />
-                  <rect x="8" y="72" width="18" height="6" />
-                  <rect x="84" y="42" width="6" height="12" />
-                  <rect x="96" y="42" width="16" height="6" />
-                  <rect x="90" y="56" width="12" height="6" />
-                  <rect x="106" y="56" width="6" height="12" />
-                  <rect x="84" y="68" width="16" height="6" />
-                  <rect x="42" y="84" width="12" height="6" />
-                  <rect x="60" y="84" width="6" height="12" />
-                  <rect x="72" y="84" width="12" height="6" />
-                  <rect x="90" y="84" width="12" height="12" />
-                  <rect x="106" y="84" width="6" height="6" />
-                  <rect x="42" y="96" width="6" height="16" />
-                  <rect x="54" y="102" width="18" height="10" />
-                  <rect x="78" y="96" width="12" height="6" />
-                  <rect x="84" y="106" width="28" height="6" />
-                  <rect
-                    x="42"
-                    y="42"
-                    width="36"
-                    height="36"
-                    rx="8"
-                    fill="#0068ff"
-                    stroke="#ffffff"
-                    stroke-width="3"
-                  />
-                  <text
-                    x="60"
-                    y="64"
-                    text-anchor="middle"
-                    fill="#ffffff"
-                    font-size="12"
-                    font-weight="800"
-                    font-family="sans-serif"
-                  >
-                    Zalo
-                  </text>
-                </svg>
-              </div>
-
-              <div class="space-y-1">
-                <p class="text-sm font-bold text-ink-base">
-                  Mở ứng dụng Zalo &rarr; Quét mã QR
-                </p>
-                <p class="text-xs text-ink-muted">
-                  Hoặc liên hệ trực tiếp số điện thoại / Zalo:{' '}
-                  <strong class="text-brand-dark">{zaloDisplay}</strong> (
-                  {schedule.morning_hours}, {schedule.afternoon_hours})
-                </p>
-              </div>
-
-              <a
-                href={zaloHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center justify-center w-full min-h-[44px] px-5 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-primary-hover text-white text-sm font-bold transition-colors shadow-xs"
-              >
-                Nhắn tin Zalo với Quỹ ngay &nearr;
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Container>
-  </Section>
 
   <!-- 4. Khối Slider Hình ảnh Hoạt động Tiêu biểu -->
   <section aria-label="Hình ảnh hoạt động tiêu biểu" class="py-8">
@@ -1215,219 +890,12 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
     </Container>
   </Section>
 
-  <!-- 6. Khối Sản Phẩm Theo Nhu Cầu Thành Viên (#san-pham) -->
-  <Section id="san-pham" variant="default" class="scroll-mt-20">
-    <Container>
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-        <div>
-          <span class="text-xs uppercase font-extrabold tracking-widest text-brand-primary">
-            Giải pháp tài chính hợp tác xã
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-bold text-ink-base mt-1">
-            Sản Phẩm &amp; Dịch Vụ Cung Ứng
-          </h2>
-          <p class="text-sm text-ink-muted mt-1 max-w-xl">
-            Thiết kế chuyên biệt cho thành viên, hộ sản xuất nông nghiệp, tiểu
-            thương và dịch vụ số liên kết Co-opBank.
-          </p>
-        </div>
-
-        <div
-          class="inline-flex flex-wrap p-1 rounded-full bg-surface-muted border border-border-default self-start md:self-auto"
-          role="tablist"
-          aria-label="Phân nhóm sản phẩm và dịch vụ"
-        >
-          <button
-            type="button"
-            id="btn-tab-tiet-kiem"
-            data-segment-tab="tab-tiet-kiem"
-            aria-controls="tab-tiet-kiem"
-            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-brand-primary text-white shadow-xs font-semibold transition-colors"
-            role="tab"
-            aria-selected="true"
-          >
-            Tiền gửi tiết kiệm
-          </button>
-          <button
-            type="button"
-            id="btn-tab-cho-vay"
-            data-segment-tab="tab-cho-vay"
-            aria-controls="tab-cho-vay"
-            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-colors font-medium"
-            role="tab"
-            aria-selected="false"
-          >
-            Cho vay thành viên
-          </button>
-          <button
-            type="button"
-            id="btn-tab-co-opbank"
-            data-segment-tab="tab-co-opbank"
-            aria-controls="tab-co-opbank"
-            class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm bg-surface-page text-ink-muted hover:text-brand-primary transition-colors font-medium"
-            role="tab"
-            aria-selected="false"
-          >
-            Dịch vụ số Co-opBank
-          </button>
-        </div>
-      </div>
-
-      <div
-        id="tab-tiet-kiem"
-        role="tabpanel"
-        aria-labelledby="btn-tab-tiet-kiem"
-        data-segment-panel
-        class="block"
-      >
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand-dark flex items-center justify-center font-extrabold text-xl">
-              1
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Tiết kiệm có kỳ hạn
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Kỳ hạn đa dạng từ 01 tháng đến 36 tháng. Lãi suất cạnh tranh, trả
-              lãi cuối kỳ hoặc định kỳ theo nhu cầu của thành viên.
-            </p>
-          </div>
-
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-extrabold text-xl">
-              2
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Tiết kiệm không kỳ hạn
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Giải pháp gửi tiền linh hoạt, thuận tiện nạp - rút bất cứ lúc nào
-              trong giờ giao dịch, vẫn sinh lời theo ngày an toàn.
-            </p>
-          </div>
-
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-extrabold text-xl">
-              3
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Tiết kiệm trả lãi định kỳ
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Nhận tiền lãi hàng tháng hoặc hàng quý đều đặn, tạo nguồn thu nhập
-              ổn định cho gia đình và thành viên.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div
-        id="tab-cho-vay"
-        role="tabpanel"
-        aria-labelledby="btn-tab-cho-vay"
-        data-segment-panel
-        class="hidden"
-      >
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand-dark flex items-center justify-center font-extrabold text-xl">
-              01
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Vay phát triển nông nghiệp &amp; nông thôn
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Hỗ trợ vốn mua cây con giống, phân bón, thức ăn chăn nuôi, máy móc
-              cơ giới hóa nông nghiệp và kinh tế trang trại.
-            </p>
-          </div>
-
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-extrabold text-xl">
-              02
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Vay kinh doanh thương mại &amp; dịch vụ
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Tiếp sức vốn lưu động cho các hộ kinh doanh buôn bán, tiểu thương,
-              xưởng sản xuất chế biến nông sản trên địa bàn.
-            </p>
-          </div>
-
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center font-extrabold text-xl">
-              03
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Vay phục vụ đời sống thành viên
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Đồng hành cùng gia đình thành viên sửa chữa nhà ở, mua sắm phương
-              tiện, trang thiết bị sinh hoạt và học tập.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div
-        id="tab-co-opbank"
-        role="tabpanel"
-        aria-labelledby="btn-tab-co-opbank"
-        data-segment-panel
-        class="hidden"
-      >
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-extrabold text-xl">
-              24/7
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Co-opBank Mobile Banking
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Ứng dụng ngân hàng số chuyển tiền nhanh 24/7, thanh toán hóa đơn
-              điện nước, nạp tiền điện thoại tiện lợi.
-            </p>
-          </div>
-
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center font-extrabold text-xl">
-              EMV
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Thẻ Chip Co-opBank NAPAS
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Hỗ trợ phát hành thẻ chip thanh toán an toàn, rút tiền tại hệ
-              thống máy ATM toàn quốc và thanh toán qua POS.
-            </p>
-          </div>
-
-          <div class="rounded-3xl border border-emerald-100 bg-surface-page p-7 space-y-4 shadow-xs">
-            <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-extrabold text-xl">
-              CK
-            </div>
-            <h3 class="text-lg font-bold text-brand-primary">
-              Dịch vụ chuyển tiền &amp; thanh toán
-            </h3>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Điểm kết nối nộp, rút tiền và thực hiện giao dịch chuyển tiền liên
-              kết với Ngân hàng Hợp tác xã Việt Nam (Co-opBank).
-            </p>
-          </div>
-        </div>
-      </div>
-    </Container>
-  </Section>
-
-  <!-- 7. Khối Số liệu quy mô (#quy-mo) -->
+  <!-- 6. Khối Số liệu quy mô (#quy-mo) -->
   <Section
     id="quy-mo"
     data-scale-section
-    variant="brand-subtle"
-    class="scroll-mt-20 border-y border-emerald-200/70"
+    variant="default"
+    class="scroll-mt-20"
   >
     <Container>
       <div class="space-y-8">
