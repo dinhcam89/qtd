@@ -284,7 +284,9 @@ test.describe('Trang Quy mô, Sản phẩm, Lãi suất', () => {
     for (let i = 0; i < mapCount; i++) {
       const link = mapLinks.nth(i);
       const href = await link.getAttribute('href');
-      expect(href).toMatch(/^https:\/\/(www\.)?google\.com\/maps/);
+      expect(href).toMatch(
+        /^https:\/\/((www\.)?google\.com\/maps|maps\.app\.goo\.gl\/)/
+      );
       expect(await link.getAttribute('target')).toBe('_blank');
       const rel = await link.getAttribute('rel');
       expect(rel).toContain('noopener');

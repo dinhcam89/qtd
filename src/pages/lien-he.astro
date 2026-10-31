@@ -28,7 +28,7 @@ const breadcrumbItems = [
 const mainPhoneHref = toTelHref(contact.phone);
 const mainHotlineHref = toTelHref(contact.hotline);
 const mainEmailHref = toMailtoHref(contact.email);
-const mainMapUrl = buildMapUrl(contact.address?.full);
+const mainMapUrl = contact.map_embed_url || buildMapUrl(contact.address?.full);
 
 const branches = contact.branches || [];
 const hasBrandAssets = process.env.QTD_FIXTURES !== '1';

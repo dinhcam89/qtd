@@ -49,7 +49,7 @@ const logoSrc = hasClassicLogo
 const phoneHref = toTelHref(contact.phone);
 const hotlineHref = toTelHref(contact.hotline);
 const emailHref = toMailtoHref(contact.email);
-const mapUrl = buildMapUrl(contact.address?.full);
+const mapUrl = contact.map_embed_url || buildMapUrl(contact.address?.full);
 
 const currentYear = new Date().getFullYear();
 ---

@@ -101,6 +101,110 @@
   transform: rotate(0deg) translate3d(0, -2px, 0);
 }
 
+/* Hoạt ảnh trang nền Nông thôn & QR Zalo trên trang POC (100% GPU transform/opacity) */
+@keyframes sunbeam-pulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.08) rotate(3deg);
+    opacity: 0.95;
+  }
+}
+
+@keyframes rice-breeze-wave {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(0, 2px, 0) scaleY(1.025);
+  }
+}
+
+@keyframes rice-stalk-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes water-flow-shimmer {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(12px, -2px, 0);
+    opacity: 0.85;
+  }
+}
+
+@keyframes qr-float-gentle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0);
+  }
+}
+
+@keyframes qr-scan-sweep {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(0, 108px, 0);
+    opacity: 0;
+  }
+}
+
+.animate-sunbeam-pulse {
+  animation: sunbeam-pulse 7s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.animate-rice-wave-slow {
+  animation: rice-breeze-wave 8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-rice-wave-delayed {
+  animation: rice-breeze-wave 9.5s ease-in-out 1.5s infinite;
+  transform-origin: bottom center;
+}
+
+.animate-rice-stalk-sway {
+  animation: rice-stalk-sway 4.2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-water-shimmer {
+  animation: water-flow-shimmer 6s ease-in-out infinite;
+}
+
+.animate-qr-float {
+  animation: qr-float-gentle 4s ease-in-out infinite;
+}
+
+.animate-qr-scan {
+  animation: qr-scan-sweep 3.2s ease-in-out infinite;
+}
+
 /* Tôn trọng người dùng giảm chuyển động prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *,
