@@ -20,6 +20,7 @@ interface Props {
   type?: 'website' | 'article';
   publishedTime?: Date | string | null;
   noindex?: boolean;
+  transparentHeader?: boolean;
 }
 
 const site = await getSite();
@@ -33,6 +34,7 @@ const {
   type = 'website',
   publishedTime = null,
   noindex = false,
+  transparentHeader = false,
 } = Astro.props;
 ---
 
@@ -101,9 +103,14 @@ const {
   <body class="min-h-screen flex flex-col bg-surface-page text-ink-base">
     <SkipLink targetId="main-content" />
 
-    <TopAnnouncementBar />
+    <TopAnnouncementBar transparent={transparentHeader} />
 
-    <Header siteName={site.name} contact={contact} schedule={schedule} />
+    <Header
+      siteName={site.name}
+      contact={contact}
+      schedule={schedule}
+      transparent={transparentHeader}
+    />
 
     <main id="main-content" class="flex-1 w-full">
       <slot />

@@ -86,6 +86,22 @@ function initMenu(): void {
       );
     });
   });
+
+  // Hiệu ứng Header trong suốt trên đỉnh trang chủ (kiểu Vietcombank) và chuyển sang nền trắng khi cuộn xuống
+  const siteHeader = document.getElementById('site-header');
+  if (siteHeader?.getAttribute('data-transparent-header') === 'true') {
+    const syncHeaderScroll = () => {
+      if (window.scrollY > 20) {
+        siteHeader.classList.remove('bg-transparent');
+        siteHeader.classList.add('bg-white/95', 'shadow-xs');
+      } else {
+        siteHeader.classList.add('bg-transparent');
+        siteHeader.classList.remove('bg-white/95', 'shadow-xs');
+      }
+    };
+    syncHeaderScroll();
+    window.addEventListener('scroll', syncHeaderScroll, { passive: true });
+  }
 }
 
 if (document.readyState === 'loading') {

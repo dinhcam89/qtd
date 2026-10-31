@@ -50,28 +50,35 @@ const validDepositOptions = rates.deposit_rates.filter(
 );
 ---
 
-<BaseLayout title={siteTitle} description={siteDescription}>
-  <!-- 1. Hero Section: Trang nền phong cảnh nông thôn & đồng lúa trải dài tràn viền (VCB Scenic Landscape Background) -->
-  <section class="relative w-full overflow-hidden bg-gradient-to-b from-[#d9f2e6] via-[#e8f7ee] to-[#f4faf6] pt-8 pb-24 sm:pt-12 sm:pb-28 lg:pt-16 lg:pb-36 border-b border-emerald-900/10">
-    <!-- SVG Vector Phong Cảnh Tràn Viền (Bầu trời, đồi núi, ruộng bậc thang lúa vàng, dòng suối uốn lượn) -->
+<BaseLayout
+  title={siteTitle}
+  description={siteDescription}
+  transparentHeader={true}
+>
+  <!-- 1. Hero Section: Trang nền bầu trời & phong cảnh đồng lúa bao trọn lên tận đỉnh trang phía sau Header giống Vietcombank -->
+  <section class="relative w-full pt-8 pb-24 sm:pt-12 sm:pb-28 lg:pt-16 lg:pb-36 border-b border-emerald-900/10">
+    <!-- Lớp nền Bầu trời & Phong cảnh tràn viền kéo ngược lên phía trên (-top-52) bao phủ toàn bộ Header & Top Bar -->
     <div
-      class="absolute inset-0 w-full h-full pointer-events-none select-none overflow-hidden"
+      class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#9ad6f4] via-[#c8edf0] via-40% to-[#ecf9f1] z-0"
       aria-hidden="true"
     >
+      <!-- Quầng sáng bầu trời dịu nhẹ phía trên (tạo chiều sâu không gian bầu trời giống VCB) -->
+      <div class="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.55)_0%,_rgba(255,255,255,0)_70%)]"></div>
+
       <!-- Ánh mặt trời dịu êm góc phải (dùng radial-gradient thay vì filter blur để cuộn trang mượt 60fps) -->
-      <div class="absolute top-2 right-8 sm:right-24 w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-[radial-gradient(circle,_rgba(253,224,71,0.65)_0%,_rgba(253,224,71,0)_70%)]"></div>
-      <div class="absolute top-10 right-16 sm:right-32 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#fef08a] border-2 border-white/60 shadow-md"></div>
+      <div class="absolute top-52 right-8 sm:right-24 w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-[radial-gradient(circle,_rgba(253,224,71,0.65)_0%,_rgba(253,224,71,0)_70%)]"></div>
+      <div class="absolute top-60 right-16 sm:right-32 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#fef08a] border-2 border-white/60 shadow-md"></div>
 
       <!-- Đám mây trôi mềm mại -->
       <svg
-        class="absolute top-12 left-10 w-48 h-16 opacity-40 text-white"
+        class="absolute top-60 left-10 w-48 h-16 opacity-50 text-white"
         fill="currentColor"
         viewBox="0 0 100 35"
       >
         <path d="M10 25 a15 15 0 0 1 25 -10 a20 20 0 0 1 35 0 a15 15 0 0 1 25 10 z"></path>
       </svg>
       <svg
-        class="hidden sm:block absolute top-20 right-1/3 w-64 h-20 opacity-30 text-white"
+        class="hidden sm:block absolute top-64 right-1/3 w-64 h-20 opacity-40 text-white"
         fill="currentColor"
         viewBox="0 0 100 35"
       >

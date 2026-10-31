@@ -2,6 +2,12 @@
 import Container from './ui/Container.astro';
 import { getPublishedNews, getNewsDetailHref } from '../lib/news';
 
+interface Props {
+  transparent?: boolean;
+}
+
+const { transparent = false } = Astro.props;
+
 const publishedNews = await getPublishedNews();
 const latestNotice =
   publishedNews.find((item) => item.data.category === 'thong-bao') ||
@@ -15,7 +21,12 @@ if (!latestNotice) {
 <div
   id="top-announcement-bar"
   data-notice-id={latestNotice.id}
-  class="relative bg-amber-500/15 border-b border-amber-500/25 text-amber-950 transition-all z-50 text-xs sm:text-sm font-medium"
+  class:list={[
+    'relative transition-all z-50 text-xs sm:text-sm font-medium',
+    transparent
+      ? 'bg-white/35 border-b border-emerald-950/10 text-ink-base'
+      : 'bg-amber-500/15 border-b border-amber-500/25 text-amber-950',
+  ]}
   role="region"
   aria-label="Thông báo mới"
 >

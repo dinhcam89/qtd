@@ -11,9 +11,10 @@ interface Props {
   siteName?: string;
   contact?: ContactData;
   schedule?: ScheduleData;
+  transparent?: boolean;
 }
 
-const { siteName = '' } = Astro.props;
+const { siteName = '', transparent = false } = Astro.props;
 const contact = Astro.props.contact ?? (await getContact());
 const schedule = Astro.props.schedule ?? (await getSchedule());
 
@@ -49,51 +50,85 @@ const logoSrc = hasClassicLogo
 ---
 
 <header
-  class="border-b border-emerald-900/10 bg-white/98 shadow-2xs sticky top-0 z-40 transition-colors"
+  class:list={[
+    'sticky top-0 z-40 transition-colors duration-200',
+    transparent
+      ? 'bg-transparent border-b border-emerald-950/10'
+      : 'border-b border-emerald-900/10 bg-white/98 shadow-2xs',
+  ]}
   id="site-header"
+  data-transparent-header={transparent ? 'true' : undefined}
 >
   <!-- 1. Thanh phân khúc khách hàng đỉnh trang kiểu Vietcombank (Customer Segment Bar) -->
   <nav
     aria-label="Phân khúc khách hàng"
-    class="border-b border-emerald-900/10 bg-surface-brand-subtle/60 text-xs sm:text-sm hidden md:block"
+    class:list={[
+      'text-xs sm:text-sm hidden md:block transition-colors duration-200',
+      transparent
+        ? 'border-b border-emerald-950/10 bg-transparent'
+        : 'border-b border-emerald-900/10 bg-surface-brand-subtle/60',
+    ]}
   >
     <Container class="flex items-center justify-between py-2">
-      <div class="flex items-center space-x-1.5 text-ink-muted">
-        <span class="font-bold text-brand-primary bg-surface-brand-subtle px-3.5 py-1 rounded-full border border-emerald-200 shadow-2xs">
+      <div class="flex items-center space-x-1.5 text-ink-base">
+        <span
+          class:list={[
+            'font-bold px-3.5 py-1 rounded-full shadow-2xs',
+            transparent
+              ? 'bg-white text-brand-dark border border-white'
+              : 'text-brand-primary bg-surface-brand-subtle border border-emerald-200',
+          ]}
+        >
           Thành viên &amp; Cá nhân
         </span>
         <a
           href="/san-pham"
-          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-surface-brand-subtle transition-colors"
+          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
         >
           Hộ sản xuất nông nghiệp
         </a>
         <a
           href="/san-pham"
-          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-surface-brand-subtle transition-colors"
+          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
         >
           Hộ kinh doanh &amp; Hợp tác xã
         </a>
         <a
           href="/kenh-chinh-thuc"
-          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-surface-brand-subtle transition-colors"
+          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
         >
           Ngân hàng số Co-opBank
         </a>
         <a
           href="/gioi-thieu"
-          class="px-3 py-1 rounded-full hover:text-brand-primary hover:bg-surface-brand-subtle transition-colors"
+          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
         >
           Về Quỹ
         </a>
       </div>
-      <div class="flex items-center gap-4 text-xs text-ink-muted font-medium">
-        <span>
-          Hotline:{' '}
-          <strong class="text-brand-primary font-bold">{contactPhone}</strong>
+      <div class="flex items-center gap-3 text-xs text-ink-base font-medium">
+        <span
+          class:list={[
+            'inline-flex items-center gap-1.5 px-3 py-1 rounded-full',
+            transparent
+              ? 'bg-white/80 border border-white/90 shadow-2xs'
+              : 'bg-surface-page border border-border-default',
+          ]}
+        >
+          <svg
+            class="w-3.5 h-3.5 text-brand-dark shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+          </svg>
+          <strong class="text-ink-base font-bold">{contactPhone}</strong>
         </span>
-        <span class="text-border-default">|</span>
-        <span>
+        <span class="text-ink-base/40" aria-hidden="true">
+          |
+        </span>
+        <span class="font-medium text-ink-base">
           Giờ phục vụ: {scheduleMorning} &amp; {scheduleAfternoon}
         </span>
       </div>
@@ -221,7 +256,7 @@ const logoSrc = hasClassicLogo
     <!-- Panel Menu Mobile -->
     <nav
       id="mobile-nav-panel"
-      class="hidden lg:hidden border-t border-border-default py-3"
+      class="hidden lg:hidden border-t border-border-default bg-white/95 rounded-b-2xl px-2 py-3 shadow-lg"
       aria-label="Điều hướng trên di động"
     >
       <ul class="flex flex-col space-y-1">
