@@ -41,14 +41,14 @@ const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
     breadcrumb={breadcrumbItems}
   />
 
-  <!-- Khối thông tin Trụ sở chính & Thời gian làm việc -->
+  <!-- Khối thông tin Hội sở chính & Thời gian làm việc -->
   <Section variant="default" class="py-10 sm:py-14">
     <Container>
       <div
         data-page-content
         class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch"
       >
-        <!-- Thông tin liên hệ trụ sở chính -->
+        <!-- Thông tin liên hệ hội sở chính -->
         <div class="rounded-3xl border border-emerald-200/80 bg-surface-page p-6 sm:p-8 flex flex-col h-full shadow-xs">
           <div class="flex items-center gap-3 mb-6">
             {hasBrandAssets && (
@@ -65,7 +65,7 @@ const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
                 Điểm giao dịch trung tâm
               </span>
               <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
-                Trụ sở chính
+                Hội sở chính
               </h2>
             </div>
           </div>
@@ -222,7 +222,7 @@ const hasBrandAssets = process.env.QTD_FIXTURES !== '1';
                 Vị trí trên bản đồ
               </h2>
               <p class="text-ink-muted mt-2">
-                Trụ sở chính Quỹ tín dụng nhân dân {siteName} tại{' '}
+                Hội sở chính Quỹ tín dụng nhân dân {siteName} tại{' '}
                 {formatContactText(contact.address?.full)}.
               </p>
             </div>

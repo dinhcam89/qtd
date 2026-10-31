@@ -10,8 +10,9 @@ function setupDynamicGreeting(): void {
   if (!greetingEl) return;
 
   const hour = new Date().getHours();
-  let greeting = 'Chào bạn';
-  let subGreeting = 'Hôm nay Quỹ có thể đồng hành gì cùng bạn?';
+  let greeting = 'Chào buổi sáng';
+  let subGreeting = 'Bạn đang tìm kiếm gì hôm nay?';
+  const isNight = hour >= 18 || hour < 5;
 
   if (hour >= 5 && hour < 12) {
     greeting = 'Chào buổi sáng';
@@ -21,8 +22,7 @@ function setupDynamicGreeting(): void {
     subGreeting = 'Bạn đang tìm kiếm giải pháp tài chính gì hôm nay?';
   } else {
     greeting = 'Chào buổi tối';
-    subGreeting =
-      'Khám phá các sản phẩm sinh lời và tích lũy an toàn cùng Quỹ.';
+    subGreeting = 'Bạn đang tìm kiếm gì hôm nay?';
   }
 
   const titleSpan = greetingEl.querySelector<HTMLElement>(
@@ -31,8 +31,24 @@ function setupDynamicGreeting(): void {
   const subSpan = greetingEl.querySelector<HTMLElement>(
     '[data-greeting-subtitle]'
   );
+  const dayIcon = greetingEl.querySelector<HTMLElement>(
+    '[data-greeting-icon-day]'
+  );
+  const nightIcon = greetingEl.querySelector<HTMLElement>(
+    '[data-greeting-icon-night]'
+  );
+
   if (titleSpan) titleSpan.textContent = greeting;
   if (subSpan) subSpan.textContent = subGreeting;
+  if (dayIcon && nightIcon) {
+    if (isNight) {
+      dayIcon.classList.add('hidden');
+      nightIcon.classList.remove('hidden');
+    } else {
+      dayIcon.classList.remove('hidden');
+      nightIcon.classList.add('hidden');
+    }
+  }
 }
 
 function setupPocCalculator(): void {

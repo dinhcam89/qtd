@@ -10,7 +10,7 @@ updated: 2026-10-01
 
 - Tên miền website chính thức duy nhất là fixture.example.invalid
 - Số điện thoại tiếp nhận yêu cầu và hotline công khai
-- Cán bộ nghiệp vụ chỉ giao dịch trực tiếp tại trụ sở và các điểm giao dịch đã niêm yết
+- Cán bộ nghiệp vụ chỉ giao dịch trực tiếp tại hội sở và các điểm giao dịch đã niêm yết
 
 ## Nếu bạn nghi ngờ bị giả mạo
 

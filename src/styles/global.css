@@ -70,6 +70,37 @@
   }
 }
 
+/* Hiệu ứng thẻ Sổ Tiết Kiệm Thành Viên lắc nhẹ định kỳ vài giây một lần (chỉ dùng transform trên GPU) */
+@keyframes card-periodic-sway {
+  0%,
+  68%,
+  100% {
+    transform: rotate(-2deg) translate3d(0, 0, 0);
+  }
+  74% {
+    transform: rotate(-4.5deg) translate3d(0, -3px, 0);
+  }
+  80% {
+    transform: rotate(1.5deg) translate3d(0, -3px, 0);
+  }
+  86% {
+    transform: rotate(-3.5deg) translate3d(0, -1px, 0);
+  }
+  92% {
+    transform: rotate(-0.5deg) translate3d(0, 0, 0);
+  }
+}
+
+.animate-card-periodic-sway {
+  animation: card-periodic-sway 4.5s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.animate-card-periodic-sway:hover {
+  animation-play-state: paused;
+  transform: rotate(0deg) translate3d(0, -2px, 0);
+}
+
 /* Tôn trọng người dùng giảm chuyển động prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *,

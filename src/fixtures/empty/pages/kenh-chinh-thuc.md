@@ -10,7 +10,7 @@ updated: 2026-01-01
 
 Để đảm bảo an toàn thông tin và quyền lợi của thành viên và khách hàng, các kênh thông tin điện tử và giao dịch của Quỹ tín dụng nhân dân luôn tuân theo các dấu hiệu nhận biết được công khai.
 
-[CẦN BỔ SUNG: Hướng dẫn chi tiết dấu hiệu nhận biết tên miền chính thức, địa chỉ trụ sở và số điện thoại liên lạc của quỹ]
+[CẦN BỔ SUNG: Hướng dẫn chi tiết dấu hiệu nhận biết tên miền chính thức, địa chỉ hội sở và số điện thoại liên lạc của quỹ]
 
 ## Nếu bạn nghi ngờ bị giả mạo
 

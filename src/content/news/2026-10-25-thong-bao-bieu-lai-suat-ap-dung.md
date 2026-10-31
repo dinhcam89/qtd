@@ -19,4 +19,4 @@ Quỹ tín dụng nhân dân Vạn Trạch xin trân trọng thông báo đến 
 - Lãi suất cho vay ưu đãi phục vụ phát triển nông nghiệp, nông thôn, kinh doanh dịch vụ và tiêu dùng đời sống của thành viên trên địa bàn hoạt động.
 - Thủ tục hồ sơ nhanh chóng, thẩm định rõ ràng, giải ngân kịp thời, phương thức trả nợ linh hoạt phù hợp với chu kỳ sản xuất kinh doanh.
 
-Quý thành viên và khách hàng có nhu cầu gửi tiết kiệm hoặc vay vốn, vui lòng tham khảo chi tiết tại trang [Biểu lãi suất](/lai-suat/) hoặc liên hệ trực tiếp trụ sở Quỹ và các điểm giao dịch để được hỗ trợ tận tình.
+Quý thành viên và khách hàng có nhu cầu gửi tiết kiệm hoặc vay vốn, vui lòng tham khảo chi tiết tại trang [Biểu lãi suất](/lai-suat/) hoặc liên hệ trực tiếp hội sở Quỹ và các điểm giao dịch để được hỗ trợ tận tình.
