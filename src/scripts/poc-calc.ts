@@ -66,7 +66,7 @@ function setupPocCalculator(): void {
   const termSelect =
     calcContainer.querySelector<HTMLSelectElement>('#calc-term-select');
   const interestRateDisplay = calcContainer.querySelector<HTMLElement>(
-    '#calc-interest-rate'
+    '#calc-interest-rate, #calc-applied-rate'
   );
   const estimatedProfitDisplay = calcContainer.querySelector<HTMLElement>(
     '#calc-estimated-profit'
@@ -78,7 +78,7 @@ function setupPocCalculator(): void {
   if (!amountInput || !termSelect || !estimatedProfitDisplay) return;
 
   function formatVnd(val: number): string {
-    return new Intl.NumberFormat('vi-VN').format(Math.round(val)) + ' đ';
+    return new Intl.NumberFormat('vi-VN').format(Math.round(val)) + ' đồng';
   }
 
   function calculate(): void {
@@ -95,7 +95,10 @@ function setupPocCalculator(): void {
       amountDisplay.textContent = formatVnd(rawVal);
     }
     if (interestRateDisplay) {
-      interestRateDisplay.textContent = `${rate.toString().replace('.', ',')}%/năm`;
+      interestRateDisplay.textContent =
+        interestRateDisplay.id === 'calc-applied-rate'
+          ? `Lãi suất áp dụng: ${rate.toString().replace('.', ',')}%/năm`
+          : `${rate.toString().replace('.', ',')}%/năm`;
     }
     if (estimatedProfitDisplay) {
       estimatedProfitDisplay.textContent = formatVnd(profit);
@@ -126,14 +129,16 @@ function setupPocCalculator(): void {
 
   // Preset quick buttons (10tr, 50tr, 100tr, 200tr, 500tr)
   const presetBtns = calcContainer.querySelectorAll<HTMLButtonElement>(
-    '[data-preset-amount]'
+    '[data-preset-amount], [data-amount-preset]'
   );
   presetBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const preset = btn.getAttribute('data-preset-amount');
-      if (preset && amountInput && amountSlider) {
+      const preset =
+        btn.getAttribute('data-preset-amount') ||
+        btn.getAttribute('data-amount-preset');
+      if (preset && amountInput) {
         amountInput.value = preset;
-        amountSlider.value = preset;
+        if (amountSlider) amountSlider.value = preset;
         calculate();
       }
     });
