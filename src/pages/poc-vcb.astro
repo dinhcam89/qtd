@@ -21,6 +21,7 @@ import {
   formatText,
 } from '../lib/format';
 import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+import { generateQrSvgPath } from '../lib/qr';
 
 const site = await getSite();
 const rates = await getRates();
@@ -51,7 +52,17 @@ const rawZalo = (contact.zalo || contact.phone || '0915942559').replace(
 const zaloHref = /^0\d{8,10}$/.test(rawZalo)
   ? `https://zalo.me/${rawZalo}`
   : 'https://zalo.me/0915942559';
-const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
+const qrSvgPath = generateQrSvgPath(zaloHref);
+
+/**
+ * THUỘC TÍNH CHỌN PHƯƠNG ÁN ẢNH NỀN TRANG CHỦ:
+ * Đổi giá trị của ACTIVE_HERO_BG_OPTION thành '1' | '2' | '3' | '4' (hoặc sửa data-active-bg-option bên dưới):
+ * - '1': Mái hiên Quê hương & Đèn lồng ấm áp (Phong cách Quán Nhà VCB)
+ * - '2': Cánh đồng Lúa chín & Lũy tre làng
+ * - '3': Cây đa cổ thụ & Làng quê thanh bình
+ * - '4': Đường tỉnh lộ uốn lượn qua cánh đồng lúa & thôn xóm
+ */
+const ACTIVE_HERO_BG_OPTION: string = '1';
 ---
 
 <BaseLayout
@@ -61,15 +72,22 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
 >
   <!-- 1. Hero Section POC: Bộ 4 Phương án Nền Màu nước Thoáng rộng kiểu Vietcombank & Khối QR Zalo -->
   <section class="relative w-full min-h-[calc(100vh-5.25rem)] md:min-h-[calc(100vh-8.5rem)] flex flex-col justify-center pt-2 pb-24 sm:pt-3 sm:pb-28 lg:pt-3 lg:pb-28 border-b border-emerald-900/10">
-    <!-- Lớp nền Bầu trời & Phong cảnh Màu nước bao phủ lên sát đỉnh trang (-top-52), 72% bầu trời mở thoáng đãng -->
+    <!-- Lớp nền Bầu trời & Phong cảnh Màu nước bao phủ lên sát đỉnh trang (-top-52), đổi số trong data-active-bg-option="1..4" để chọn ảnh nền -->
     <div
+      id="hero-bg-container"
+      data-active-bg-option={ACTIVE_HERO_BG_OPTION}
       class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#89ccf2] via-[#cbe8f6] via-48% to-[#eef8f2] z-0"
       aria-hidden="true"
     >
-      <!-- Option 1 (Mặc định): Mái hiên Quê hương & Đèn lồng ấm áp (Màu nước chuẩn phong cách VCB Quán Nhà) -->
+      <!-- Option 1: Mái hiên Quê hương & Đèn lồng ấm áp (Màu nước chuẩn phong cách VCB Quán Nhà) -->
       <div
         data-bg-option-layer="1"
-        class="absolute inset-0 w-full h-full opacity-100 transition-opacity duration-500"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '1'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
       >
         {hasBrandAssets && (
           <img
@@ -89,7 +107,12 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
       <!-- Option 2: Cánh đồng lúa Bậc thang Mùa vàng & Lũy tre làng -->
       <div
         data-bg-option-layer="2"
-        class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '2'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
       >
         {hasBrandAssets && (
           <img
@@ -108,7 +131,12 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
       <!-- Option 3: Cây đa Sân đình & Đồng cỏ Nông thôn Thanh bình -->
       <div
         data-bg-option-layer="3"
-        class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '3'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
       >
         {hasBrandAssets && (
           <img
@@ -127,7 +155,12 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
       <!-- Option 4: Đường tỉnh lộ xuyên cánh đồng lúa & nhà cửa thôn xóm cuối đường -->
       <div
         data-bg-option-layer="4"
-        class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '4'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
       >
         {hasBrandAssets && (
           <img
@@ -341,8 +374,8 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                 href={zaloHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                title="Quét mã QR Zalo hoặc bấm để liên hệ Quỹ tín dụng nhân dân"
-                aria-label="Quét mã QR Zalo liên hệ Quỹ tín dụng nhân dân"
+                title={`Quét mã QR Zalo liên hệ ${formatText(site.short_name || 'QTD Vạn Trạch')}`}
+                aria-label={`Quét mã QR Zalo liên hệ ${formatText(site.short_name || 'QTD Vạn Trạch')}`}
                 class="animate-qr-float group relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-white p-2 shadow-xl border-2 border-white hover:border-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus"
               >
                 <div class="relative w-full h-full rounded-lg bg-white overflow-hidden">
@@ -352,66 +385,39 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                     aria-hidden="true"
                   ></div>
 
-                  <!-- Mã QR Vector Mẫu sắc nét -->
+                  <!-- Mã QR Zalo chuẩn ISO/IEC 18004 sắc nét -->
                   <svg
-                    viewBox="0 0 120 120"
+                    viewBox="0 0 31 31"
+                    shape-rendering="crispEdges"
                     class="w-full h-full text-slate-900"
                     fill="currentColor"
                     aria-hidden="true"
                   >
-                    <rect width="120" height="120" fill="#ffffff" />
-                    <path d="M8,8 h28 v28 h-28 z M13,13 v18 h18 v-18 z M17,17 h10 v10 h-10 z" />
-                    <path d="M84,8 h28 v28 h-28 z M89,13 v18 h18 v-18 z M93,17 h10 v10 h-10 z" />
-                    <path d="M8,84 h28 v28 h-28 z M13,89 v18 h18 v-18 z M17,93 h10 v10 h-10 z" />
-                    <rect x="42" y="8" width="6" height="6" />
-                    <rect x="54" y="8" width="12" height="6" />
-                    <rect x="72" y="8" width="6" height="6" />
-                    <rect x="42" y="20" width="12" height="6" />
-                    <rect x="60" y="20" width="6" height="12" />
-                    <rect x="72" y="26" width="6" height="6" />
-                    <rect x="42" y="32" width="6" height="6" />
-                    <rect x="8" y="42" width="12" height="6" />
-                    <rect x="26" y="42" width="6" height="12" />
-                    <rect x="8" y="54" width="6" height="6" />
-                    <rect x="18" y="60" width="12" height="6" />
-                    <rect x="8" y="72" width="18" height="6" />
-                    <rect x="84" y="42" width="6" height="12" />
-                    <rect x="96" y="42" width="16" height="6" />
-                    <rect x="90" y="56" width="12" height="6" />
-                    <rect x="106" y="56" width="6" height="12" />
-                    <rect x="84" y="68" width="16" height="6" />
-                    <rect x="42" y="84" width="12" height="6" />
-                    <rect x="60" y="84" width="6" height="12" />
-                    <rect x="72" y="84" width="12" height="6" />
-                    <rect x="90" y="84" width="12" height="12" />
-                    <rect x="106" y="84" width="6" height="6" />
-                    <rect x="42" y="96" width="6" height="16" />
-                    <rect x="54" y="102" width="18" height="10" />
-                    <rect x="78" y="96" width="12" height="6" />
-                    <rect x="84" y="106" width="28" height="6" />
-                    <!-- Tâm QR: Biểu tượng Zalo -->
-                    <rect
-                      x="44"
-                      y="44"
-                      width="32"
-                      height="32"
-                      rx="7"
-                      fill="#0068ff"
-                      stroke="#ffffff"
-                      stroke-width="3"
-                    />
-                    <text
-                      x="60"
-                      y="64"
-                      text-anchor="middle"
-                      fill="#ffffff"
-                      font-size="11"
-                      font-weight="800"
-                      font-family="sans-serif"
-                    >
-                      Zalo
-                    </text>
+                    <rect width="31" height="31" fill="#ffffff" />
+                    <path d={qrSvgPath} />
                   </svg>
+
+                  <!-- Tâm QR ở giữa: Logo Quỹ nhỏ & Tên Quỹ -->
+                  <div
+                    aria-hidden="true"
+                    class="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+                  >
+                    <div class="bg-white rounded-md px-1 py-0.5 shadow-xs border border-emerald-700/30 flex flex-col items-center justify-center">
+                      {hasBrandAssets && (
+                        <img
+                          src="/images/logo-qtdnd-classic.png"
+                          alt=""
+                          width="22"
+                          height="22"
+                          decoding="async"
+                          class="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain"
+                        />
+                      )}
+                      <span class="text-[5px] sm:text-[5.5px] font-extrabold text-brand-primary uppercase leading-none tracking-tighter mt-0.5 whitespace-nowrap">
+                        {formatText(site.short_name || 'QTD Vạn Trạch')}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </a>
             </div>

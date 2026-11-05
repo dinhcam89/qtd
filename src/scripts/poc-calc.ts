@@ -16,7 +16,7 @@ function setupDynamicGreeting(): void {
 
   if (hour >= 5 && hour < 12) {
     greeting = 'Chào buổi sáng';
-    subGreeting = 'Chúc quý khách hàng và thành viêb một ngày mới an lành!';
+    subGreeting = 'Chúc quý khách hàng và thành viên một ngày mới an lành!';
   } else if (hour >= 12 && hour < 18) {
     greeting = 'Chào buổi chiều';
     subGreeting = 'Quý khách hàng đang tìm kiếm gì hôm nay?';
@@ -199,13 +199,16 @@ function setupSegmentTabs(): void {
 }
 
 function setupPocBgOptions(): void {
+  const container = document.querySelector<HTMLElement>(
+    '[data-active-bg-option]'
+  );
   const buttons = document.querySelectorAll<HTMLButtonElement>(
     '[data-bg-option-btn]'
   );
   const layers = document.querySelectorAll<HTMLElement>(
     '[data-bg-option-layer]'
   );
-  if (buttons.length === 0 || layers.length === 0) return;
+  if (layers.length === 0) return;
 
   function activateOption(optionId: string): void {
     layers.forEach((layer) => {
@@ -233,9 +236,10 @@ function setupPocBgOptions(): void {
     });
   }
 
-  // Hỗ trợ chọn sẵn qua query ?bg=1..4
+  // Hỗ trợ chọn sẵn qua thuộc tính data-active-bg-option="1..4" hoặc query ?bg=1..4
+  const attrBg = container?.getAttribute('data-active-bg-option');
   const params = new URLSearchParams(window.location.search);
-  const initialBg = params.get('bg');
+  const initialBg = params.get('bg') || attrBg;
   if (initialBg && ['1', '2', '3', '4'].includes(initialBg)) {
     activateOption(initialBg);
   }

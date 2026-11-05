@@ -22,6 +22,7 @@ import {
   formatText,
 } from '../lib/format';
 import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
+import { generateQrSvgPath } from '../lib/qr';
 
 const site = await getSite();
 const rates = await getRates();
@@ -48,6 +49,25 @@ const maxDepositRate = rates.deposit_rates.reduce((max: number, item) => {
 const validDepositOptions = rates.deposit_rates.filter(
   (r) => r.rate !== null && r.rate > 0.5
 );
+
+const rawZalo = (contact.zalo || contact.phone || '0915942559').replace(
+  /\s+/g,
+  ''
+);
+const zaloHref = /^0\d{8,10}$/.test(rawZalo)
+  ? `https://zalo.me/${rawZalo}`
+  : 'https://zalo.me/0915942559';
+const qrSvgPath = generateQrSvgPath(zaloHref);
+
+/**
+ * THUỘC TÍNH CHỌN PHƯƠNG ÁN ẢNH NỀN TRANG CHỦ:
+ * Đổi giá trị của ACTIVE_HERO_BG_OPTION thành '1' | '2' | '3' | '4' (hoặc sửa data-active-bg-option bên dưới):
+ * - '1': Mái hiên Quê hương & Đèn lồng ấm áp (Phong cách Quán Nhà VCB)
+ * - '2': Cánh đồng Lúa chín & Lũy tre làng
+ * - '3': Cây đa cổ thụ & Làng quê thanh bình
+ * - '4': Đường tỉnh lộ uốn lượn qua cánh đồng lúa & thôn xóm
+ */
+const ACTIVE_HERO_BG_OPTION: string = '1';
 ---
 
 <BaseLayout
@@ -57,80 +77,114 @@ const validDepositOptions = rates.deposit_rates.filter(
 >
   <!-- 1. Hero Section: Trang nền bầu trời & phong cảnh đồng lúa bao trọn lên tận đỉnh trang phía sau Header giống Vietcombank -->
   <section class="relative w-full min-h-[calc(100vh-5.25rem)] md:min-h-[calc(100vh-8.5rem)] flex flex-col justify-center pt-3 pb-24 sm:pt-4 sm:pb-28 lg:pt-4 lg:pb-28 border-b border-emerald-900/10">
-    <!-- Lớp nền Bầu trời & Phong cảnh tràn viền kéo ngược lên phía trên (-top-52) bao phủ toàn bộ Header & Top Bar -->
+    <!-- Lớp nền Bầu trời & Phong cảnh Màu nước bao phủ lên sát đỉnh trang (-top-52), đổi số trong data-active-bg-option="1..4" để chọn ảnh nền -->
     <div
-      class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#9ad6f4] via-[#c8edf0] via-40% to-[#ecf9f1] z-0"
+      id="hero-bg-container"
+      data-active-bg-option={ACTIVE_HERO_BG_OPTION}
+      class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#89ccf2] via-[#cbe8f6] via-48% to-[#eef8f2] z-0"
       aria-hidden="true"
     >
-      <!-- Quầng sáng bầu trời dịu nhẹ phía trên (tạo chiều sâu không gian bầu trời giống VCB) -->
-      <div class="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.6)_0%,_rgba(255,255,255,0)_72%)]"></div>
-
-      <!-- Ánh mặt trời dịu êm góc phải (dùng radial-gradient thay vì filter blur để cuộn trang mượt 60fps) -->
-      <div class="absolute top-52 right-8 sm:right-24 w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-[radial-gradient(circle,_rgba(253,224,71,0.65)_0%,_rgba(253,224,71,0)_70%)]"></div>
-      <div class="absolute top-60 right-16 sm:right-32 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#fef08a] border-2 border-white/60 shadow-md"></div>
-
-      <!-- Các dãy đồi xanh & ruộng lúa tầng tầng lớp lớp bao quát toàn cảnh -->
-      <svg
-        class="absolute bottom-0 inset-x-0 w-full h-[65%] sm:h-[72%] object-cover"
-        preserveAspectRatio="none"
-        viewBox="0 0 1440 450"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+      <!-- Option 1: Mái hiên Quê hương & Đèn lồng ấm áp (Màu nước chuẩn phong cách VCB Quán Nhà) -->
+      <div
+        data-bg-option-layer="1"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '1'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
       >
-        <!-- Dãy núi mờ phía xa -->
-        <path
-          d="M0,180 Q360,90 720,160 T1440,110 L1440,450 L0,450 Z"
-          fill="#a7d8b5"
-          opacity="0.35"
-        ></path>
+        {hasBrandAssets && (
+          <img
+            src="/images/poc-bg-option1.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover object-bottom"
+          />
+        )}
+        <div class="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#89ccf2] via-[#aedcf6]/70 to-transparent"></div>
+        <div class="absolute bottom-12 right-8 sm:right-24 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-[radial-gradient(circle,_rgba(254,240,138,0.45)_0%,_rgba(253,224,71,0)_70%)] animate-sunbeam-pulse"></div>
+      </div>
 
-        <!-- Đồi xanh tầng trung -->
-        <path
-          d="M0,230 Q320,150 680,220 T1440,170 L1440,450 L0,450 Z"
-          fill="#6cc287"
-          opacity="0.45"
-        ></path>
+      <!-- Option 2: Cánh đồng lúa Bậc thang Mùa vàng & Lũy tre làng -->
+      <div
+        data-bg-option-layer="2"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '2'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
+      >
+        {hasBrandAssets && (
+          <img
+            src="/images/poc-bg-option2.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover object-bottom"
+            loading="lazy"
+          />
+        )}
+        <div class="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#89ccf2] via-[#b8e2f8]/70 to-transparent"></div>
+        <div class="absolute top-52 right-12 sm:right-28 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-[radial-gradient(circle,_rgba(254,249,195,0.55)_0%,_rgba(254,240,138,0)_72%)] animate-sunbeam-pulse"></div>
+      </div>
 
-        <!-- Ruộng bậc thang lúa xanh trù phú (Tone xanh QTDND) -->
-        <path
-          d="M0,290 C340,210 620,310 980,240 C1180,200 1340,260 1440,250 L1440,450 L0,450 Z"
-          fill="#3db86e"
-          opacity="0.55"
-        ></path>
+      <!-- Option 3: Cây đa Sân đình & Đồng cỏ Nông thôn Thanh bình -->
+      <div
+        data-bg-option-layer="3"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '3'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
+      >
+        {hasBrandAssets && (
+          <img
+            src="/images/poc-bg-option3.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover object-bottom"
+            loading="lazy"
+          />
+        )}
+        <div class="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#8acdf3] via-[#bfe5f7]/70 to-transparent"></div>
+        <div class="absolute bottom-16 right-12 sm:right-24 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-[radial-gradient(circle,_rgba(254,240,138,0.4)_0%,_rgba(254,240,138,0)_70%)] animate-sunbeam-pulse"></div>
+      </div>
 
-        <!-- Đồi ruộng lúa vàng chín rộ (Tone vàng lúa QTDND) -->
-        <path
-          d="M0,350 C380,280 720,390 1100,310 C1280,270 1380,330 1440,320 L1440,450 L0,450 Z"
-          fill="#d8e878"
-          opacity="0.5"
-        ></path>
-
-        <!-- Dòng sông / suối xanh mát uốn lượn tượng trưng cho sự trù phú và dòng vốn lưu thông -->
-        <path
-          d="M0,420 C320,370 420,440 680,390 C960,340 1200,430 1440,380 L1440,450 L0,450 Z"
-          fill="#7dd3fc"
-          opacity="0.6"
-        ></path>
-        <path
-          d="M0,435 C340,395 440,450 700,410 C980,370 1220,445 1440,405 L1440,450 L0,450 Z"
-          fill="#38bdf8"
-          opacity="0.5"
-        ></path>
-
-        <!-- Thảm cỏ xanh mặt tiền -->
-        <path
-          d="M0,410 Q480,360 960,400 T1440,390 L1440,450 L0,450 Z"
-          fill="#1fad5c"
-          opacity="0.25"
-        ></path>
-      </svg>
+      <!-- Option 4: Đường tỉnh lộ xuyên cánh đồng lúa & nhà cửa thôn xóm cuối đường -->
+      <div
+        data-bg-option-layer="4"
+        class:list={[
+          'absolute inset-0 w-full h-full transition-opacity duration-500',
+          ACTIVE_HERO_BG_OPTION === '4'
+            ? 'opacity-100'
+            : 'opacity-0 pointer-events-none',
+        ]}
+      >
+        {hasBrandAssets && (
+          <img
+            src="/images/poc-bg-option4.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            class="w-full h-full object-cover object-bottom"
+            loading="lazy"
+          />
+        )}
+        <div class="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#89ccf2] via-[#bce2f7]/70 to-transparent"></div>
+        <div class="absolute bottom-16 inset-x-0 mx-auto w-64 h-48 rounded-full bg-[radial-gradient(circle,_rgba(254,240,138,0.4)_0%,_rgba(254,240,138,0)_70%)] animate-sunbeam-pulse"></div>
+      </div>
     </div>
 
     <!-- Nội dung chính Hero tràn rộng (Widescreen Full-Width) -->
     <Container class="relative z-10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-        <!-- Cột trái: Lời chào thời gian thực, Tiêu đề, Tìm kiếm & Hành động -->
-        <div class="lg:col-span-7 space-y-3.5">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-center">
+        <!-- Cột trái (5 cột): Lời chào thời gian thực, Tiêu đề, Tìm kiếm & Hành động -->
+        <div class="lg:col-span-5 space-y-3">
           <!-- Icon Mặt trời (Sáng/Chiều) & Mặt trăng (Tối) chuẩn phong cách Vietcombank -->
           <div data-dynamic-greeting class="flex items-center gap-3.5">
             <!-- Icon Ban ngày: Mặt trời tỏa nắng ấm áp & Mây trắng (5:00 - 17:59) -->
@@ -340,80 +394,165 @@ const validDepositOptions = rates.deposit_rates.filter(
           </div>
         </div>
 
-        <!-- Cột phải: Bộ thẻ tài chính & Sổ tiết kiệm xếp lớp sinh động (Vietcombank Floating Card Stack) -->
-        <div class="lg:col-span-5 flex justify-center lg:justify-end">
-          <div class="relative w-full max-w-md pb-5 sm:pb-6">
-            <!-- Thẻ 1: Sổ tiết kiệm thành viên uy tín (có hiệu ứng lắc nhẹ định kỳ vài giây một lần) -->
-            <div class="relative z-10 rounded-3xl bg-[#014d27] bg-gradient-to-br from-[#006d35] via-[#015a30] to-[#014d27] p-4 sm:p-5 text-white shadow-2xl border-2 border-white/40 animate-card-periodic-sway transition-transform duration-300">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#ffd100]"></span>
-                  <span class="text-xs uppercase font-extrabold tracking-wider text-white">
-                    Sổ Tiết Kiệm Thành Viên
+        <!-- Cột phải (7 cột): Khối QR Zalo (có Logo & Tên Quỹ ở giữa) + Bộ 2 thẻ xếp lớp sinh động -->
+        <div class="lg:col-span-7">
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-5 sm:gap-6 lg:gap-7">
+            <!-- Cụm 1: Mã QR Zalo vuông trắng tinh gọn + Mũi tên cong kiểu VCB ("Quét Zalo liên hệ") -->
+            <div class="flex flex-col items-center shrink-0 sm:-mt-6">
+              <div class="mb-1.5 flex flex-col items-center text-center">
+                <span class="text-xs font-extrabold text-brand-dark tracking-tight italic">
+                  Quét Zalo liên hệ
+                </span>
+                <svg
+                  class="w-16 h-6 text-brand-primary"
+                  viewBox="0 0 80 28"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M64 24 C54 6, 32 4, 16 14"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M22 8 L15 15 L24 17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+
+              <a
+                href={zaloHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`Quét mã QR Zalo liên hệ ${formatText(site.short_name || 'QTD Vạn Trạch')}`}
+                aria-label={`Quét mã QR Zalo liên hệ ${formatText(site.short_name || 'QTD Vạn Trạch')}`}
+                class="animate-qr-float group relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-white p-2 shadow-xl border-2 border-white hover:border-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus"
+              >
+                <div class="relative w-full h-full rounded-lg bg-white overflow-hidden">
+                  <!-- Tia quét hoạt ảnh tinh tế -->
+                  <div
+                    class="animate-qr-scan absolute inset-x-1 top-1 h-1 rounded-full bg-gradient-to-r from-transparent via-[#00a85a] to-transparent pointer-events-none z-20"
+                    aria-hidden="true"
+                  ></div>
+
+                  <!-- Mã QR Zalo chuẩn ISO/IEC 18004 sắc nét -->
+                  <svg
+                    viewBox="0 0 31 31"
+                    shape-rendering="crispEdges"
+                    class="w-full h-full text-slate-900"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <rect width="31" height="31" fill="#ffffff" />
+                    <path d={qrSvgPath} />
+                  </svg>
+
+                  <!-- Tâm QR ở giữa: Logo Quỹ nhỏ & Tên Quỹ -->
+                  <div
+                    aria-hidden="true"
+                    class="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+                  >
+                    <div class="bg-white rounded-md px-1 py-0.5 shadow-xs border border-emerald-700/30 flex flex-col items-center justify-center">
+                      {hasBrandAssets && (
+                        <img
+                          src="/images/logo-qtdnd-classic.png"
+                          alt=""
+                          width="22"
+                          height="22"
+                          decoding="async"
+                          class="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain"
+                        />
+                      )}
+                      <span class="text-[5px] sm:text-[5.5px] font-extrabold text-brand-primary uppercase leading-none tracking-tighter mt-0.5 whitespace-nowrap">
+                        {formatText(site.short_name || 'QTD Vạn Trạch')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Cụm 2: Bộ thẻ tài chính & Sổ tiết kiệm xếp lớp sinh động -->
+            <div class="relative w-full max-w-md pb-5 sm:pb-6 sm:pr-3">
+              <!-- Thẻ 1: Sổ tiết kiệm thành viên uy tín (có hiệu ứng lắc nhẹ định kỳ vài giây một lần) -->
+              <div class="relative z-10 rounded-3xl bg-[#014d27] bg-gradient-to-br from-[#006d35] via-[#015a30] to-[#014d27] p-4 sm:p-5 text-white shadow-2xl border-2 border-white/40 animate-card-periodic-sway transition-transform duration-300">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#ffd100]"></span>
+                    <span class="text-xs uppercase font-extrabold tracking-wider text-white">
+                      Sổ Tiết Kiệm Thành Viên
+                    </span>
+                  </div>
+                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-black/25 text-white">
+                    Bảo hiểm DIV 100%
                   </span>
                 </div>
-                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-black/25 text-white">
-                  Bảo hiểm DIV 100%
-                </span>
+
+                <div class="my-3.5 sm:my-4 space-y-1">
+                  <div class="text-xs text-white/95 font-medium">
+                    Lãi suất tiết kiệm hấp dẫn:
+                  </div>
+                  <div class="text-3xl sm:text-4xl font-extrabold text-white flex items-baseline gap-1">
+                    {maxDepositRate > 0
+                      ? `${maxDepositRate.toString().replace('.', ',')}%`
+                      : DEFAULT_FALLBACK_TEXT}
+                    {maxDepositRate > 0 && (
+                      <span class="text-sm font-semibold text-white">/năm</span>
+                    )}
+                  </div>
+                  <div class="text-xs text-white/90 pt-1">
+                    Kỳ hạn linh hoạt từ 01 đến 36 tháng &bull; An toàn tuyệt đối
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs border-t border-white/25 pt-3">
+                  <span class="font-semibold text-white">
+                    {formatText(site.short_name || site.name)}
+                  </span>
+                  <span class="text-white/90">
+                    {contact.phone
+                      ? `Hotline: ${contact.phone}`
+                      : 'Tổ chức BHTG'}
+                  </span>
+                </div>
               </div>
 
-              <div class="my-3.5 sm:my-4 space-y-1">
-                <div class="text-xs text-white/95 font-medium">
-                  Lãi suất tiết kiệm hấp dẫn:
+              <!-- Thẻ 2: Thẻ Chip Co-opBank Napas lấp ló phía sau -->
+              <div
+                class="hidden sm:block absolute -top-4 right-0 w-4/5 rounded-3xl bg-[#0f4c5c] p-4 text-white shadow-xl transform rotate-6 border border-white/30 -z-0"
+                aria-hidden="true"
+              >
+                <div class="flex justify-between items-center text-[11px] font-bold text-white">
+                  <span>Co-opBank NAPAS</span>
+                  <span>Thẻ chip chuẩn EMV</span>
                 </div>
-                <div class="text-3xl sm:text-4xl font-extrabold text-white flex items-baseline gap-1">
-                  {maxDepositRate > 0
-                    ? `${maxDepositRate.toString().replace('.', ',')}%`
-                    : DEFAULT_FALLBACK_TEXT}
-                  {maxDepositRate > 0 && (
-                    <span class="text-sm font-semibold text-white">/năm</span>
-                  )}
-                </div>
-                <div class="text-xs text-white/90 pt-1">
-                  Kỳ hạn linh hoạt từ 01 đến 36 tháng &bull; An toàn tuyệt đối
-                </div>
+                <div class="h-12"></div>
               </div>
 
-              <div class="flex items-center justify-between text-xs border-t border-white/25 pt-3">
-                <span class="font-semibold text-white">
-                  {formatText(site.short_name || site.name)}
-                </span>
-                <span class="text-white/90">
-                  {contact.phone ? `Hotline: ${contact.phone}` : 'Tổ chức BHTG'}
-                </span>
-              </div>
-            </div>
-
-            <!-- Thẻ 2: Thẻ Chip Co-opBank Napas lấp ló phía sau -->
-            <div
-              class="hidden sm:block absolute -top-4 -right-3 w-4/5 rounded-3xl bg-[#0f4c5c] p-4 text-white shadow-xl transform rotate-6 border border-white/30 -z-0"
-              aria-hidden="true"
-            >
-              <div class="flex justify-between items-center text-[11px] font-bold text-white">
-                <span>Co-opBank NAPAS</span>
-                <span>Thẻ chip chuẩn EMV</span>
-              </div>
-              <div class="h-12"></div>
-            </div>
-
-            <!-- Huy hiệu BHTG DIV nổi bật đè góc -->
-            <div class="relative sm:absolute mt-3 sm:mt-0 sm:bottom-0 sm:left-0 z-20 bg-white rounded-2xl p-2 sm:p-2.5 shadow-lg border border-emerald-200 flex items-center gap-2.5 max-w-xs">
-              {hasBrandAssets && (
-                <img
-                  src="/images/chung-nhan-bhtg-vn.png"
-                  alt="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
-                  width="70"
-                  height="48"
-                  decoding="async"
-                  class="h-8 sm:h-10 w-auto object-contain shrink-0"
-                />
-              )}
-              <div class="text-left">
-                <div class="text-xs font-bold text-ink-base leading-tight">
-                  Bảo Hiểm Tiền Gửi VN
-                </div>
-                <div class="text-[11px] text-brand-primary font-semibold">
-                  Tổ chức đã tham gia BHTG
+              <!-- Huy hiệu BHTG DIV nổi bật đè góc -->
+              <div class="relative sm:absolute mt-3 sm:mt-0 sm:bottom-0 sm:left-0 z-20 bg-white rounded-2xl p-2 sm:p-2.5 shadow-lg border border-emerald-200 flex items-center gap-2.5 max-w-xs">
+                {hasBrandAssets && (
+                  <img
+                    src="/images/chung-nhan-bhtg-vn.png"
+                    alt="Chứng nhận Bảo hiểm tiền gửi Việt Nam"
+                    width="70"
+                    height="48"
+                    decoding="async"
+                    class="h-8 sm:h-10 w-auto object-contain shrink-0"
+                  />
+                )}
+                <div class="text-left">
+                  <div class="text-xs font-bold text-ink-base leading-tight">
+                    Bảo Hiểm Tiền Gửi VN
+                  </div>
+                  <div class="text-[11px] text-brand-primary font-semibold">
+                    Tổ chức đã tham gia BHTG
+                  </div>
                 </div>
               </div>
             </div>
