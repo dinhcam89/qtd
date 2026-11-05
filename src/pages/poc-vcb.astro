@@ -60,7 +60,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
   transparentHeader={true}
 >
   <!-- 1. Hero Section POC: Bộ 4 Phương án Nền Màu nước Thoáng rộng kiểu Vietcombank & Khối QR Zalo -->
-  <section class="relative w-full min-h-[calc(100vh-8.5rem)] lg:min-h-[calc(100vh-11.75rem)] flex flex-col justify-center pt-3 pb-14 sm:pt-4 sm:pb-16 lg:pt-4 lg:pb-16 border-b border-emerald-900/10">
+  <section class="relative w-full min-h-[calc(100vh-9.5rem)] lg:min-h-[calc(100vh-10.75rem)] flex flex-col justify-center pt-2 pb-16 sm:pt-3 sm:pb-20 lg:pt-3 lg:pb-20 border-b border-emerald-900/10">
     <!-- Lớp nền Bầu trời & Phong cảnh Màu nước bao phủ lên sát đỉnh trang (-top-52), 72% bầu trời mở thoáng đãng -->
     <div
       class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#89ccf2] via-[#cbe8f6] via-48% to-[#eef8f2] z-0"
@@ -190,10 +190,10 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
       </div>
       <div
         data-page-content
-        class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-6 items-center py-2 sm:py-3 lg:py-4"
+        class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-center py-1 sm:py-2 lg:py-2"
       >
         <!-- Cột trái (5 cột): Tinh gọn đúng chuẩn VCB (Tên Quỹ + Lời chào thời gian thực + Thanh tìm kiếm viên thuốc) -->
-        <div class="lg:col-span-5 space-y-5">
+        <div class="lg:col-span-5 space-y-3.5">
           <h1 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-brand-dark">
             {formatText(site.name)}
           </h1>
@@ -343,7 +343,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                 rel="noopener noreferrer"
                 title="Quét mã QR Zalo hoặc bấm để liên hệ Quỹ tín dụng nhân dân"
                 aria-label="Quét mã QR Zalo liên hệ Quỹ tín dụng nhân dân"
-                class="animate-qr-float group relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-white p-2.5 shadow-xl border-2 border-white hover:border-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus"
+                class="animate-qr-float group relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-white p-2 shadow-xl border-2 border-white hover:border-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus"
               >
                 <div class="relative w-full h-full rounded-lg bg-white overflow-hidden">
                   <!-- Tia quét hoạt ảnh tinh tế -->
@@ -417,9 +417,9 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
             </div>
 
             <!-- Cụm 2: Bộ 2 thẻ xếp lớp như ở trang chủ hiện tại (Thẻ Sổ Tiết Kiệm Thành Viên ở trước lắc nhẹ + Thẻ Co-opBank NAPAS lấp ló phía sau) -->
-            <div class="relative w-full max-w-md pb-6 sm:pb-8 sm:pr-3">
+            <div class="relative w-full max-w-md pb-5 sm:pb-6 sm:pr-3">
               <!-- Thẻ 1: Sổ tiết kiệm thành viên uy tín (có hiệu ứng lắc nhẹ định kỳ vài giây một lần) -->
-              <div class="relative z-10 rounded-3xl bg-[#014d27] bg-gradient-to-br from-[#006d35] via-[#015a30] to-[#014d27] p-6 text-white shadow-2xl border-2 border-white/40 animate-card-periodic-sway transition-transform duration-300">
+              <div class="relative z-10 rounded-3xl bg-[#014d27] bg-gradient-to-br from-[#006d35] via-[#015a30] to-[#014d27] p-4 sm:p-5 text-white shadow-2xl border-2 border-white/40 animate-card-periodic-sway transition-transform duration-300">
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-[#ffd100]"></span>
@@ -432,7 +432,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                   </span>
                 </div>
 
-                <div class="my-6 space-y-1">
+                <div class="my-3.5 sm:my-4 space-y-1">
                   <div class="text-xs text-white/95 font-medium">
                     Lãi suất tiết kiệm hấp dẫn:
                   </div>
@@ -463,18 +463,18 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
 
               <!-- Thẻ 2: Thẻ Chip Co-opBank Napas lấp ló phía sau -->
               <div
-                class="hidden sm:block absolute -top-5 right-0 w-4/5 rounded-3xl bg-[#0f4c5c] p-5 text-white shadow-xl transform rotate-6 border border-white/30 -z-0"
+                class="hidden sm:block absolute -top-4 right-0 w-4/5 rounded-3xl bg-[#0f4c5c] p-4 text-white shadow-xl transform rotate-6 border border-white/30 -z-0"
                 aria-hidden="true"
               >
                 <div class="flex justify-between items-center text-[11px] font-bold text-white">
                   <span>Co-opBank NAPAS</span>
                   <span>Thẻ chip chuẩn EMV</span>
                 </div>
-                <div class="h-14"></div>
+                <div class="h-12"></div>
               </div>
 
               <!-- Huy hiệu BHTG DIV nổi bật đè góc -->
-              <div class="relative sm:absolute mt-3 sm:mt-0 sm:bottom-0 sm:left-0 z-20 bg-white rounded-2xl p-3 shadow-lg border border-emerald-200 flex items-center gap-3 max-w-xs">
+              <div class="relative sm:absolute mt-3 sm:mt-0 sm:bottom-0 sm:left-0 z-20 bg-white rounded-2xl p-2 sm:p-2.5 shadow-lg border border-emerald-200 flex items-center gap-2.5 max-w-xs">
                 {hasBrandAssets && (
                   <img
                     src="/images/chung-nhan-bhtg-vn.png"
@@ -482,7 +482,7 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
                     width="70"
                     height="48"
                     decoding="async"
-                    class="h-10 sm:h-12 w-auto object-contain shrink-0"
+                    class="h-8 sm:h-10 w-auto object-contain shrink-0"
                   />
                 )}
                 <div class="text-left">
@@ -504,10 +504,10 @@ const zaloDisplay = contact.zalo || contact.phone || '0915 942 559';
   <!-- 2. Thanh Tiện Ích Dock Nổi Hình Viên Thuốc 5 Mục Cân Đối (Vietcombank Floating Pill Dock) -->
   <section
     aria-label="Lối tắt tiện ích nhanh"
-    class="relative z-30 -mt-12 sm:-mt-14 lg:-mt-14 pb-8 sm:pb-10"
+    class="relative z-30 -mt-16 sm:-mt-[4.5rem] lg:-mt-[4.5rem] pb-8 sm:pb-10"
   >
     <Container>
-      <div class="rounded-3xl sm:rounded-full bg-white shadow-lg border border-emerald-200/80 p-3 sm:p-4 lg:py-4 lg:px-8">
+      <div class="rounded-3xl sm:rounded-full bg-white shadow-lg border border-emerald-200/80 p-2.5 sm:p-3 lg:py-3 lg:px-6">
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4 items-center">
           <a
             href="#lai-suat"
