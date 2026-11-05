@@ -59,7 +59,7 @@ const zaloHref = /^0\d{8,10}$/.test(rawZalo)
   transparentHeader={true}
 >
   <!-- 1. Hero Section POC: Bộ 4 Phương án Nền Màu nước Thoáng rộng kiểu Vietcombank & Khối QR Zalo -->
-  <section class="relative w-full pt-4 pb-28 sm:pt-6 sm:pb-36 lg:pt-8 lg:pb-44 border-b border-emerald-900/10">
+  <section class="relative w-full min-h-[calc(100vh-4.5rem)] lg:min-h-[calc(100vh-7.25rem)] flex flex-col justify-center pt-4 pb-28 sm:pt-6 sm:pb-36 lg:pt-8 lg:pb-44 border-b border-emerald-900/10">
     <!-- Lớp nền Bầu trời & Phong cảnh Màu nước bao phủ lên sát đỉnh trang (-top-52), 72% bầu trời mở thoáng đãng -->
     <div
       class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#89ccf2] via-[#cbe8f6] via-48% to-[#eef8f2] z-0"
@@ -503,7 +503,7 @@ const zaloHref = /^0\d{8,10}$/.test(rawZalo)
   <!-- 2. Thanh Tiện Ích Dock Nổi Hình Viên Thuốc 5 Mục Cân Đối (Vietcombank Floating Pill Dock) -->
   <section
     aria-label="Lối tắt tiện ích nhanh"
-    class="relative z-30 -mt-12 sm:-mt-14 lg:-mt-16"
+    class="relative z-30 -mt-16 sm:-mt-20 lg:-mt-24 pb-8 sm:pb-12"
   >
     <Container>
       <div class="rounded-3xl sm:rounded-full bg-white shadow-lg border border-emerald-200/80 p-3 sm:p-4 lg:py-4 lg:px-8">
@@ -670,7 +670,10 @@ const zaloHref = /^0\d{8,10}$/.test(rawZalo)
   </section>
 
   <!-- 4. Khối Slider Hình ảnh Hoạt động Tiêu biểu -->
-  <section aria-label="Hình ảnh hoạt động tiêu biểu" class="py-8">
+  <section
+    aria-label="Hình ảnh hoạt động tiêu biểu"
+    class="pt-10 pb-8 sm:pt-14 sm:pb-10"
+  >
     <Container>
       <HomeSlider />
     </Container>

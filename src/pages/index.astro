@@ -56,7 +56,7 @@ const validDepositOptions = rates.deposit_rates.filter(
   transparentHeader={true}
 >
   <!-- 1. Hero Section: Trang nền bầu trời & phong cảnh đồng lúa bao trọn lên tận đỉnh trang phía sau Header giống Vietcombank -->
-  <section class="relative w-full pt-8 pb-24 sm:pt-12 sm:pb-28 lg:pt-16 lg:pb-36 border-b border-emerald-900/10">
+  <section class="relative w-full min-h-[calc(100vh-4.5rem)] lg:min-h-[calc(100vh-7.25rem)] flex flex-col justify-center pt-8 pb-28 sm:pt-12 sm:pb-36 lg:pt-12 lg:pb-44 border-b border-emerald-900/10">
     <!-- Lớp nền Bầu trời & Phong cảnh tràn viền kéo ngược lên phía trên (-top-52) bao phủ toàn bộ Header & Top Bar -->
     <div
       class="absolute inset-x-0 -top-52 bottom-0 w-full pointer-events-none select-none overflow-hidden bg-gradient-to-b from-[#9ad6f4] via-[#c8edf0] via-40% to-[#ecf9f1] z-0"
@@ -426,7 +426,7 @@ const validDepositOptions = rates.deposit_rates.filter(
   <!-- 2. Thanh Tiện Ích Dock Nổi Hình Viên Thuốc (Vietcombank Floating Pill Dock) -->
   <section
     aria-label="Lối tắt tiện ích nhanh"
-    class="relative z-30 -mt-12 sm:-mt-14 lg:-mt-16"
+    class="relative z-30 -mt-16 sm:-mt-20 lg:-mt-24 pb-8 sm:pb-12"
   >
     <Container>
       <div class="rounded-3xl sm:rounded-full bg-white shadow-lg border border-emerald-200/80 p-3 sm:p-4 lg:py-4 lg:px-8">
