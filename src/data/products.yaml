@@ -1,4 +1,11 @@
 loan_products:
+  - name: 'Cho vay cầm cố sổ tiết kiệm'
+    summary: 'Hỗ trợ thành viên và khách hàng vay vốn nhanh chóng với tài sản bảo đảm là sổ tiết kiệm do Quỹ phát hành, đồng thời vẫn được hưởng lãi tiền gửi trên sổ tiết kiệm.'
+    target_customers: 'Thành viên và khách hàng cá nhân có sổ tiết kiệm tại Quỹ'
+    amount_limit: null
+    term: 'Phù hợp với thời hạn còn lại của sổ tiết kiệm'
+    conditions: 'Có sổ tiết kiệm hợp pháp do Quỹ phát hành'
+    required_documents: 'Sổ tiết kiệm bản gốc và CCCD còn hiệu lực'
   - name: '[CẦN BỔ SUNG: tên sản phẩm cho vay]'
     summary: null
     target_customers: null
@@ -15,6 +22,20 @@ deposit_products:
     conditions: null
     required_documents: null
 payment_services:
+  - name: 'Chuyển tiền nhanh 24/7'
+    summary: 'Dịch vụ chuyển tiền nhanh liên ngân hàng 24/7 qua hệ thống Ngân hàng Hợp tác xã Việt Nam (Co-opBank) và mạng lưới NAPAS, hỗ trợ giao dịch tại quầy và trên ứng dụng số.'
+    target_customers: 'Thành viên, khách hàng cá nhân và hộ kinh doanh'
+    amount_limit: null
+    term: null
+    conditions: 'Thực hiện tại quầy giao dịch của Quỹ hoặc qua tài khoản Co-opBank'
+    required_documents: 'CCCD còn hiệu lực'
+  - name: 'Dịch vụ rút tiền'
+    summary: 'Hỗ trợ rút tiền mặt trực tiếp tại quầy giao dịch của Quỹ và rút tiền qua hệ thống thẻ chip Co-opBank NAPAS tại các máy ATM trên toàn quốc.'
+    target_customers: 'Thành viên và khách hàng cá nhân'
+    amount_limit: null
+    term: null
+    conditions: 'Theo quy định giao dịch của Quỹ và hệ thống Co-opBank'
+    required_documents: 'CCCD hoặc sổ tiết kiệm / thẻ thanh toán hợp lệ'
   - name: 'Ngân hàng số Co-opbank Mobile Banking'
     summary: 'Hỗ trợ thành viên sử dụng dịch vụ ngân hàng số, chuyển tiền, thanh toán và quản lý tài khoản linh hoạt.'
     target_customers: 'Thành viên và khách hàng cá nhân có nhu cầu giao dịch trực tuyến'

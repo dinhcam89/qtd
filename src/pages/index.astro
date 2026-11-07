@@ -272,7 +272,7 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
           </div>
 
           <!-- Thanh tìm kiếm nhanh hình viên thuốc tinh gọn (Vietcombank Quick Search Pill) -->
-          <div class="max-w-md">
+          <div class="max-w-md space-y-2.5">
             <div class="relative flex items-center rounded-full bg-white shadow-md border border-white/90 px-4 py-3 focus-within:ring-2 focus-within:ring-brand-primary transition-shadow">
               <span class="pr-3 text-ink-muted" aria-hidden="true">
                 <svg
@@ -292,14 +292,36 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
               <input
                 type="text"
                 aria-label="Tìm kiếm sản phẩm, dịch vụ"
-                placeholder="Tiền gửi tiết kiệm, vay vốn, lãi suất..."
+                placeholder="Cho vay cầm cố sổ tiết kiệm, chuyển tiền 24/7, rút tiền..."
                 class="w-full bg-transparent text-xs sm:text-sm text-ink-base placeholder:text-ink-muted focus:outline-hidden font-medium"
               />
+            </div>
+
+            <!-- Gợi ý nghiệp vụ nhanh ngay dưới thanh tìm kiếm -->
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <a
+                href="/san-pham#cho-vay"
+                class="inline-flex items-center px-3 py-1 rounded-full bg-white/85 hover:bg-white text-brand-dark text-xs font-semibold shadow-2xs border border-emerald-900/10 transition-colors"
+              >
+                Cho vay cầm cố sổ tiết kiệm
+              </a>
+              <a
+                href="/san-pham#dich-vu-thanh-toan"
+                class="inline-flex items-center px-3 py-1 rounded-full bg-white/85 hover:bg-white text-brand-dark text-xs font-semibold shadow-2xs border border-emerald-900/10 transition-colors"
+              >
+                Chuyển tiền 24/7
+              </a>
+              <a
+                href="/san-pham#dich-vu-thanh-toan"
+                class="inline-flex items-center px-3 py-1 rounded-full bg-white/85 hover:bg-white text-brand-dark text-xs font-semibold shadow-2xs border border-emerald-900/10 transition-colors"
+              >
+                Rút tiền
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- Cột phải (7 cột): Khối QR Zalo (có Logo & Tên Quỹ ở giữa) + Bộ 2 thẻ xếp lớp sinh động -->
+        <!-- Cột phải (7 cột): Khối QR Zalo (có Logo PCF & Tên Quỹ ở giữa) + Bộ 2 thẻ xếp lớp sinh động -->
         <div class="lg:col-span-7">
           <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-5 sm:gap-6 lg:gap-7">
             <!-- Cụm 1: Mã QR Zalo vuông trắng tinh gọn + Mũi tên cong kiểu VCB ("Quét Zalo liên hệ") -->
@@ -357,7 +379,7 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
                     <path d={qrSvgPath} />
                   </svg>
 
-                  <!-- Tâm QR ở giữa: Logo Quỹ nhỏ & Tên Quỹ -->
+                  <!-- Tâm QR ở giữa: Logo PCF tách nền & Tên Quỹ -->
                   <div
                     aria-hidden="true"
                     class="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
@@ -365,7 +387,7 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
                     <div class="bg-white rounded-md px-1 py-0.5 shadow-xs border border-emerald-700/30 flex flex-col items-center justify-center">
                       {hasBrandAssets && (
                         <img
-                          src="/images/logo-qtdnd-classic.png"
+                          src="/images/logo.png"
                           alt=""
                           width="22"
                           height="22"
@@ -393,9 +415,6 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
                       Sổ Tiết Kiệm Thành Viên
                     </span>
                   </div>
-                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-black/25 text-white">
-                    Bảo hiểm DIV 100%
-                  </span>
                 </div>
 
                 <div class="my-3.5 sm:my-4 space-y-1">
@@ -434,7 +453,7 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
               >
                 <div class="flex justify-between items-center text-[11px] font-bold text-white">
                   <span>Co-opBank NAPAS</span>
-                  <span>Thẻ chip chuẩn EMV</span>
+                  <span>Chuyển tiền 24/7 &bull; Rút tiền</span>
                 </div>
                 <div class="h-12"></div>
               </div>

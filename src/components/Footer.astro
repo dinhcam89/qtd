@@ -20,10 +20,7 @@ const { site, contact, schedule } = Astro.props;
 const publicRoot =
   process.env.QTD_FIXTURES === '1' ? 'src/fixtures/public' : 'public';
 
-// Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo truyền thống)
-const hasClassicLogo = fs.existsSync(
-  path.resolve(process.cwd(), `${publicRoot}/images/logo-qtdnd-classic.png`)
-);
+// Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo PCF tách nền)
 const hasLogoPng = fs.existsSync(
   path.resolve(process.cwd(), `${publicRoot}/images/logo.png`)
 );
@@ -33,17 +30,20 @@ const hasLogoSvg = fs.existsSync(
 const hasLogoWebp = fs.existsSync(
   path.resolve(process.cwd(), `${publicRoot}/images/logo.webp`)
 );
+const hasClassicLogo = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/logo-qtdnd-classic.png`)
+);
 const hasBhtgCert = fs.existsSync(
   path.resolve(process.cwd(), `${publicRoot}/images/chung-nhan-bhtg-vn.png`)
 );
-const logoSrc = hasClassicLogo
-  ? '/images/logo-qtdnd-classic.png'
+const logoSrc = hasLogoPng
+  ? '/images/logo.png'
   : hasLogoSvg
     ? '/images/logo.svg'
     : hasLogoWebp
       ? '/images/logo.webp'
-      : hasLogoPng
-        ? '/images/logo.png'
+      : hasClassicLogo
+        ? '/images/logo-qtdnd-classic.png'
         : null;
 
 const phoneHref = toTelHref(contact.phone);

@@ -25,9 +25,9 @@ const scheduleAfternoon = schedule?.afternoon_hours || '13:30 - 17:00';
 const publicRoot =
   process.env.QTD_FIXTURES === '1' ? 'src/fixtures/public' : 'public';
 
-// Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo truyền thống)
-const hasClassicLogo = fs.existsSync(
-  path.resolve(process.cwd(), `${publicRoot}/images/logo-qtdnd-classic.png`)
+// Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo PCF tách nền)
+const hasLogoPng = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.png`)
 );
 const hasLogoSvg = fs.existsSync(
   path.resolve(process.cwd(), `${publicRoot}/images/logo.svg`)
@@ -35,17 +35,17 @@ const hasLogoSvg = fs.existsSync(
 const hasLogoWebp = fs.existsSync(
   path.resolve(process.cwd(), `${publicRoot}/images/logo.webp`)
 );
-const hasLogoPng = fs.existsSync(
-  path.resolve(process.cwd(), `${publicRoot}/images/logo.png`)
+const hasClassicLogo = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/logo-qtdnd-classic.png`)
 );
-const logoSrc = hasClassicLogo
-  ? '/images/logo-qtdnd-classic.png'
+const logoSrc = hasLogoPng
+  ? '/images/logo.png'
   : hasLogoSvg
     ? '/images/logo.svg'
     : hasLogoWebp
       ? '/images/logo.webp'
-      : hasLogoPng
-        ? '/images/logo.png'
+      : hasClassicLogo
+        ? '/images/logo-qtdnd-classic.png'
         : null;
 ---
 
@@ -73,23 +73,23 @@ const logoSrc = hasClassicLogo
       <div class="flex items-center space-x-1.5 text-ink-base">
         <span
           class:list={[
-            'font-bold px-3.5 py-1 rounded-full shadow-2xs',
+            'font-bold px-3 py-1 rounded-full',
             transparent
-              ? 'bg-white text-brand-dark border border-white'
-              : 'text-brand-primary bg-surface-brand-subtle border border-emerald-200',
+              ? 'bg-transparent text-brand-dark'
+              : 'text-brand-primary bg-surface-brand-subtle border border-emerald-200 shadow-2xs',
           ]}
         >
           Thành viên &amp; Cá nhân
         </span>
         <a
           href="/san-pham"
-          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
+          class="hidden px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
         >
           Hộ sản xuất nông nghiệp
         </a>
         <a
           href="/san-pham"
-          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
+          class="hidden px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
         >
           Hộ kinh doanh &amp; Hợp tác xã
         </a>
