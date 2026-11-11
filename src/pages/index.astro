@@ -21,7 +21,6 @@ import {
   formatText,
 } from '../lib/format';
 import { DEFAULT_FALLBACK_TEXT } from '../lib/constants';
-import { generateQrSvgPath } from '../lib/qr';
 
 const site = await getSite();
 const rates = await getRates();
@@ -47,19 +46,10 @@ const validDepositOptions = rates.deposit_rates.filter(
   (r) => r.rate !== null && r.rate > 0.5
 );
 
-const rawZalo = (contact.zalo || contact.phone || '0915942559').replace(
-  /\s+/g,
-  ''
-);
-const zaloHref = /^0\d{8,10}$/.test(rawZalo)
-  ? `https://zalo.me/${rawZalo}`
-  : 'https://zalo.me/0915942559';
-const qrSvgPath = generateQrSvgPath(zaloHref);
-
 /**
  * THUỘC TÍNH CHỌN PHƯƠNG ÁN ẢNH NỀN TRANG CHỦ:
  * Đổi giá trị của ACTIVE_HERO_BG_OPTION thành '1' | '2' | '3' | '4' (hoặc sửa data-active-bg-option bên dưới):
- * - '1': Mái hiên Quê hương & Đèn lồng ấm áp (Phong cách Quán Nhà VCB)
+ * - '1': Phong cảnh đồi cỏ & đường quê thanh bình (Màu nước chuẩn phong cách VCB)
  * - '2': Cánh đồng Lúa chín & Lũy tre làng
  * - '3': Cây đa cổ thụ & Làng quê thanh bình
  * - '4': Đường tỉnh lộ uốn lượn qua cánh đồng lúa & thôn xóm
@@ -72,8 +62,8 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
   description={siteDescription}
   transparentHeader={true}
 >
-  <!-- 1. Hero Section: Bộ 4 Phương án Nền Màu nước Thoáng rộng kiểu Vietcombank & Khối QR Zalo -->
-  <section class="relative w-full min-h-[calc(100vh-5.25rem)] md:min-h-[calc(100vh-8.5rem)] flex flex-col justify-center pt-2 pb-24 sm:pt-3 sm:pb-28 lg:pt-3 lg:pb-28 border-b border-emerald-900/10">
+  <!-- 1. Hero Section: Bộ 4 Phương án Nền Màu nước Thoáng rộng kiểu Vietcombank -->
+  <section class="relative w-full min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-7.25rem)] flex flex-col justify-center pt-2 pb-24 sm:pt-3 sm:pb-28 lg:pt-3 lg:pb-28 border-b border-emerald-900/10">
     <!-- Lớp nền Bầu trời & Phong cảnh Màu nước bao phủ lên sát đỉnh trang (-top-52), đổi số trong data-active-bg-option="1..4" để chọn ảnh nền -->
     <div
       id="hero-bg-container"
@@ -321,90 +311,10 @@ const ACTIVE_HERO_BG_OPTION: string = '1';
           </div>
         </div>
 
-        <!-- Cột phải (7 cột): Khối QR Zalo (có Logo PCF & Tên Quỹ ở giữa) + Bộ 2 thẻ xếp lớp sinh động -->
+        <!-- Cột phải (7 cột): Bộ 2 thẻ xếp lớp sinh động -->
         <div class="lg:col-span-7">
           <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-5 sm:gap-6 lg:gap-7">
-            <!-- Cụm 1: Mã QR Zalo vuông trắng tinh gọn + Mũi tên cong kiểu VCB ("Quét Zalo liên hệ") -->
-            <div class="flex flex-col items-center shrink-0 sm:-mt-6">
-              <div class="mb-1.5 flex flex-col items-center text-center">
-                <span class="text-xs font-extrabold text-brand-dark tracking-tight italic">
-                  Quét Zalo liên hệ
-                </span>
-                <svg
-                  class="w-16 h-6 text-brand-primary"
-                  viewBox="0 0 80 28"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M64 24 C54 6, 32 4, 16 14"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M22 8 L15 15 L24 17"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-
-              <a
-                href={zaloHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`Quét mã QR Zalo liên hệ ${formatText(site.short_name || 'QTD Vạn Trạch')}`}
-                aria-label={`Quét mã QR Zalo liên hệ ${formatText(site.short_name || 'QTD Vạn Trạch')}`}
-                class="animate-qr-float group relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-white p-2 shadow-xl border-2 border-white hover:border-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-border-focus"
-              >
-                <div class="relative w-full h-full rounded-lg bg-white overflow-hidden">
-                  <!-- Tia quét hoạt ảnh tinh tế -->
-                  <div
-                    class="animate-qr-scan absolute inset-x-1 top-1 h-1 rounded-full bg-gradient-to-r from-transparent via-[#00a85a] to-transparent pointer-events-none z-20"
-                    aria-hidden="true"
-                  ></div>
-
-                  <!-- Mã QR Zalo chuẩn ISO/IEC 18004 sắc nét -->
-                  <svg
-                    viewBox="0 0 31 31"
-                    shape-rendering="crispEdges"
-                    class="w-full h-full text-slate-900"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <rect width="31" height="31" fill="#ffffff" />
-                    <path d={qrSvgPath} />
-                  </svg>
-
-                  <!-- Tâm QR ở giữa: Logo PCF tách nền & Tên Quỹ -->
-                  <div
-                    aria-hidden="true"
-                    class="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
-                  >
-                    <div class="bg-white rounded-md px-1 py-0.5 shadow-xs border border-emerald-700/30 flex flex-col items-center justify-center">
-                      {hasBrandAssets && (
-                        <img
-                          src="/images/logo.png"
-                          alt=""
-                          width="22"
-                          height="22"
-                          decoding="async"
-                          class="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain"
-                        />
-                      )}
-                      <span class="text-[5px] sm:text-[5.5px] font-extrabold text-brand-primary uppercase leading-none tracking-tighter mt-0.5 whitespace-nowrap">
-                        {formatText(site.short_name || 'QTD Vạn Trạch')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <!-- Cụm 2: Bộ 2 thẻ xếp lớp (Thẻ Sổ Tiết Kiệm Thành Viên ở trước lắc nhẹ + Thẻ Co-opBank NAPAS lấp ló phía sau) -->
+            <!-- Bộ 2 thẻ xếp lớp (Thẻ Sổ Tiết Kiệm Thành Viên ở trước lắc nhẹ + Thẻ Co-opBank NAPAS lấp ló phía sau) -->
             <div class="relative w-full max-w-md pb-5 sm:pb-6 sm:pr-3">
               <!-- Thẻ 1: Sổ tiết kiệm thành viên uy tín (có hiệu ứng lắc nhẹ định kỳ vài giây một lần) -->
               <div class="relative z-10 rounded-3xl bg-[#014d27] bg-gradient-to-br from-[#006d35] via-[#015a30] to-[#014d27] p-4 sm:p-5 text-white shadow-2xl border-2 border-white/40 animate-card-periodic-sway transition-transform duration-300">
