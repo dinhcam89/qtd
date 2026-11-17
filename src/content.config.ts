@@ -13,12 +13,24 @@ import { productsSchema } from './lib/schemas/products';
 import { documentsSchema } from './lib/schemas/documents';
 
 const isFixtures = process.env.QTD_FIXTURES === '1';
+const isEmptyFixtures = process.env.QTD_FIXTURES === 'empty';
 
 function getCollectionBase(
   collectionName: string,
   defaultBase: string
 ): string {
-  if (isFixtures) {
+  if (isEmptyFixtures) {
+    const emptyDir = path.resolve(
+      process.cwd(),
+      'src',
+      'fixtures',
+      'empty',
+      collectionName
+    );
+    if (fs.existsSync(emptyDir)) {
+      return `src/fixtures/empty/${collectionName}`;
+    }
+  } else if (isFixtures) {
     const fixtureDir = path.resolve(
       process.cwd(),
       'src',
@@ -48,7 +60,10 @@ export const collections = {
     schema: ratesSchema,
   }),
   products: defineCollection({
-    loader: glob({ pattern: 'products.yaml', base: 'src/data' }),
+    loader: glob({
+      pattern: 'products.yaml',
+      base: getCollectionBase('products', 'src/data'),
+    }),
     schema: productsSchema,
   }),
   contact: defineCollection({
@@ -66,7 +81,10 @@ export const collections = {
     schema: scheduleSchema,
   }),
   leadership: defineCollection({
-    loader: glob({ pattern: 'leadership.yaml', base: 'src/data' }),
+    loader: glob({
+      pattern: 'leadership.yaml',
+      base: getCollectionBase('leadership', 'src/data'),
+    }),
     schema: leadershipSchema,
   }),
   news: defineCollection({

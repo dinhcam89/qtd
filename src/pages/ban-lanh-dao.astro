@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/ui/Container.astro';
 import Section from '../components/ui/Section.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
 import LinkButton from '../components/ui/LinkButton.astro';
 import { getSite, getLeadership } from '../lib/data';
 import { formatText } from '../lib/format';
@@ -28,58 +29,24 @@ function isValidPhoto(photo: string | null | undefined): boolean {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
-  <!-- Hero / Tiêu đề trang -->
-  <section class="border-b border-border-default bg-surface-muted py-8 md:py-12">
-    <Container>
-      <!-- Breadcrumb -->
-      <nav
-        aria-label="Đường dẫn điều hướng"
-        class="mb-4 text-sm text-ink-muted"
-      >
-        <ol class="flex items-center space-x-2">
-          <li>
-            <a
-              href="/"
-              class="hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-border-focus rounded"
-            >
-              Trang chủ
-            </a>
-          </li>
-          <li aria-hidden="true" class="text-border-strong">
-            /
-          </li>
-          <li>
-            <a
-              href="/gioi-thieu"
-              class="hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-border-focus rounded"
-            >
-              Giới thiệu
-            </a>
-          </li>
-          <li aria-hidden="true" class="text-border-strong">
-            /
-          </li>
-          <li class="font-medium text-ink-base" aria-current="page">
-            Ban lãnh đạo
-          </li>
-        </ol>
-      </nav>
-
-      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-brand-primary">
-        Ban lãnh đạo
-      </h1>
-      <p class="mt-3 text-base sm:text-lg text-ink-muted max-w-3xl">
-        Cơ cấu tổ chức Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ
-        tín dụng nhân dân {formatText(site.name)}.
-      </p>
-    </Container>
-  </section>
+  <PageHeader
+    title="Ban lãnh đạo"
+    description={`Cơ cấu tổ chức Hội đồng quản trị, Ban kiểm soát và Ban điều hành của Quỹ tín dụng nhân dân ${formatText(site.name)}.`}
+    breadcrumb={[
+      { label: 'Trang chủ', href: '/' },
+      { label: 'Giới thiệu', href: '/gioi-thieu' },
+      { label: 'Ban lãnh đạo' },
+    ]}
+  />
 
   <!-- Hội đồng quản trị -->
   <Section class="bg-surface-page">
     <Container>
       <div data-page-content class="space-y-6">
         <div class="border-b border-border-default pb-3">
+          <span class="inline-block text-xs uppercase font-extrabold tracking-widest text-brand-dark bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300 mb-1.5">
+            Cơ quan quản trị
+          </span>
           <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
             Hội đồng quản trị
           </h2>
@@ -91,8 +58,7 @@ function isValidPhoto(photo: string | null | undefined): boolean {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {leadership.board_of_directors.map((member: LeaderMember) => (
-            <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
-              <!-- Khối ảnh hoặc Avatar placeholder trung tính -->
+            <article class="flex flex-col items-center text-center p-6 sm:p-7 rounded-2xl bg-surface-page border border-emerald-200/80 shadow-xs hover:border-brand-primary hover:shadow-md transition-all">
               <div class="mb-4">
                 {isValidPhoto(member.photo) ? (
                   <img
@@ -101,11 +67,11 @@ function isValidPhoto(photo: string | null | undefined): boolean {
                     width="96"
                     height="96"
                     loading="lazy"
-                    class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-emerald-200"
                   />
                 ) : (
                   <div
-                    class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
+                    class="w-24 h-24 rounded-full bg-surface-brand-subtle border border-emerald-200 flex items-center justify-center text-brand-primary"
                     aria-hidden="true"
                   >
                     <svg
@@ -125,7 +91,7 @@ function isValidPhoto(photo: string | null | undefined): boolean {
                 )}
               </div>
 
-              <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
+              <p class="text-xs font-bold uppercase tracking-wider text-brand-primary mb-1">
                 {formatText(member.position)}
               </p>
               <h3 class="text-lg font-bold text-ink-base">
@@ -148,6 +114,9 @@ function isValidPhoto(photo: string | null | undefined): boolean {
     <Container>
       <div class="space-y-6">
         <div class="border-b border-border-default pb-3">
+          <span class="inline-block text-xs uppercase font-extrabold tracking-widest text-brand-dark bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300 mb-1.5">
+            Giám sát độc lập
+          </span>
           <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
             Ban kiểm soát
           </h2>
@@ -159,7 +128,7 @@ function isValidPhoto(photo: string | null | undefined): boolean {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {leadership.supervisory_board.map((member: LeaderMember) => (
-            <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
+            <article class="flex flex-col items-center text-center p-6 sm:p-7 rounded-2xl bg-surface-page border border-emerald-200/80 shadow-xs hover:border-brand-primary hover:shadow-md transition-all">
               <div class="mb-4">
                 {isValidPhoto(member.photo) ? (
                   <img
@@ -168,11 +137,11 @@ function isValidPhoto(photo: string | null | undefined): boolean {
                     width="96"
                     height="96"
                     loading="lazy"
-                    class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-emerald-200"
                   />
                 ) : (
                   <div
-                    class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
+                    class="w-24 h-24 rounded-full bg-surface-brand-subtle border border-emerald-200 flex items-center justify-center text-brand-primary"
                     aria-hidden="true"
                   >
                     <svg
@@ -192,7 +161,7 @@ function isValidPhoto(photo: string | null | undefined): boolean {
                 )}
               </div>
 
-              <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
+              <p class="text-xs font-bold uppercase tracking-wider text-brand-primary mb-1">
                 {formatText(member.position)}
               </p>
               <h3 class="text-lg font-bold text-ink-base">
@@ -215,6 +184,9 @@ function isValidPhoto(photo: string | null | undefined): boolean {
     <Container>
       <div class="space-y-6">
         <div class="border-b border-border-default pb-3">
+          <span class="inline-block text-xs uppercase font-extrabold tracking-widest text-brand-dark bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300 mb-1.5">
+            Tổ chức điều hành
+          </span>
           <h2 class="text-xl sm:text-2xl font-bold text-brand-primary">
             Ban điều hành
           </h2>
@@ -226,7 +198,7 @@ function isValidPhoto(photo: string | null | undefined): boolean {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {leadership.executive_board.map((member: LeaderMember) => (
-            <article class="flex flex-col items-center text-center p-6 rounded-lg bg-surface-page border border-border-default shadow-xs hover:border-brand-primary/50 transition-colors">
+            <article class="flex flex-col items-center text-center p-6 sm:p-7 rounded-2xl bg-surface-page border border-emerald-200/80 shadow-xs hover:border-brand-primary hover:shadow-md transition-all">
               <div class="mb-4">
                 {isValidPhoto(member.photo) ? (
                   <img
@@ -235,11 +207,11 @@ function isValidPhoto(photo: string | null | undefined): boolean {
                     width="96"
                     height="96"
                     loading="lazy"
-                    class="w-24 h-24 rounded-full object-cover border-2 border-border-default"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-emerald-200"
                   />
                 ) : (
                   <div
-                    class="w-24 h-24 rounded-full bg-surface-muted border border-border-default flex items-center justify-center text-ink-subtle"
+                    class="w-24 h-24 rounded-full bg-surface-brand-subtle border border-emerald-200 flex items-center justify-center text-brand-primary"
                     aria-hidden="true"
                   >
                     <svg
@@ -259,7 +231,7 @@ function isValidPhoto(photo: string | null | undefined): boolean {
                 )}
               </div>
 
-              <p class="text-xs font-semibold uppercase tracking-wider text-brand-primary mb-1">
+              <p class="text-xs font-bold uppercase tracking-wider text-brand-primary mb-1">
                 {formatText(member.position)}
               </p>
               <h3 class="text-lg font-bold text-ink-base">

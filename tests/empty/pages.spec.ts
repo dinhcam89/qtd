@@ -1,0 +1,211 @@
+import { test, expect } from '@playwright/test';
+import { setupPageGuards } from '../helpers';
+
+const DISCLAIMER =
+  'Lãi suất mang tính tham khảo, vui lòng liên hệ quỹ để biết chi tiết.';
+
+test.describe('Empty Fixture tests — Các trang nội dung ở trạng thái rỗng (dist-empty)', () => {
+  test('/lai-suat: có RATE_DISCLAIMER ngay cạnh bảng, thời điểm áp dụng hiển thị "Đang cập nhật", không ghép "tính đến"', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/lai-suat');
+
+    await expect(page.locator('h1')).toHaveText('Lãi suất');
+
+    // Hai bảng (tiền gửi, cho vay), mỗi bảng một thẻ <table> duy nhất
+    await expect(page.locator('table[data-responsive-table]')).toHaveCount(2);
+
+    // Disclaimer nằm cùng khối với các bảng
+    const block = page.locator('[data-rates-tables]');
+    await expect(block.locator('table')).toHaveCount(2);
+    await expect(block).toContainText(DISCLAIMER);
+
+    // Thời điểm áp dụng: effective_from null → "Đang cập nhật", không có "tính đến"
+    const effective = page.locator('[data-rates-effective]');
+    await expect(effective).toContainText('Thời điểm áp dụng:');
+    await expect(effective).toContainText('Đang cập nhật');
+    const bodyText = await page.locator('body').innerText();
+    expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
+    expect(bodyText).not.toMatch(/áp dụng từ.*đang cập nhật/i);
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/quy-mo: dùng StatItem, null hiển thị "Đang cập nhật", không có dòng "Tính đến" khi as_of null', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/quy-mo');
+
+    await expect(page.locator('h1')).toHaveText('Quy mô hoạt động');
+    const cards = page.locator('[data-stat-card]');
+    expect(await cards.count()).toBeGreaterThan(0);
+    await expect(page.locator('[data-stat-fallback]')).toHaveCount(
+      await cards.count()
+    );
+    await expect(page.locator('[data-stat-asof]')).toHaveCount(0);
+
+    const bodyText = await page.locator('body').innerText();
+    expect(bodyText).toContain('Số liệu: Đang cập nhật');
+    expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/san-pham: có nhóm cho vay và tiền gửi, trường chưa có hiển thị "Đang cập nhật"', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/san-pham');
+
+    await expect(page.locator('h1')).toHaveText('Sản phẩm');
+    await expect(page.locator('#cho-vay h2')).toHaveText('Sản phẩm cho vay');
+    await expect(page.locator('#tien-gui h2')).toHaveText('Sản phẩm tiền gửi');
+
+    const cards = page.locator('[data-product-card]');
+    expect(await cards.count()).toBeGreaterThan(0);
+    // Trường null phải hiện "Đang cập nhật", không có giá trị bịa
+    const first = cards.first();
+    await expect(first.locator('dd').first()).toHaveText('Đang cập nhật');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/quy-che: có đúng 1 h1, trạng thái rỗng hiển thị "Đang cập nhật", không có liên kết tới file không tồn tại', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/quy-che');
+
+    // 1. Có đúng 1 h1 với tiêu đề chuẩn
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Quy chế và văn bản');
+
+    // 2. Trạng thái rỗng hiển thị "Đang cập nhật"
+    const emptyBox = page.locator('[data-documents-empty]');
+    await expect(emptyBox).toBeVisible();
+    await expect(emptyBox).toHaveText('Đang cập nhật');
+
+    // 3. Không có liên kết nào tới file không tồn tại hoặc file giả
+    const docLinks = page.locator('main a[href^="/docs/"]');
+    await expect(docLinks).toHaveCount(0);
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/tin-tuc: trạng thái rỗng hiển thị "Đang cập nhật", không xuất hiện bài draft mẫu', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/tin-tuc/');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Tin tức');
+
+    const emptyBox = page.locator('[data-news-empty]');
+    await expect(emptyBox).toBeVisible();
+    await expect(emptyBox).toHaveText('Đang cập nhật');
+
+    await expect(page.locator('[data-news-item]')).toHaveCount(0);
+    await expect(
+      page.locator('nav[aria-label="Phân trang tin tức"]')
+    ).toHaveCount(0);
+
+    const content = await page.content();
+    expect(content).not.toContain('thong-bao-mau');
+    expect(content).not.toContain('Tiêu đề thông báo mẫu');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/thong-bao: hiển thị lịch làm việc, khối thông báo rỗng hiển thị "Đang cập nhật", không có draft', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/thong-bao');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Thông báo và lịch làm việc');
+
+    await expect(page.locator('[data-regular-schedule]')).toBeVisible();
+
+    const emptyNotices = page.locator('[data-notices-empty]');
+    await expect(emptyNotices).toBeVisible();
+    await expect(emptyNotices).toHaveText('Đang cập nhật');
+    await expect(page.locator('[data-notice-item]')).toHaveCount(0);
+
+    const content = await page.content();
+    expect(content).not.toContain('thong-bao-mau');
+    expect(content).not.toContain('Tiêu đề thông báo mẫu');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/lien-he: chế độ rỗng không có thẻ a[href^="tel:"], a[href^="mailto:"], liên kết bản đồ, iframe; hiển thị "Đang cập nhật" gọn gàng', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/lien-he');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Thông tin liên hệ');
+
+    // Không có link tel:, mailto:, map link, iframe
+    await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
+    await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
+    await expect(page.locator('a[data-map-link]')).toHaveCount(0);
+    await expect(page.locator('iframe')).toHaveCount(0);
+
+    // Hiển thị "Đang cập nhật" gọn gàng ở các khối liên hệ chính
+    const addressDd = page.locator('[data-contact-address] dd').first();
+    await expect(addressDd).toHaveText('Đang cập nhật');
+
+    const phoneDd = page.locator('[data-contact-phone] dd');
+    await expect(phoneDd).toHaveText('Đang cập nhật');
+
+    const emailDd = page.locator('[data-contact-email] dd');
+    await expect(emailDd).toHaveText('Đang cập nhật');
+
+    // Có banner dẫn tới /kenh-chinh-thuc
+    const bannerLink = page.locator('[data-official-channels-banner] a');
+    await expect(bannerLink).toBeVisible();
+    await expect(bannerLink).toHaveAttribute('href', '/kenh-chinh-thuc');
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+
+  test('/kenh-chinh-thuc: chế độ rỗng không có tel:, mailto:, iframe; domain hiển thị "Đang cập nhật"', async ({
+    page,
+  }) => {
+    const { consoleErrors, cspViolations } = await setupPageGuards(page);
+    await page.goto('/kenh-chinh-thuc');
+
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveText('Kênh thông tin chính thức');
+
+    // Không có link tel:, mailto:, iframe
+    await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
+    await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
+    await expect(page.locator('iframe')).toHaveCount(0);
+
+    // Domain hiển thị "Đang cập nhật" và không gắn link
+    const domainDd = page.locator('[data-official-domain] dd');
+    await expect(domainDd).toHaveText('Đang cập nhật');
+    await expect(domainDd.locator('a')).toHaveCount(0);
+
+    // Đề mục hướng dẫn an toàn
+    const content = page.locator('.content-body');
+    await expect(content).toBeVisible();
+
+    expect(consoleErrors).toEqual([]);
+    expect(cspViolations).toEqual([]);
+  });
+});

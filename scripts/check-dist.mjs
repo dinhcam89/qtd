@@ -3,7 +3,10 @@ import path from 'node:path';
 
 const distDir = process.argv[2] || 'dist';
 const isFixturesDist =
-  distDir === 'dist-fixtures' || distDir.includes('fixture');
+  distDir === 'dist-fixtures' ||
+  distDir === 'dist-empty' ||
+  distDir.includes('fixture') ||
+  distDir.includes('empty');
 let errors = [];
 
 function checkDistHtmlFiles() {
@@ -332,9 +335,9 @@ function checkDistHtmlFiles() {
         const fullPath = path.join(dir, entry.name);
         const relative = path.relative(distDir, fullPath).replace(/\\/g, '/');
 
-        if (entry.name === 'dist-fixtures') {
+        if (entry.name === 'dist-fixtures' || entry.name === 'dist-empty') {
           errors.push(
-            `${relative}: Phát hiện thư mục 'dist-fixtures' nằm trong dist.`
+            `${relative}: Phát hiện thư mục '${entry.name}' nằm trong dist.`
           );
         }
 
@@ -346,8 +349,11 @@ function checkDistHtmlFiles() {
           checkAllDistFiles(fullPath);
         } else if (entry.isFile()) {
           if (fixtureFileNames.has(entry.name)) {
+            const isFromEmpty = fs.existsSync(
+              path.resolve('src/fixtures/empty', entry.name)
+            );
             errors.push(
-              `${relative}: Phát hiện file '${entry.name}' bắt nguồn từ src/fixtures lọt vào dist.`
+              `${relative}: Phát hiện file '${entry.name}' bắt nguồn từ ${isFromEmpty ? 'src/fixtures/empty' : 'src/fixtures'} lọt vào dist.`
             );
           }
 

@@ -75,6 +75,7 @@ npm run lint     # ESLint + Prettier check
 npm run check    # astro check (type + content schema)
 npm test         # Playwright + axe
 npm run test:unit # chạy unit tests thuần (format, news, documents)
+npm run test:empty # chạy tests trạng thái rỗng trên dist-empty
 npm run test:fixtures # build fixture và chạy tests với dữ liệu fixture
 npm run verify   # chạy toàn bộ kiểm tra chất lượng trước khi chốt task
 npm run lhci:quick # Lighthouse CI nhanh (1 lần, 3 URL: /, /lai-suat/, /tin-tuc/) dùng trong verify
@@ -82,6 +83,8 @@ npm run lhci     # Lighthouse CI đầy đủ (3 lần, mọi trang) dùng trong
 npm run build:cf # build cho Cloudflare Workers Builds (kiểm tra nhánh, SITE_URL, placeholder)
 npm audit --omit=dev --audit-level=high # kiểm tra bảo mật các gói phụ thuộc production
 ```
+Quy tắc kiểm thử dữ liệu: test trạng thái rỗng thuộc `tests/empty/`; test production không khẳng định dữ liệu cụ thể.
+
 ### 4.1 Môi trường và công cụ
 - Mã nguồn nằm tại D:\TaiLieu\projects\qtd, terminal là PowerShell. Chạy lệnh trực tiếp (npm, git, node), không dùng wsl. Nối lệnh bằng `;` thay vì `&&`.
 - Tạo và sửa file CHỈ bằng công cụ ghi file của IDE. KHÔNG ghi file bằng heredoc, base64, PowerShell hay Python, và không tạo script tạm để "đồng bộ" file.

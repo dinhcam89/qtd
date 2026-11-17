@@ -81,7 +81,7 @@ test.describe('Fixture tests — Biểu lãi suất mẫu & Quy mô & Chân tran
         const footerLinks = page.locator('[data-footer-nav] a');
         const footerTexts = await footerLinks.allTextContents();
         expect(footerTexts).toContain('Quy mô');
-        expect(footerTexts).toContain('Ban lãnh đạo');
+        expect(footerTexts).not.toContain('Ban lãnh đạo');
 
         expect(consoleErrors).toHaveLength(0);
         expect(cspViolations).toHaveLength(0);

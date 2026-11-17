@@ -1,0 +1,29 @@
+address:
+  street: '[CẦN BỔ SUNG: địa chỉ đường/thôn]'
+  ward: '[CẦN BỔ SUNG: xã/phường]'
+  district: '[CẦN BỔ SUNG: quận/huyện]'
+  city: '[CẦN BỔ SUNG: tỉnh/thành phố]'
+  full: '[CẦN BỔ SUNG: địa chỉ đầy đủ]'
+phone: '[CẦN BỔ SUNG: số điện thoại]'
+hotline: null
+email: '[CẦN BỔ SUNG: email]'
+facebook: null
+zalo: null
+map_embed_url: null
+branches:
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 1]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 1]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 1]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 1]'
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 2]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 2]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 2]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 2]'
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 3]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 3]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 3]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 3]'
+  - name: '[CẦN BỔ SUNG: tên phòng giao dịch 4]'
+    address: '[CẦN BỔ SUNG: địa chỉ phòng giao dịch 4]'
+    phone: '[CẦN BỔ SUNG: số điện thoại phòng giao dịch 4]'
+    working_hours: '[CẦN BỔ SUNG: giờ làm việc phòng giao dịch 4]'

@@ -18,6 +18,7 @@ export const productItemSchema = z.object({
 export const productsSchema = z.object({
   loan_products: z.array(productItemSchema),
   deposit_products: z.array(productItemSchema),
+  payment_services: z.array(productItemSchema).optional().default([]),
 });
 
 export type ProductItem = z.infer<typeof productItemSchema>;

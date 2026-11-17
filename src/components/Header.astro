@@ -1,45 +1,216 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
+import type { ContactData } from '../lib/schemas/contact';
+import type { ScheduleData } from '../lib/schemas/schedule';
+import { getContact, getSchedule } from '../lib/data';
 import { NAV_ITEMS, PRIMARY_NAV_ITEMS } from '../lib/nav';
 import Container from './ui/Container.astro';
 
 interface Props {
   siteName?: string;
+  contact?: ContactData;
+  schedule?: ScheduleData;
+  transparent?: boolean;
 }
 
-const { siteName = '' } = Astro.props;
+const { siteName = '', transparent = false } = Astro.props;
+const contact = Astro.props.contact ?? (await getContact());
+const schedule = Astro.props.schedule ?? (await getSchedule());
+
+const contactPhone = contact?.phone || '0232 3848 123';
+const scheduleMorning = schedule?.morning_hours || '07:00 - 11:30';
+const scheduleAfternoon = schedule?.afternoon_hours || '13:30 - 17:00';
+
+const publicRoot =
+  process.env.QTD_FIXTURES === '1' ? 'src/fixtures/public' : 'public';
+
+// Kiểm tra logo có tồn tại trong public/images/ hay không (ưu tiên logo PCF tách nền)
+const hasLogoPng = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.png`)
+);
+const hasLogoSvg = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.svg`)
+);
+const hasLogoWebp = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/logo.webp`)
+);
+const hasClassicLogo = fs.existsSync(
+  path.resolve(process.cwd(), `${publicRoot}/images/logo-qtdnd-classic.png`)
+);
+const logoSrc = hasLogoPng
+  ? '/images/logo.png'
+  : hasLogoSvg
+    ? '/images/logo.svg'
+    : hasLogoWebp
+      ? '/images/logo.webp'
+      : hasClassicLogo
+        ? '/images/logo-qtdnd-classic.png'
+        : null;
 ---
 
 <header
-  class="border-b border-border-default bg-surface-page sticky top-0 z-40"
+  class:list={[
+    'sticky top-0 z-40 transition-colors duration-200',
+    transparent
+      ? 'bg-transparent border-b border-emerald-950/10'
+      : 'border-b border-emerald-900/10 bg-white/98 shadow-2xs',
+  ]}
   id="site-header"
+  data-transparent-header={transparent ? 'true' : undefined}
 >
+  <!-- 1. Thanh phân khúc khách hàng đỉnh trang kiểu Vietcombank (Customer Segment Bar) -->
+  <nav
+    aria-label="Phân khúc khách hàng"
+    class:list={[
+      'text-xs sm:text-sm hidden md:block transition-colors duration-200',
+      transparent
+        ? 'border-b border-emerald-950/10 bg-transparent'
+        : 'border-b border-emerald-900/10 bg-surface-brand-subtle/60',
+    ]}
+  >
+    <Container class="flex items-center justify-between py-2">
+      <div class="flex items-center space-x-1.5 text-ink-base">
+        <span
+          class:list={[
+            'font-bold px-3 py-1 rounded-full',
+            transparent
+              ? 'bg-transparent text-brand-dark'
+              : 'text-brand-primary bg-surface-brand-subtle border border-emerald-200 shadow-2xs',
+          ]}
+        >
+          Thành viên &amp; Cá nhân
+        </span>
+        <a
+          href="/san-pham"
+          class="hidden px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
+        >
+          Hộ sản xuất nông nghiệp
+        </a>
+        <a
+          href="/san-pham"
+          class="hidden px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
+        >
+          Hộ kinh doanh &amp; Hợp tác xã
+        </a>
+        <a
+          href="/kenh-chinh-thuc"
+          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
+        >
+          Ngân hàng số Co-opBank
+        </a>
+        <a
+          href="/gioi-thieu"
+          class="px-3 py-1 rounded-full font-medium text-ink-base hover:text-brand-dark hover:bg-white/60 transition-colors"
+        >
+          Về Quỹ tín dụng nhân dân Vạn Trạch
+        </a>
+      </div>
+      <div class="flex items-center gap-3 text-xs text-ink-base font-medium">
+        <span
+          class:list={[
+            'inline-flex items-center gap-1.5 px-3 py-1 rounded-full',
+            transparent
+              ? 'bg-white/80 border border-white/90 shadow-2xs'
+              : 'bg-surface-page border border-border-default',
+          ]}
+        >
+          <svg
+            class="w-3.5 h-3.5 text-brand-dark shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+          </svg>
+          <strong class="text-ink-base font-bold">{contactPhone}</strong>
+        </span>
+        <span class="text-ink-base/40" aria-hidden="true">
+          |
+        </span>
+        <span class="font-medium text-ink-base">
+          Giờ phục vụ: {scheduleMorning} &amp; {scheduleAfternoon}
+        </span>
+      </div>
+    </Container>
+  </nav>
+
+  <!-- 2. Thanh điều hướng chính -->
   <Container>
-    <div class="flex items-center justify-between min-h-[4.5rem] py-3">
-      <!-- Tên Quỹ dạng chữ, không vẽ logo/khẩu hiệu giả -->
+    <div class="flex items-center justify-between min-h-[5rem] py-2 sm:py-2.5">
+      <!-- Logo và Tên Quỹ -->
       <a
         href="/"
         data-header-brand
         data-site-brand
-        class="text-xl sm:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors"
+        class="inline-flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl xl:text-2xl font-bold tracking-tight text-brand-primary hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus rounded py-1 transition-colors mr-auto min-w-0"
       >
-        {siteName}
+        {logoSrc && (
+          <img
+            src={logoSrc}
+            alt={`Logo ${siteName}`}
+            width="64"
+            height="64"
+            loading="lazy"
+            fetchpriority="low"
+            decoding="async"
+            class="h-14 sm:h-16 w-auto object-contain shrink-0"
+          />
+        )}
+        {siteName.toUpperCase().startsWith('QUỸ TÍN DỤNG NHÂN DÂN') ? (
+          <span class="flex flex-col text-left leading-none py-0.5 min-w-0">
+            <span class="text-xs sm:text-xs lg:text-sm font-bold text-brand-primary uppercase tracking-wider">
+              QUỸ TÍN DỤNG NHÂN DÂN
+            </span>
+            <span class="text-lg sm:text-xl xl:text-2xl font-extrabold text-brand-primary tracking-tight mt-0.5 break-words">
+              {siteName.replace(/^QUỸ TÍN DỤNG NHÂN DÂN\s*/i, '')}
+            </span>
+          </span>
+        ) : (
+          <span class="min-w-0 break-words leading-tight">{siteName}</span>
+        )}
       </a>
 
       <!-- Menu ngang trên Desktop (lg+): chỉ các mục primary, các trang con nằm ở Giới thiệu/footer -->
       <nav
         data-desktop-nav
-        class="hidden lg:flex items-center space-x-0.5 xl:space-x-1"
+        class="hidden lg:flex items-center space-x-0.5 xl:space-x-1.5 ml-3 xl:ml-8 shrink-0"
         aria-label="Điều hướng chính"
       >
         {PRIMARY_NAV_ITEMS.map((item) => (
           <a
             href={item.href}
-            class="px-2.5 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center text-sm xl:text-base font-medium text-ink-base hover:text-brand-primary hover:bg-surface-muted rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+            class="px-2 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center text-sm xl:text-base font-medium text-ink-base hover:text-brand-primary hover:bg-surface-brand-subtle rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
           >
             {item.label}
           </a>
         ))}
       </nav>
+
+      <!-- Bộ chọn ngôn ngữ Tiếng Việt / Tiếng Anh (Góc trên bên phải) -->
+      <div class="hidden lg:flex items-center ml-2 xl:ml-3 pl-2 xl:pl-3 border-l border-border-default shrink-0">
+        <div
+          class="inline-flex items-center p-0.5 rounded-lg bg-surface-muted border border-border-default text-xs font-semibold"
+          role="group"
+          aria-label="Lựa chọn ngôn ngữ"
+        >
+          <span
+            class="px-2 py-1 rounded-md bg-brand-primary text-white shadow-xs cursor-default select-none"
+            aria-current="true"
+          >
+            VI
+          </span>
+          <button
+            type="button"
+            id="lang-en-btn"
+            class="px-2 py-1 rounded-md text-ink-muted hover:text-ink-base transition-colors focus-visible:outline-2 focus-visible:outline-border-focus"
+            title="English (Phiên bản tiếng Anh đang được chuẩn bị)"
+            aria-label="EN - Chuyển sang tiếng Anh"
+          >
+            EN
+          </button>
+        </div>
+      </div>
 
       <!-- Nút Hamburger trên Mobile (vùng bấm tối thiểu 44x44px) -->
       <button
@@ -85,7 +256,7 @@ const { siteName = '' } = Astro.props;
     <!-- Panel Menu Mobile -->
     <nav
       id="mobile-nav-panel"
-      class="hidden lg:hidden border-t border-border-default py-3"
+      class="hidden lg:hidden border-t border-border-default bg-white/95 rounded-b-2xl px-2 py-3 shadow-lg"
       aria-label="Điều hướng trên di động"
     >
       <ul class="flex flex-col space-y-1">
@@ -99,6 +270,29 @@ const { siteName = '' } = Astro.props;
             </a>
           </li>
         ))}
+        <li class="pt-2 border-t border-border-default px-4 py-2">
+          <div class="flex items-center justify-between text-sm font-medium text-ink-muted">
+            <span>Ngôn ngữ / Language:</span>
+            <div
+              class="inline-flex items-center p-0.5 rounded-lg bg-surface-muted border border-border-default text-xs font-semibold"
+              role="group"
+              aria-label="Lựa chọn ngôn ngữ"
+            >
+              <span class="px-2.5 py-1 rounded-md bg-brand-primary text-white shadow-xs">
+                VI
+              </span>
+              <button
+                type="button"
+                id="lang-en-btn-mobile"
+                class="px-2.5 py-1 rounded-md text-ink-muted hover:text-ink-base"
+                title="English (Phiên bản tiếng Anh đang được chuẩn bị)"
+                aria-label="EN - Chuyển sang tiếng Anh"
+              >
+                EN
+              </button>
+            </div>
+          </div>
+        </li>
       </ul>
     </nav>
   </Container>

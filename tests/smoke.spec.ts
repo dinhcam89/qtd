@@ -307,22 +307,27 @@ test.describe('Smoke tests', () => {
         .map((p) => (p.path.endsWith('/') ? p.path : `${p.path}/`))
     );
 
-    // So sánh hai tập hợp
+    // Mọi expectedPath phải có trong sitemap
     const missingInSitemap = [...expectedPaths].filter(
       (p) => !urlsInSitemap.has(p)
     );
-    const extraInSitemap = [...urlsInSitemap].filter(
-      (p) => !expectedPaths.has(p)
-    );
-
     expect(
       missingInSitemap,
       `Thiếu trang trong sitemap-0.xml: ${missingInSitemap.join(', ')}`
     ).toEqual([]);
-    expect(
-      extraInSitemap,
-      `Trang thừa trong sitemap-0.xml: ${extraInSitemap.join(', ')}`
-    ).toEqual([]);
+
+    // Mọi URL phụ thêm trong sitemap (nếu có) phải là route tin tức hợp lệ tồn tại file html trong dist
+    const extraInSitemap = [...urlsInSitemap].filter(
+      (p) => !expectedPaths.has(p)
+    );
+    for (const extraPath of extraInSitemap) {
+      expect(extraPath.startsWith('/tin-tuc/')).toBe(true);
+      const cleanPath = extraPath.replace(/^\//, '').replace(/\/$/, '');
+      const candidate1 = path.join(distPath, cleanPath, 'index.html');
+      const candidate2 = path.join(distPath, `${cleanPath}.html`);
+      expect(fs.existsSync(candidate1) || fs.existsSync(candidate2)).toBe(true);
+    }
+
     expect(urlsInSitemap.has('/404')).toBe(false);
     expect(urlsInSitemap.has('/404/')).toBe(false);
   });
@@ -358,7 +363,7 @@ test.describe('Smoke tests', () => {
     expect(cspViolations).toEqual([]);
   });
 
-  test('thẻ StatItem khi giá trị null hiển thị "Đang cập nhật" text-lg ink-muted một dòng không kèm đơn vị và các thẻ cao bằng nhau', async ({
+  test('thẻ StatItem: hiển thị giá trị hợp lệ hoặc "Đang cập nhật" text-lg ink-muted một dòng và các thẻ cao bằng nhau', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
@@ -370,7 +375,6 @@ test.describe('Smoke tests', () => {
 
     const fallbacks = page.locator('[data-stat-fallback]');
     const fallbackCount = await fallbacks.count();
-    expect(fallbackCount).toBe(count); // tất cả thẻ quy mô hiện tại đều null
 
     for (let i = 0; i < fallbackCount; i++) {
       const fb = fallbacks.nth(i);
@@ -396,41 +400,53 @@ test.describe('Smoke tests', () => {
       expect(style.whiteSpace).toBe('nowrap');
     }
 
-    // Không có đơn vị hiển thị
-    const units = page.locator('[data-stat-unit]');
-    expect(await units.count()).toBe(0);
-
     // Kiểm tra các thẻ có cùng chiều cao (nếu trên cùng hàng)
-    const cardHeights = await cards.evaluateAll((list) =>
-      list.map((el) => Math.round(el.getBoundingClientRect().height))
+    const cardMetrics = await cards.evaluateAll((list) =>
+      list.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top), height: Math.round(r.height) };
+      })
     );
-    const firstHeight = cardHeights[0];
-    for (const h of cardHeights) {
-      expect(Math.abs(h - firstHeight)).toBeLessThanOrEqual(2);
+    const rows = new Map<number, number[]>();
+    for (const m of cardMetrics) {
+      const list = rows.get(m.top) || [];
+      list.push(m.height);
+      rows.set(m.top, list);
+    }
+    for (const [, heights] of rows) {
+      if (heights.length > 1) {
+        const firstHeight = heights[0];
+        for (const h of heights) {
+          expect(Math.abs(h - firstHeight)).toBeLessThanOrEqual(2);
+        }
+      }
     }
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
   });
 
-  test('dòng Tính đến trong thẻ chỉ hiển thị khi as_of có giá trị, khi null thì không hiển thị', async ({
+  test('dòng Tính đến trong thẻ chỉ hiển thị khi as_of có giá trị, định dạng dd/mm/yyyy', async ({
     page,
   }) => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/');
 
-    // Khi site.stats.as_of là null:
-    // 1. Không thẻ nào có phần tử [data-stat-asof]
     const asOfLocators = page.locator('[data-stat-asof]');
-    expect(await asOfLocators.count()).toBe(0);
+    const asOfCount = await asOfLocators.count();
+    if (asOfCount > 0) {
+      for (let i = 0; i < asOfCount; i++) {
+        const txt = (await asOfLocators.nth(i).innerText()).trim();
+        expect(/\d{2}\/\d{2}\/\d{4}/.test(txt)).toBe(true);
+      }
+    } else {
+      const scaleSection = page.locator('#quy-mo');
+      await expect(scaleSection).toContainText('Số liệu: Đang cập nhật');
+    }
 
-    // 2. Toàn trang không chứa đoạn "Tính đến Đang cập nhật"
+    // Toàn trang không chứa đoạn "Tính đến Đang cập nhật"
     const bodyText = await page.locator('body').innerText();
     expect(bodyText).not.toMatch(/tính đến\s+đang cập nhật/i);
-
-    // 3. Tiêu đề khối quy mô có "Số liệu: Đang cập nhật"
-    const scaleSection = page.locator('#quy-mo');
-    await expect(scaleSection).toContainText('Số liệu: Đang cập nhật');
 
     expect(consoleErrors).toEqual([]);
     expect(cspViolations).toEqual([]);
@@ -576,38 +592,47 @@ test.describe('Smoke tests', () => {
     await page.goto('/');
 
     const heroActions = page.locator('[data-hero-actions]');
-    await expect(heroActions).toBeVisible();
+    if ((await heroActions.count()) > 0) {
+      await expect(heroActions).toBeVisible();
 
-    const buttons = heroActions.locator('[data-hero-btn]');
-    expect(await buttons.count()).toBe(2);
+      const buttons = heroActions.locator('[data-hero-btn]');
+      expect(await buttons.count()).toBe(2);
 
-    const vp = page.viewportSize();
-    const isMobile = vp && vp.width < 640;
+      const vp = page.viewportSize();
+      const isMobile = vp && vp.width < 640;
 
-    const btn1Box = await buttons.nth(0).boundingBox();
-    const btn2Box = await buttons.nth(1).boundingBox();
-    const containerBox = await heroActions.boundingBox();
+      const btn1Box = await buttons.nth(0).boundingBox();
+      const btn2Box = await buttons.nth(1).boundingBox();
+      const containerBox = await heroActions.boundingBox();
 
-    expect(btn1Box).not.toBeNull();
-    expect(btn2Box).not.toBeNull();
-    expect(containerBox).not.toBeNull();
+      expect(btn1Box).not.toBeNull();
+      expect(btn2Box).not.toBeNull();
+      expect(containerBox).not.toBeNull();
 
-    if (isMobile) {
-      // 1. Hai nút cùng chiều rộng toàn dòng
-      expect(Math.abs(btn1Box!.width - btn2Box!.width)).toBeLessThanOrEqual(2);
-      expect(
-        Math.abs(btn1Box!.width - containerBox!.width)
-      ).toBeLessThanOrEqual(2);
+      if (isMobile) {
+        // 1. Hai nút cùng chiều rộng toàn dòng
+        expect(Math.abs(btn1Box!.width - btn2Box!.width)).toBeLessThanOrEqual(
+          2
+        );
+        expect(
+          Math.abs(btn1Box!.width - containerBox!.width)
+        ).toBeLessThanOrEqual(2);
 
-      // 2. Xếp dọc: nút 2 nằm dưới nút 1
-      expect(btn2Box!.y).toBeGreaterThanOrEqual(
-        btn1Box!.y + btn1Box!.height - 1
-      );
+        // 2. Xếp dọc: nút 2 nằm dưới nút 1
+        expect(btn2Box!.y).toBeGreaterThanOrEqual(
+          btn1Box!.y + btn1Box!.height - 1
+        );
+      } else {
+        // Từ sm trở lên giữ dạng hàng ngang
+        expect(Math.abs(btn1Box!.y - btn2Box!.y)).toBeLessThanOrEqual(5);
+        // Nút 2 nằm bên phải nút 1
+        expect(btn2Box!.x).toBeGreaterThanOrEqual(btn1Box!.x + btn1Box!.width);
+      }
     } else {
-      // Từ sm trở lên giữ dạng hàng ngang
-      expect(Math.abs(btn1Box!.y - btn2Box!.y)).toBeLessThanOrEqual(5);
-      // Nút 2 nằm bên phải nút 1
-      expect(btn2Box!.x).toBeGreaterThanOrEqual(btn1Box!.x + btn1Box!.width);
+      await expect(page.locator('[data-dynamic-greeting]')).toBeVisible();
+      await expect(
+        page.locator('section[aria-label="Lối tắt tiện ích nhanh"]')
+      ).toBeVisible();
     }
 
     expect(consoleErrors).toEqual([]);
@@ -620,11 +645,10 @@ test.describe('Smoke tests', () => {
     const { consoleErrors, cspViolations } = await setupPageGuards(page);
     await page.goto('/');
 
-    // 7a) Với mỗi giá trị thẻ quy mô đang là "Đang cập nhật":
+    // 7a) Với mỗi giá trị thẻ quy mô có fallback "Đang cập nhật":
     // chiều cao hộp chữ <= 1,3 lần line-height (tức một dòng) và font-size <= 28px
     const fallbacks = page.locator('[data-scale-section] [data-stat-fallback]');
     const fallbackCount = await fallbacks.count();
-    expect(fallbackCount).toBeGreaterThan(0);
 
     for (let i = 0; i < fallbackCount; i++) {
       const fb = fallbacks.nth(i);

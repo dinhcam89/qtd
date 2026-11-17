@@ -2,11 +2,11 @@ import { z } from 'astro/zod';
 
 export const siteStatsSchema = z.object({
   as_of: z.string().nullable(),
-  members_count: z.number().nullable(),
-  charter_capital: z.number().nullable(),
-  total_assets: z.number().nullable(),
-  total_deposits: z.number().nullable(),
-  total_loans: z.number().nullable(),
+  members_count: z.union([z.number(), z.string()]).nullable(),
+  charter_capital: z.union([z.number(), z.string()]).nullable(),
+  total_assets: z.union([z.number(), z.string()]).nullable(),
+  total_deposits: z.union([z.number(), z.string()]).nullable(),
+  total_loans: z.union([z.number(), z.string()]).nullable(),
 });
 
 export const officialDomainSchema = z

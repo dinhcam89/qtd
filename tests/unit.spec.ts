@@ -5,6 +5,7 @@ import {
   formatFileSize,
   formatNumber,
   formatPercent,
+  formatRate,
   formatCurrency,
 } from '../src/lib/format';
 import {
@@ -59,6 +60,8 @@ test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)',
     // ISO hợp lệ dd/mm/yyyy
     expect(formatDate('2026-10-21T00:00:00Z')).toBe('21/10/2026');
     expect(formatDate('2026-03-05')).toBe('05/03/2026');
+    expect(formatDate('30/06/2025')).toBe('30/06/2025');
+    expect(formatDateIso('30/06/2025')).toBe('2025-06-30');
     expect(formatDate(new Date('2026-01-15T12:00:00Z'))).toBe('15/01/2026');
 
     // null / undefined / rỗng trả về "Đang cập nhật"
@@ -88,6 +91,16 @@ test.describe('Unit tests — Định dạng chuẩn vi-VN (src/lib/format.ts)',
     expect(formatPercent(6)).toBe('6%/năm');
     expect(formatPercent(5.2, { perYear: false })).toBe('5,2%');
     expect(formatPercent(0)).toBe('0%/năm');
+  });
+
+  test('formatRate: chuẩn vi-VN (tối thiểu 1, tối đa 2 chữ số thập phân), null/undefined trả về "Đang cập nhật"', () => {
+    expect(formatRate(null)).toBe('Đang cập nhật');
+    expect(formatRate(undefined)).toBe('Đang cập nhật');
+    expect(formatRate(0.2)).toBe('0,2%');
+    expect(formatRate(3)).toBe('3,0%');
+    expect(formatRate(3.25)).toBe('3,25%');
+    expect(formatRate(7.5)).toBe('7,5%');
+    expect(formatRate(8)).toBe('8,0%');
   });
 
   test('formatCurrency: chuẩn Việt Nam (1.000.000 đồng), null/undefined trả về "Đang cập nhật"', () => {
@@ -630,6 +643,15 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
       });
       expect(resTrue.isValid).toBe(false);
 
+      const resEmptyFixtures = decideBuildMode({
+        QTD_FIXTURES: 'empty',
+        SITE_URL: validSiteUrl,
+      });
+      expect(resEmptyFixtures.isValid).toBe(false);
+      expect(
+        resEmptyFixtures.errors.some((e) => e.includes('QTD_FIXTURES'))
+      ).toBe(true);
+
       // Cho phép khi là "0", rỗng hoặc undefined
       const res0 = decideBuildMode({
         QTD_FIXTURES: '0',
@@ -1060,7 +1082,9 @@ test.describe('Unit tests — Hàm SEO và metadata (src/lib/seo.ts)', () => {
     test('chứa đầy đủ mọi mục từ NAV_ITEMS làm lối đi dự phòng khi tắt JavaScript', () => {
       const footerHrefs = FOOTER_NAV_ITEMS.map((item) => item.href);
       expect(footerHrefs).toContain('/quy-mo');
-      expect(footerHrefs).toContain('/ban-lanh-dao');
+      // Ban lãnh đạo và Lịch sử hình thành tạm thời ẩn theo yêu cầu người dùng
+      expect(footerHrefs).not.toContain('/ban-lanh-dao');
+      expect(footerHrefs).not.toContain('/lich-su');
       expect(FOOTER_NAV_ITEMS.length).toBe(NAV_ITEMS.length);
     });
   });

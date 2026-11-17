@@ -10,7 +10,7 @@ updated: 2026-10-01
 
 ## 2. Địa bàn và Phạm vi hoạt động
 
-[FIXTURE] Quỹ tín dụng nhân dân hoạt động trên địa bàn toàn huyện Kiểm Thử theo giấy phép hoạt động của Ngân hàng Nhà nước. Nhằm tạo thuận tiện tối đa cho bà con thành viên và khách hàng đến giao dịch, Quỹ đã tổ chức mạng lưới phục vụ gồm Trụ sở chính và 04 Phòng giao dịch:
+[FIXTURE] Quỹ tín dụng nhân dân hoạt động trên địa bàn toàn huyện Kiểm Thử theo giấy phép hoạt động của Ngân hàng Nhà nước. Nhằm tạo thuận tiện tối đa cho bà con thành viên và khách hàng đến giao dịch, Quỹ đã tổ chức mạng lưới phục vụ gồm Hội sở chính và 04 Phòng giao dịch:
 
 - **Phòng giao dịch Số 1 (Khu vực Phía Đông):** Phục vụ thành viên tại các xã phía Đông huyện.
 - **Phòng giao dịch Số 2 (Khu vực Phía Tây):** Phục vụ thành viên tại các xã phía Tây huyện.

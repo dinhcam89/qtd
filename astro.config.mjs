@@ -4,15 +4,25 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
-const isFixtures = process.env.QTD_FIXTURES === '1';
+const fixturesMode = process.env.QTD_FIXTURES;
+const isFixtures = fixturesMode === '1';
+const isEmptyFixtures = fixturesMode === 'empty';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
   site: process.env.SITE_URL || 'https://qtd.pages.dev',
-  outDir: isFixtures ? './dist-fixtures' : './dist',
+  outDir: isEmptyFixtures
+    ? './dist-empty'
+    : isFixtures
+      ? './dist-fixtures'
+      : './dist',
   publicDir: isFixtures ? './src/fixtures/public' : './public',
-  server: isFixtures ? { port: 4322 } : { port: 4321 },
+  server: isEmptyFixtures
+    ? { port: 4323 }
+    : isFixtures
+      ? { port: 4322 }
+      : { port: 4321 },
   build: {
     inlineStylesheets: 'never',
   },

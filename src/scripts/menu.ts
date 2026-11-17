@@ -74,6 +74,34 @@ function initMenu(): void {
       closeMenu(false);
     }
   });
+
+  // Thông báo khi bấm chọn tiếng Anh (chưa có bản dịch đầy đủ)
+  const enButtons = document.querySelectorAll(
+    '#lang-en-btn, #lang-en-btn-mobile'
+  );
+  enButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      alert(
+        'Phiên bản tiếng Anh đang được cập nhật. Website Quỹ tín dụng nhân dân Vạn Trạch hiện phục vụ thông tin bằng tiếng Việt.'
+      );
+    });
+  });
+
+  // Hiệu ứng Header trong suốt trên đỉnh trang chủ (kiểu Vietcombank) và chuyển sang nền trắng khi cuộn xuống
+  const siteHeader = document.getElementById('site-header');
+  if (siteHeader?.getAttribute('data-transparent-header') === 'true') {
+    const syncHeaderScroll = () => {
+      if (window.scrollY > 20) {
+        siteHeader.classList.remove('bg-transparent');
+        siteHeader.classList.add('bg-white/95', 'shadow-xs');
+      } else {
+        siteHeader.classList.add('bg-transparent');
+        siteHeader.classList.remove('bg-white/95', 'shadow-xs');
+      }
+    };
+    syncHeaderScroll();
+    window.addEventListener('scroll', syncHeaderScroll, { passive: true });
+  }
 }
 
 if (document.readyState === 'loading') {

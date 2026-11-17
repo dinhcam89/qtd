@@ -1,14 +1,14 @@
-name: '[TÊN QUỸ]'
-short_name: '[CẦN BỔ SUNG: tên viết tắt]'
-license_number: '[CẦN BỔ SUNG: số giấy phép hoạt động]'
-established_year: null
-operating_area: '[CẦN BỔ SUNG: địa bàn hoạt động gồm trụ sở chính và 04 phòng giao dịch]'
-description: '[CẦN BỔ SUNG: giới thiệu chung về quỹ]'
+name: 'QUỸ TÍN DỤNG NHÂN DÂN VẠN TRẠCH'
+short_name: 'QTDND VẠN TRẠCH'
+license_number: '04NH-GP 10/01/1996'
+established_year: 1958
+operating_area: 'Xã Bố Trạch, Tỉnh Quảng Trị'
+description: 'QTDND Vạn Trạch tiền thân là Hợp tác xã tín dụng được thành lập từ năm 1958. Đến năm 1996, đơn vị chuyển sang mô hình hoạt động QTDND phù hợp với định hướng đổi mới của Nhà nước và xu thế phát triển tài chính hợp tác. Kể từ đó, Quỹ từng bước củng cố hoạt động, mở rộng quy mô, không ngừng nâng cao chất lượng dịch vụ, khẳng định uy tín trên địa bàn.'
 official_domain: null
 stats:
-  as_of: null
-  members_count: null
-  charter_capital: null
-  total_assets: null
-  total_deposits: null
-  total_loans: null
+  as_of: 30/06/2025
+  members_count: 8000
+  charter_capital: '52 tỷ đồng'
+  total_assets: '1270 tỷ đồng'
+  total_deposits: '1140 tỷ đồng'
+  total_loans: '900 tỷ đồng'

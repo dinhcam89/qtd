@@ -1,6 +1,7 @@
 # Build & cache
 dist/
 dist-fixtures/
+dist-empty/
 .astro/
 src/fixtures/public/docs/fixture-large.pdf
 

@@ -19,12 +19,12 @@ const { columns, data, caption, class: className = '' } = Astro.props;
 <div class="w-full">
   <table
     data-responsive-table
+    aria-label={caption}
     class:list={[
       'responsive-rate-table w-full text-left border-collapse border border-border-default rounded-lg bg-surface-page',
       className,
     ]}
   >
-    {caption && <caption class="sr-only">{caption}</caption>}
     {columns && (
       <thead>
         <tr class="border-b border-border-default bg-surface-muted text-ink-base text-base font-semibold">

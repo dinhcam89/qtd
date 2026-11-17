@@ -1,0 +1,193 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface SlideItem {
+  src: string;
+  alt: string;
+  title?: string;
+  subtitle?: string;
+}
+
+const publicRoot =
+  process.env.QTD_FIXTURES === '1' ? 'src/fixtures/public' : 'public';
+const sliderDir = path.resolve(process.cwd(), `${publicRoot}/images/slider`);
+let slides: SlideItem[] = [];
+
+if (fs.existsSync(sliderDir)) {
+  const files = fs
+    .readdirSync(sliderDir)
+    .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f))
+    // Ưu tiên ảnh nhẹ (.webp, .jpg) lên đầu để tối ưu tốc độ tải và giải mã ảnh đầu tiên (LCP)
+    .sort((a, b) => {
+      const isAPng = a.toLowerCase().endsWith('.png') ? 1 : 0;
+      const isBPng = b.toLowerCase().endsWith('.png') ? 1 : 0;
+      if (isAPng !== isBPng) return isAPng - isBPng;
+      return a.localeCompare(b);
+    });
+
+  // Sắp xếp ổn định và gán mô tả phù hợp cho từng banner
+  slides = files.map((file) => {
+    let title = 'Quỹ tín dụng nhân dân Vạn Trạch';
+    let subtitle = 'Đồng hành phát triển — An tâm tài chính';
+
+    if (file.includes('2.9.2026')) {
+      title = 'Chào mừng kỷ niệm ngày Quốc khánh 2/9';
+      subtitle = 'Thông báo lịch nghỉ lễ Quốc Khánh 2/9/2026';
+    } else if (file.includes('nghi-le')) {
+      title = 'Thông báo phục vụ & Lịch làm việc các dịp lễ';
+      subtitle = 'Tận tâm phục vụ thành viên và khách hàng';
+    } else if (file.includes('dhtv')) {
+      title = 'Đại hội thành viên năm 2026';
+      subtitle = 'Tôn vinh thành công và định hướng phát triển';
+    } else if (file.includes('asxh')) {
+      title = 'Đồng hành cùng công tác an sinh xã hội trên địa bàn';
+      subtitle = 'Trao tặng phương tiện sinh kế cho hộ khó khăn';
+    }
+
+    return {
+      src: `/images/slider/${file}`,
+      alt: title,
+      title,
+      subtitle,
+    };
+  });
+}
+
+if (slides.length === 0) {
+  return null;
+}
+---
+
+<div
+  data-home-slider
+  class="relative w-full overflow-hidden rounded-2xl bg-surface-muted border border-border-default shadow-xs select-none aspect-[16/9] sm:aspect-[16/7] lg:aspect-[21/9]"
+  tabindex="0"
+  role="region"
+  aria-label="Hình ảnh hoạt động và sự kiện tiêu biểu"
+>
+  <!-- Danh sách các Slide -->
+  <div class="relative w-full h-full">
+    {slides.map((slide, index) => (
+      <div
+        data-slide
+        data-slide-index={index}
+        class={`absolute inset-0 w-full h-full transition-opacity duration-500 ease-out ${
+          index === 0
+            ? 'opacity-100 pointer-events-auto z-10'
+            : 'opacity-0 pointer-events-none z-0'
+        }`}
+        aria-hidden={index === 0 ? 'false' : 'true'}
+      >
+        <img
+          data-src={slide.src}
+          alt={slide.alt}
+          width="1920"
+          height="1080"
+          loading="lazy"
+          fetchpriority="low"
+          decoding="async"
+          class="w-full h-full object-cover object-center"
+        />
+
+        <!-- Gradient overlay giúp tôn vinh hình ảnh và dễ đọc chữ/chấm điều khiển -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent pointer-events-none" />
+
+        <!-- Chú thích tiêu đề banner (nếu có) -->
+        {(slide.title || slide.subtitle) && (
+          <div class="absolute bottom-6 sm:bottom-8 left-6 sm:left-10 right-16 sm:right-24 text-white z-20 pointer-events-none">
+            {slide.title && (
+              <h2 class="text-base sm:text-xl lg:text-2xl font-bold tracking-tight">
+                {slide.title}
+              </h2>
+            )}
+            {slide.subtitle && (
+              <p class="text-xs sm:text-sm text-white/95 mt-1 max-w-xl hidden min-[480px]:block">
+                {slide.subtitle}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+
+  <!-- Nút chuyển Slide Trái / Phải (Vùng bấm tối thiểu 44x44px theo WCAG) -->
+  {slides.length > 1 && (
+    <>
+      <button
+        type="button"
+        data-slider-prev
+        class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-white cursor-pointer"
+        aria-label="Hình ảnh trước"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        data-slider-next
+        class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-white cursor-pointer"
+        aria-label="Hình ảnh tiếp theo"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+
+      <!-- Các chấm chỉ báo Slide (Indicators - vùng bấm >= 28x28px đạt chuẩn WCAG) -->
+      <div
+        class="absolute bottom-2.5 sm:bottom-3.5 right-3 sm:right-5 z-20 flex items-center gap-1"
+        role="tablist"
+        aria-label="Chỉ báo vị trí ảnh"
+      >
+        {slides.map((_, index) => (
+          <button
+            type="button"
+            role="tab"
+            data-slider-dot={index}
+            class="min-w-[28px] min-h-[28px] px-1 flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-white rounded-full"
+            aria-label={`Chuyển đến hình ảnh ${index + 1}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            aria-current={index === 0 ? 'true' : undefined}
+          >
+            <span
+              data-slider-dot-bar
+              class={`block h-2.5 rounded-full transition-colors duration-300 ${
+                index === 0
+                  ? 'bg-white w-7'
+                  : 'bg-white/55 w-2.5 hover:bg-white/85'
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </>
+  )}
+</div>
+
+<script src="../scripts/slider.ts"></script>
